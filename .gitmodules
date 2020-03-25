@@ -31,3 +31,12 @@
 [submodule "lib/ui-library"]
 	path = lib/ui-library
 	url = https://github.com/pkp/ui-library
+[submodule "plugins/themes/omp-dainst-theme"]
+	path = plugins/themes/omp-dainst-theme
+	url = https://github.com/dainst/omp-dainst-theme
+[submodule "plugins/blocks/omp-dainst-nav-block"]
+	path = plugins/blocks/omp-dainst-nav-block
+	url = https://github.com/dainst/omp-dainst-nav-block
+[submodule "plugins/pubIds/zenon"]
+	path = plugins/pubIds/zenon
+	url = https://github.com/dainst/ojs-zenon-plugin.git
