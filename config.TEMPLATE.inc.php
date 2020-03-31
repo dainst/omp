@@ -29,7 +29,7 @@
 installed = Off
 
 ; The canonical URL to the OMP installation (excluding the trailing slash)
-base_url = "http://pkp.sfu.ca/omp"
+base_url = "https://publications.dainst.org/books"
 
 ; Session cookie name
 session_cookie_name = OMPSID
