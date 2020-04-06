@@ -40,3 +40,6 @@
 [submodule "plugins/pubIds/zenon"]
 	path = plugins/pubIds/zenon
 	url = https://github.com/dainst/ojs-zenon-plugin.git
+[submodule "plugins/generic/cilantro"]
+	path = plugins/generic/cilantro
+	url = https://github.com/dainst/ojs-cilantro-plugin
