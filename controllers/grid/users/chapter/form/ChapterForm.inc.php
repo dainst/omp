@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/chapter/form/ChapterForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ChapterForm
@@ -90,15 +90,23 @@ class ChapterForm extends Form {
 
 		$monograph = $this->getMonograph();
 		$this->setData('submissionId', $monograph->getId());
+		$enableChapterPublicationDates = (int)$monograph->getEnableChapterPublicationDates() === 1;
+		$this->setData('enableChapterPublicationDates', $enableChapterPublicationDates);
 
 		$chapter = $this->getChapter();
 		if ($chapter) {
 			$this->setData('chapterId', $chapter->getId());
 			$this->setData('title', $chapter->getTitle());
 			$this->setData('subtitle', $chapter->getSubtitle());
+			$this->setData('abstract', $chapter->getAbstract());
+			$this->setData('datePublished', $chapter->getDatePublished());
+			$this->setData('pages', $chapter->getPages());
 		} else {
 			$this->setData('title', null);
 			$this->setData('subtitle', null);
+			$this->setData('abstract', null);
+			$this->setData('datePublished', null);
+			$this->setData('pages', null);
 		}
 	}
 
@@ -107,21 +115,24 @@ class ChapterForm extends Form {
 	 * @see Form::readInputData()
 	 */
 	function readInputData() {
-		$this->readUserVars(array('title', 'subtitle', 'authors', 'files'));
+		$this->readUserVars(array('title', 'subtitle', 'authors', 'files','abstract','datePublished','pages'));
 	}
 
 	/**
 	 * Save chapter
-	 * @param $request
 	 * @see Form::execute()
 	 */
-	function execute($request) {
+	function execute() {
 		$chapterDao = DAORegistry::getDAO('ChapterDAO');
 		$chapter = $this->getChapter();
+		$request = Application::getRequest();
 
 		if ($chapter) {
 			$chapter->setTitle($this->getData('title'), null); //Localized
 			$chapter->setSubtitle($this->getData('subtitle'), null); //Localized
+			$chapter->setAbstract($this->getData('abstract'), null); //Localized
+			$chapter->setDatePublished($this->getData('datePublished'));
+			$chapter->setPages($this->getData('pages'));
 			$chapterDao->updateObject($chapter);
 		} else {
 			$monograph = $this->getMonograph();
@@ -130,7 +141,12 @@ class ChapterForm extends Form {
 			$chapter->setMonographId($monograph->getId());
 			$chapter->setTitle($this->getData('title'), null); //Localized
 			$chapter->setSubtitle($this->getData('subtitle'), null); //Localized
+			$chapter->setAbstract($this->getData('abstract'), null); //Localized
+			$chapter->setDatePublished($this->getData('datePublished'));
+			$chapter->setPages($this->getData('pages'));
+			$chapter->setSequence(REALLY_BIG_NUMBER);
 			$chapterDao->insertChapter($chapter);
+			$chapterDao->resequenceChapters($monograph->getId());
 		}
 
 		$this->setChapter($chapter);
@@ -251,4 +267,4 @@ class ChapterForm extends Form {
 	}
 }
 
-?>
+

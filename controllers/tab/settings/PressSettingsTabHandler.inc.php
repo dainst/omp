@@ -3,8 +3,8 @@
 /**
  * @file controllers/tab/settings/PressSettingsTabHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PressSettingsTabHandler
@@ -36,14 +36,14 @@ class PressSettingsTabHandler extends ManagerSettingsTabHandler {
 	// Overridden methods from Handler
 	//
 	/**
-	 * @see PKPHandler::initialize()
+	 * @copydoc ManagerSettingsTabHandler::initialize()
 	 */
-	function initialize($request, $args = null) {
-		parent::initialize($request, $args);
+	function initialize($request) {
+		parent::initialize($request);
 
 		// Load grid-specific translations
 		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_USER);
 	}
 }
 
-?>
+

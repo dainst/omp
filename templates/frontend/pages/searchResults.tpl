@@ -1,8 +1,8 @@
 {**
  * templates/frontend/pages/searchResults.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Display the page to view the catalog.
@@ -16,6 +16,7 @@
 
 	{* Breadcrumb *}
 	{include file="frontend/components/breadcrumbs.tpl" type="category" currentTitleKey="common.search"}
+	<h1>{translate key="common.search"}</h1>
 	<div class="monograph_count">
 		{translate key="catalog.browseTitles" numTitles=$publishedMonographs|@count}
 	</div>

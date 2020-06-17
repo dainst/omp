@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/chapter/ChapterGridCategoryRowCellProvider.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ChapterGridCategoryRowCellProvider
@@ -20,16 +20,9 @@ class ChapterGridCategoryRowCellProvider extends GridCellProvider {
 	var $_readOnly;
 
 	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
-	/**
 	 * @see GridCellProvider::getCellActions()
 	 */
-	function getCellActions($request, $row, $column) {
+	function getCellActions($request, $row, $column, $position = GRID_ACTION_POSITION_DEFAULT) {
 		if ($column->getId() == 'name' && !$row->isReadOnly()) {
 			$chapter = $row->getData();
 			$monograph = $row->getMonograph();
@@ -47,10 +40,11 @@ class ChapterGridCategoryRowCellProvider extends GridCellProvider {
 						__('submission.chapter.editChapter'),
 						'modal_edit'
 					),
-					$chapter->getLocalizedTitle()
+					htmlspecialchars($chapter->getLocalizedTitle())
 				)
 			);
 		}
+		return parent::getCellActions($request, $row, $column, $position);
 	}
 
 	/**
@@ -70,4 +64,4 @@ class ChapterGridCategoryRowCellProvider extends GridCellProvider {
 	}
 }
 
-?>
+

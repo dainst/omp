@@ -4,8 +4,8 @@
 <!--
   * locale/es_ES/manager.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Credits: https://pkp.sfu.ca/wiki/index.php?title=OMP:_Spanish_(es_ES)
   * Localization strings.
@@ -469,4 +469,12 @@ Podrá ofrecer una razón al usuario/a para deshabilitar su cuenta.</message>
 	<message key="manager.setup.resetPermissions.description">La declaración de derechos de autor y la información de licencia estarán ligadas permanentemente al contenido publicado, lo que garantiza que estos datos no cambiarán en el caso de producirse un cambio en las políticas de la editorial para nuevos envíos. Para reiniciar la información sobre permisos almacenada y todavía ligada al contenido publicado, utilice el botón siguiente:</message>
 	<message key="grid.genres.title.short">Componentes</message>
 	<message key="grid.genres.title">Componentes de la monografía</message>
+	<message key="manager.payment.generalOptions">Opciones generales</message>
+	<message key="manager.payment.options.enablePayments">Se han habilitado los pagos para esta editorial. Tenga en cuenta que los usuarios deben estar autenticados para hacer los pagos.</message>
+	<message key="manager.tools.statistics">Herramientas para generar informes relacionados con estadísticas de uso (visualización de páginas de índice de catálogo, páginas de resumen de monografías, descargas de archivos de monografías)</message>
+	<message key="manager.setup.aboutPress">Sobre la editorial</message>
+	<message key="manager.setup.aboutPress.description">Incluya cualquier información sobre su editorial, la cual pueda ser de interés para lectores, autores y revisores. Esto podría incluir su política de acceso abierto, el enfoque y el alcance de la editorial, el aviso de copyright, la divulgación de patrocinio, el historial de la editorial y una declaración de privacidad.</message>
+	<message key="grid.series.pathAlphaNumeric">La ruta de las series solo admite letras y números.</message>
+	<message key="grid.series.pathExists">La ruta de la serie ya existe. Por favor ingrese una ruta única.</message>
+	<message key="grid.series.urlWillBe">La URL de las series, será: {$sampleUrl}</message>
 </locale>

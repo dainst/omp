@@ -1,8 +1,8 @@
 {**
  * templates/frontend/pages/catalogSeries.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Display the page to view books in a series in the catalog.
@@ -17,12 +17,13 @@
  * @uses $showingEnd int The number of the last item on this page
  * @uses $total int Count of all published monographs in this series
  *}
-{include file="frontend/components/header.tpl" pageTitleTranslated=$series->getLocalizedTitle()}
+{include file="frontend/components/header.tpl" pageTitleTranslated=$series->getLocalizedTitle()|escape}
 
 <div class="page page_catalog_series">
 
 	{* Breadcrumb *}
-	{include file="frontend/components/breadcrumbs_catalog.tpl" type="series" currentTitle=$series->getLocalizedTitle()}
+	{include file="frontend/components/breadcrumbs_catalog.tpl" type="series" currentTitle=$series->getLocalizedTitle()|escape}
+	<h1>{$series->getLocalizedTitle()|escape}</h1>
 
 	{* Count of monographs in this series *}
 	<div class="monograph_count">
@@ -39,7 +40,7 @@
 			</div>
 		{/if}
 		<div class="description">
-			{$description|nl2br|strip_unsafe_html}
+			{$description|strip_unsafe_html}
 		</div>
 		{if $series->getOnlineISSN()}
 			<div class="onlineISSN">
@@ -56,9 +57,9 @@
 	{* No published titles in this category *}
 	{if empty($publishedMonographs)}
 		<h2>
-			{translate key="catalog.allBooks"}
+			{translate key="catalog.category.heading"}
 		</h2>
-		<p>{translate key="catalog.noTitlesSection"}</p>
+		<p>{translate key="catalog.category.noItems"}</p>
 
 	{else}
 
@@ -68,7 +69,7 @@
 		{/if}
 
 		{* All monographs *}
-		{include file="frontend/components/monographList.tpl" monographs=$publishedMonographs featured=$featuredMonographIds titleKey="catalog.allBooks"}
+		{include file="frontend/components/monographList.tpl" monographs=$publishedMonographs featured=$featuredMonographIds titleKey="catalog.category.heading"}
 
 		{* Pagination *}
 		{if $prevPage > 1}

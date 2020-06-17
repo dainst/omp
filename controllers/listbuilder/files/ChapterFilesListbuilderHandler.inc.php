@@ -3,8 +3,8 @@
 /**
  * @file controllers/listbuilder/files/ChapterFilesListbuilderHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ChapterFilesListbuilderHandler
@@ -36,11 +36,10 @@ class ChapterFilesListbuilderHandler extends FilesListbuilderHandler {
 
 
 	/**
-	 * Configure the grid
-	 * @param PKPRequest $request
+	 * @copydoc FilesListbuilderHandler::initialize
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 		AppLocale::requireComponents(LOCALE_COMPONENT_APP_EDITOR);
 		$this->setTitle('submission.files');
 		$this->_chapterId = $request->getUserVar('chapterId');
@@ -48,9 +47,9 @@ class ChapterFilesListbuilderHandler extends FilesListbuilderHandler {
 
 	/**
 	 * Load the list from an external source into the grid structure
-	 * @param $request PKPRequest
+	 * @see FilesListbuilderHandler::loadData
 	 */
-	function loadData($request) {
+	function loadData($request, $filter = null) {
 		$monograph = $this->getAuthorizedContextObject(ASSOC_TYPE_MONOGRAPH);
 		$chapterDao = DAORegistry::getDAO('ChapterDAO');
 		$chapter = $chapterDao->getChapter($this->_chapterId, $monograph->getId());
@@ -89,4 +88,4 @@ class ChapterFilesListbuilderHandler extends FilesListbuilderHandler {
 
 }
 
-?>
+

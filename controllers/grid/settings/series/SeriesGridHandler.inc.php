@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/settings/series/SeriesGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SeriesGridHandler
@@ -33,11 +33,10 @@ class SeriesGridHandler extends SetupGridHandler {
 	// Overridden template methods
 	//
 	/*
-	 * Configure the grid
-	 * @param $request PKPRequest
+	 * @copydoc SetupGridHandler::initialize
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 		$press = $request->getPress();
 
 		// FIXME are these all required?
@@ -190,7 +189,7 @@ class SeriesGridHandler extends SetupGridHandler {
 
 		import('controllers.grid.settings.series.form.SeriesForm');
 		$seriesForm = new SeriesForm($request, $seriesId);
-		$seriesForm->initData($args, $request);
+		$seriesForm->initData();
 		return new JSONMessage(true, $seriesForm->fetch($request));
 	}
 
@@ -208,7 +207,7 @@ class SeriesGridHandler extends SetupGridHandler {
 		$seriesForm->readInputData();
 
 		if ($seriesForm->validate()) {
-			$seriesForm->execute($args, $request);
+			$seriesForm->execute();
 			return DAO::getDataChangedEvent($seriesForm->getSeriesId());
 		} else {
 			return new JSONMessage(false);
@@ -240,4 +239,4 @@ class SeriesGridHandler extends SetupGridHandler {
 	}
 }
 
-?>
+

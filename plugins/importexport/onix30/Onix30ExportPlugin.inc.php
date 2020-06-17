@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/onix30/Onix30ExportPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class Onix30ExportPlugin
@@ -92,7 +92,7 @@ class Onix30ExportPlugin extends ImportExportPlugin {
 					'lazyLoad' => true,
 				));
 				$templateMgr->assign('exportSubmissionsListData', json_encode($exportSubmissionsListHandler->getConfig()));
-				$templateMgr->display($this->getTemplatePath() . 'index.tpl');
+				$templateMgr->display($this->getTemplateResource('index.tpl'));
 				break;
 			case 'export':
 				$exportXml = $this->exportSubmissions(
@@ -104,8 +104,8 @@ class Onix30ExportPlugin extends ImportExportPlugin {
 				$fileManager = new FileManager();
 				$exportFileName = $this->getExportFileName($this->getExportPath(), 'monographs', $press, '.xml');
 				$fileManager->writeFile($exportFileName, $exportXml);
-				$fileManager->downloadFile($exportFileName);
-				$fileManager->deleteFile($exportFileName);
+				$fileManager->downloadByPath($exportFileName);
+				$fileManager->deleteByPath($exportFileName);
 				break;
 			default:
 				$dispatcher = $request->getDispatcher();
@@ -154,4 +154,4 @@ class Onix30ExportPlugin extends ImportExportPlugin {
 	}
 }
 
-?>
+

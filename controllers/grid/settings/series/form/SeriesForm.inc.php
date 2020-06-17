@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/settings/series/form/SeriesForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SeriesForm
@@ -53,10 +53,9 @@ class SeriesForm extends PKPSectionForm {
 
 	/**
 	 * Initialize form data from current settings.
-	 * @param $args array
-	 * @param $request PKPRequest
 	 */
-	function initData($args, $request) {
+	function initData() {
+		$request = Application::getRequest();
 		$press = $request->getPress();
 
 		$seriesDao = DAORegistry::getDAO('SeriesDAO');
@@ -96,7 +95,7 @@ class SeriesForm extends PKPSectionForm {
 	/**
 	 * @see Form::validate()
 	 */
-	function validate() {
+	function validate($callHooks = true) {
 		if ($temporaryFileId = $this->getData('temporaryFileId')) {
 			import('lib.pkp.classes.file.TemporaryFileManager');
 			$temporaryFileManager = new TemporaryFileManager();
@@ -111,22 +110,20 @@ class SeriesForm extends PKPSectionForm {
 				return false;
 			}
 		}
-		return parent::validate();
+		return parent::validate($callHooks);
 	}
 
 	/**
-	 * Fetch form contents
-	 * @param $request PKPRequest
-	 * @see Form::fetch()
+	 * @copydoc PKPSectionForm::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('seriesId', $this->getSeriesId());
 
 		$press = $request->getPress();
 
 		$categoryDao = DAORegistry::getDAO('CategoryDAO');
-		$categoryCount = $categoryDao->getCountByPressId($press->getId());
+		$categoryCount = $categoryDao->getCountByContextId($press->getId());
 		$templateMgr->assign('categoryCount', $categoryCount);
 
 		// Sort options.
@@ -141,7 +138,7 @@ class SeriesForm extends PKPSectionForm {
 		));
 
 		// Get SelectCategoryListHandler data
-		import('controllers.list.SelectCategoryListHandler');
+		import('lib.pkp.controllers.list.SelectCategoryListHandler');
 		$categoriesList = new SelectCategoryListHandler(array(
 			'title' => 'grid.category.categories',
 			'inputName' => 'categories[]',
@@ -155,7 +152,7 @@ class SeriesForm extends PKPSectionForm {
 			'categoriesListData' => json_encode($categoriesListData),
 		));
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -175,11 +172,10 @@ class SeriesForm extends PKPSectionForm {
 
 	/**
 	 * Save series.
-	 * @param $args array
-	 * @param $request PKPRequest
 	 */
-	function execute($args, $request) {
+	function execute() {
 		$seriesDao = DAORegistry::getDAO('SeriesDAO');
+		$request = Application::getRequest();
 		$press = $request->getPress();
 
 		// Get or create the series object
@@ -223,8 +219,8 @@ class SeriesForm extends PKPSectionForm {
 			// Delete the old file if it exists
 			$oldSetting = $series->getImage();
 			if ($oldSetting) {
-				$pressFileManager->deleteFile($basePath . $oldSetting['thumbnailName']);
-				$pressFileManager->deleteFile($basePath . $oldSetting['name']);
+				$pressFileManager->deleteByPath($basePath . $oldSetting['thumbnailName']);
+				$pressFileManager->deleteByPath($basePath . $oldSetting['name']);
 			}
 
 			// The following variables were fetched in validation
@@ -279,7 +275,7 @@ class SeriesForm extends PKPSectionForm {
 			// Clean up the temporary file
 			import('lib.pkp.classes.file.TemporaryFileManager');
 			$temporaryFileManager = new TemporaryFileManager();
-			$temporaryFileManager->deleteFile($temporaryFileId, $this->_userId);
+			$temporaryFileManager->deleteById($temporaryFileId, $this->_userId);
 		}
 
 		// Update series object to store image information.
@@ -318,4 +314,4 @@ class SeriesForm extends PKPSectionForm {
 	}
 }
 
-?>
+

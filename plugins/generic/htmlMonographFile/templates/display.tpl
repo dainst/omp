@@ -1,8 +1,8 @@
 {**
  * plugins/generic/htmlMonographFile/templates/display.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * Embedded viewing of a HTML galley.
@@ -34,7 +34,7 @@
 		</a>
 	</header>
 
-	<div id="htmlContainer">
+	<div id="htmlContainer" style="overflow:visible;-webkit-overflow-scrolling:touch">
 		<iframe name="htmlFrame" src="{url page="catalog" op="download" path=$monograph->getBestId()|to_array:$publicationFormat->getBestId():$downloadFile->getBestId() inline=true}" allowfullscreen webkitallowfullscreen></iframe>
 	</div>
 	{call_hook name="Templates::Common::Footer::PageFooter"}

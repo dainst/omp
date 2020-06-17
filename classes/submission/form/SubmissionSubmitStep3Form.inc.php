@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/form/SubmissionSubmitStep3Form.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionSubmitStep3Form
@@ -44,30 +44,27 @@ class SubmissionSubmitStep3Form extends PKPSubmissionSubmitStep3Form {
 	}
 
 	/**
-	 * Fetch the form
-	 * @param $request
+	 * @copydoc PKPSubmissionSubmitStep3Form::fetch
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 
 		// If categories are configured, present the LB.
 		$categoryDao = DAORegistry::getDAO('CategoryDAO');
-		$templateMgr->assign('categoriesExist', $categoryDao->getCountByPressId($this->context->getId()) > 0);
+		$templateMgr->assign('categoriesExist', $categoryDao->getCountByContextId($this->context->getId()) > 0);
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
 	 * Save changes to submission.
-	 * @param $args array
-	 * @param $request PKPRequest
 	 * @return int the submission ID
 	 */
-	function execute($args, $request) {
-		parent::execute($args, $request);
+	function execute() {
+		parent::execute();
 
 		// handle category assignment.
-		ListbuilderHandler::unpack($request, $this->getData('categories'), array($this, 'deleteEntry'), array($this, 'insertEntry'), array($this, 'updateEntry'));
+		ListbuilderHandler::unpack(Application::getRequest(), $this->getData('categories'), array($this, 'deleteEntry'), array($this, 'insertEntry'), array($this, 'updateEntry'));
 
 		return $this->submissionId;
 	}
@@ -125,4 +122,4 @@ class SubmissionSubmitStep3Form extends PKPSubmissionSubmitStep3Form {
 	}
 }
 
-?>
+

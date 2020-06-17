@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/catalogEntry/form/SalesRightsForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SalesRightsForm
@@ -107,10 +107,9 @@ class SalesRightsForm extends Form {
 	}
 
 	/**
-	 * Fetch the form.
-	 * @see Form::fetch()
+	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		$monograph = $this->getMonograph();
 		$templateMgr->assign('submissionId', $monograph->getId());
@@ -150,7 +149,7 @@ class SalesRightsForm extends Form {
 			fatalError('Format not in authorized monograph');
 		}
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -213,4 +212,4 @@ class SalesRightsForm extends Form {
 		return $salesRightsId;
 	}
 }
-?>
+

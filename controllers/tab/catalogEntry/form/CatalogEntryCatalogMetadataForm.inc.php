@@ -3,8 +3,8 @@
 /**
  * @file controllers/tab/catalogEntry/form/CatalogEntryCatalogMetadataForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CatalogEntryCatalogMetadataForm
@@ -63,16 +63,18 @@ class CatalogEntryCatalogMetadataForm extends Form {
 	}
 
 	/**
-	 * Fetch the HTML contents of the form.
-	 * @param $request PKPRequest
-	 * return string
+	 * @copydoc Form::fetch
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
-		$templateMgr->assign('submissionId', $this->getMonograph()->getId());
+		$monograph = $this->getMonograph();
+		$templateMgr->assign('submissionId', $monograph->getId());
 		$templateMgr->assign('stageId', $this->getStageId());
 		$templateMgr->assign('formParams', $this->getFormParams());
-		$templateMgr->assign('datePublished', $this->getMonograph()->getDatePublished());
+		$templateMgr->assign('datePublished', $monograph->getDatePublished());
+		$chapterPublicationDatesEnabled = (int)$monograph->getEnableChapterPublicationDates() == 1;
+		$templateMgr->assign('enableChapterPublicationDates', $chapterPublicationDatesEnabled);
+
 
 		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
 
@@ -92,12 +94,12 @@ class CatalogEntryCatalogMetadataForm extends Form {
 				WORK_TYPE_EDITED_VOLUME => __('submission.workflowType.editedVolume'),
 				WORK_TYPE_AUTHORED_WORK => __('submission.workflowType.authoredWork'),
 			),
-			'workType' => $this->getMonograph()->getWorkType(),
+			'workType' => $monograph->getWorkType(),
 		));
 
 		// SelectListPanel for volume editors
 		$authorDao = DAORegistry::getDAO('AuthorDAO');
-		$authors = $authorDao->getBySubmissionId($this->getMonograph()->getId(), true);
+		$authors = $authorDao->getBySubmissionId($monograph->getId(), true);
 		$volumeEditorsListItems = array();
 		foreach ($authors as $author) {
 			$volumeEditorsListItems[] = array(
@@ -128,7 +130,7 @@ class CatalogEntryCatalogMetadataForm extends Form {
 			$templateMgr->assign('coverImage', $publishedMonograph->getCoverImage());
 		}
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	function initData() {
@@ -208,7 +210,7 @@ class CatalogEntryCatalogMetadataForm extends Form {
 			'audience', 'audienceRangeQualifier', 'audienceRangeFrom', 'audienceRangeTo', 'audienceRangeExact',
 			'copyrightYear', 'copyrightHolder', 'licenseURL', 'attachPermissions',
 			'temporaryFileId', // Cover image
-			'confirm', 'datePublished',
+			'confirm', 'datePublished', 'enableChapterPublicationDates',
 			'workType', 'volumeEditors',
 		);
 
@@ -219,7 +221,7 @@ class CatalogEntryCatalogMetadataForm extends Form {
 	 * Validate the form.
 	 * @return boolean
 	 */
-	function validate() {
+	function validate($callHooks = true) {
 		// If a cover image was uploaded, make sure it's valid
 		if ($temporaryFileId = $this->getData('temporaryFileId')) {
 			import('lib.pkp.classes.file.TemporaryFileManager');
@@ -235,14 +237,14 @@ class CatalogEntryCatalogMetadataForm extends Form {
 				return false;
 			}
 		}
-		return parent::validate();
+		return parent::validate($callHooks);
 	}
 
 	/**
 	 * Save the metadata and store the catalog data for this published
 	 * monograph.
 	 */
-	function execute($request) {
+	function execute() {
 		parent::execute();
 
 		$monograph = $this->getMonograph();
@@ -255,6 +257,8 @@ class CatalogEntryCatalogMetadataForm extends Form {
 			$publishedMonograph->setId($monograph->getId());
 		}
 		$monograph->setDatePublished($this->getData('datePublished'));
+		$enableChapterPublicationDates = $this->getData('enableChapterPublicationDates') ? 1 : 0;
+		$monograph->setEnableChapterPublicationDates($enableChapterPublicationDates);
 
 		if ($this->getData('workType') == WORK_TYPE_EDITED_VOLUME) {
 			$volumeEditors = $this->getData('volumeEditors') ? $this->getData('volumeEditors') : [];
@@ -286,8 +290,8 @@ class CatalogEntryCatalogMetadataForm extends Form {
 			// Delete the old file if it exists
 			$oldSetting = $publishedMonograph->getCoverImage();
 			if ($oldSetting) {
-				$simpleMonographFileManager->deleteFile($basePath . $oldSetting['thumbnailName']);
-				$simpleMonographFileManager->deleteFile($basePath . $oldSetting['name']);
+				$simpleMonographFileManager->deleteByPath($basePath . $oldSetting['thumbnailName']);
+				$simpleMonographFileManager->deleteByPath($basePath . $oldSetting['name']);
 			}
 
 			// The following variables were fetched in validation
@@ -307,7 +311,7 @@ class CatalogEntryCatalogMetadataForm extends Form {
 			$simpleMonographFileManager->copyFile($temporaryFile->getFilePath(), $basePath . $filename);
 
 			// Generate thumbnail image
-			$press = $request->getPress();
+			$press = Application::getRequest()->getPress();
 			$coverThumbnailsMaxWidth = $press->getSetting('coverThumbnailsMaxWidth');
 			$coverThumbnailsMaxHeight = $press->getSetting('coverThumbnailsMaxHeight');
 
@@ -330,7 +334,7 @@ class CatalogEntryCatalogMetadataForm extends Form {
 			// Clean up the temporary file
 			import('lib.pkp.classes.file.TemporaryFileManager');
 			$temporaryFileManager = new TemporaryFileManager();
-			$temporaryFileManager->deleteFile($temporaryFileId, $this->_userId);
+			$temporaryFileManager->deleteById($temporaryFileId, $this->_userId);
 		}
 
 		if ($this->getData('attachPermissions')) {
@@ -403,4 +407,4 @@ class CatalogEntryCatalogMetadataForm extends Form {
 	}
 }
 
-?>
+

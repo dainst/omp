@@ -3,8 +3,8 @@
 /**
  * @file pages/sitemap/SitemapHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SitemapHandler
@@ -66,7 +66,7 @@ class SitemapHandler extends PKPSitemapHandler {
 		}
 		// Browse by categories
 		$categoryDao = DAORegistry::getDAO('CategoryDAO');
-		$categoriesResult = $categoryDao->getByPressId($pressId);
+		$categoriesResult = $categoryDao->getByContextId($pressId);
 		while ($category = $categoriesResult->next()) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($press->getPath(), 'catalog', 'category', $category->getPath())));
 		}
@@ -81,4 +81,4 @@ class SitemapHandler extends PKPSitemapHandler {
 
 }
 
-?>
+

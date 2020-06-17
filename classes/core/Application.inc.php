@@ -3,8 +3,8 @@
 /**
  * @file classes/core/Application.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class Application
@@ -17,7 +17,6 @@
 
 import('lib.pkp.classes.core.PKPApplication');
 
-define('PHP_REQUIRED_VERSION', '5.5.0');
 define('REQUIRES_XSL', true);
 
 define('ASSOC_TYPE_MONOGRAPH',			ASSOC_TYPE_SUBMISSION);
@@ -70,7 +69,7 @@ class Application extends PKPApplication {
 	 * Get the symbolic name of this application
 	 * @return string
 	 */
-	function getName() {
+	static function getName() {
 		return 'omp';
 	}
 
@@ -100,7 +99,6 @@ class Application extends PKPApplication {
 			'AuthorDAO' => 'classes.monograph.AuthorDAO',
 			'ChapterAuthorDAO' => 'classes.monograph.ChapterAuthorDAO',
 			'ChapterDAO' => 'classes.monograph.ChapterDAO',
-			'CategoryDAO' => 'classes.press.CategoryDAO',
 			'FeatureDAO' => 'classes.press.FeatureDAO',
 			'IdentificationCodeDAO' => 'classes.publicationFormat.IdentificationCodeDAO',
 			'LayoutAssignmentDAO' => 'submission.layoutAssignment.LayoutAssignmentDAO',
@@ -126,10 +124,6 @@ class Application extends PKPApplication {
 			'SeriesDAO' => 'classes.press.SeriesDAO',
 			'SpotlightDAO' => 'classes.spotlight.SpotlightDAO',
 			'SubjectDAO' => 'classes.codelist.SubjectDAO',
-			'SubmissionEventLogDAO' => 'classes.log.SubmissionEventLogDAO',
-			'SubmissionFileDAO' => 'classes.monograph.SubmissionFileDAO',
-			'UserDAO' => 'classes.user.UserDAO',
-			'UserSettingsDAO' => 'classes.user.UserSettingsDAO',
 		));
 	}
 
@@ -265,4 +259,4 @@ class Application extends PKPApplication {
 	}
 }
 
-?>
+

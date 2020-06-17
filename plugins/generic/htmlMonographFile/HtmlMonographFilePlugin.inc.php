@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/htmlMonographFile/HtmlMonographFilePlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class HtmlMonographFilePlugin
@@ -77,13 +77,12 @@ class HtmlMonographFilePlugin extends GenericPlugin {
 				)
 			);
 			$templateMgr->assign(array(
-				'pluginTemplatePath' => $this->getTemplatePath(),
 				'pluginUrl' => $request->getBaseUrl() . '/' . $this->getPluginPath(),
 				'monograph' => $publishedMonograph,
 				'publicationFormat' => $publicationFormat,
 				'downloadFile' => $submissionFile,
 			));
-			$templateMgr->display($this->getTemplatePath() . '/display.tpl');
+			$templateMgr->display($this->getTemplateResource('display.tpl'));
 			return true;
 		}
 
@@ -166,6 +165,9 @@ class HtmlMonographFilePlugin extends GenericPlugin {
 				$contents
 		);
 
+		$templateMgr = TemplateManager::getManager($request);
+		$contents = $templateMgr->loadHtmlGalleyStyles($contents, $embeddableFiles);
+
 		// Perform variable replacement for press, publication format, site info
 		$press = $request->getPress();
 		$site = $request->getSite();
@@ -224,5 +226,3 @@ class HtmlMonographFilePlugin extends GenericPlugin {
 		return $matchArray[1] . $url . $matchArray[3];
 	}
 }
-
-?>

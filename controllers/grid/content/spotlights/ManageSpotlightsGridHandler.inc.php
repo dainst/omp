@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/content/spotlights/ManageSpotlightsGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SpotlightsGridHandler
@@ -212,7 +212,7 @@ class ManageSpotlightsGridHandler extends GridHandler {
 		$pressId = $press->getId();
 
 		$spotlightForm = new SpotlightForm($pressId, $spotlightId);
-		$spotlightForm->initData($args, $request);
+		$spotlightForm->initData();
 
 		return new JSONMessage(true, $spotlightForm->fetch($request));
 	}
@@ -237,7 +237,7 @@ class ManageSpotlightsGridHandler extends GridHandler {
 
 		$spotlightForm->readInputData();
 		if ($spotlightForm->validate()) {
-			$spotlightId = $spotlightForm->execute($request);
+			$spotlightId = $spotlightForm->execute();
 
 			if(!isset($spotlight)) {
 				// This is a new entry
@@ -322,7 +322,7 @@ class ManageSpotlightsGridHandler extends GridHandler {
 		}
 
 		if (!empty($matches)) {
-			$itemList[] = array('label' => PKPString::strtoupper(__('submission.monograph')), 'value' => '');
+			$itemList[] = array('label' => PKPString::strtoupper(__('common.publishedSubmission')), 'value' => '');
 			$itemList = array_merge($itemList, $matches);
 		}
 
@@ -349,4 +349,4 @@ class ManageSpotlightsGridHandler extends GridHandler {
 	}
 }
 
-?>
+

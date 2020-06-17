@@ -3,8 +3,8 @@
 /**
  * @file tests/ContentBaseTestCase.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ContentBaseTestCase
@@ -108,6 +108,17 @@ class ContentBaseTestCase extends PKPContentBaseTestCase {
 
 			$this->click('//form[@id=\'editChapterForm\']//button[text()=\'Save\']');
 			$this->waitForElementNotPresent('css=div.pkp_modal_panel'); // pkp/pkp-lib#655
+
+			// Test the public identifiers form
+			if (isset($chapter['pubId'])) {
+				$this->click('css=[id*=-editChapter-button-]:contains(\'' . $chapter['title'] . '\')');
+				$this->waitForElementPresent('css=.ui-tabs-anchor:contains(\'Identifiers\;)');
+				$this->clickAt('css=.ui-tabs-anchor:contains(\'Identifiers\;)');
+				$this->waitForElementPresent('css=[id^=publisherId-]');
+				$this->type('css=[id^=publisherId-]', $chapter['pubId']);
+				$this->click('//form[@id=\'publicIdentifiersForm\']//button[text()=\'Save\']');
+				$this->waitForElementNotPresent('css=div.pkp_modal_panel'); // pkp/pkp-lib#655
+			}
 		}
 	}
 

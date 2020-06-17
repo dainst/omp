@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/representations/PublicationFormatCategoryGridDataProvider.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ProofFilesGridDataProvider
@@ -81,9 +81,9 @@ class PublicationFormatCategoryGridDataProvider extends SubmissionFilesCategoryG
 	}
 
 	/**
-	 * @copydoc GridDataProvider::loadData()
+	 * @copydoc GridDataProvider::loadCategoryData()
 	 */
-	function loadCategoryData($request, $categoryDataElement, $filter = null) {
+	function loadCategoryData($request, $categoryDataElement, $filter = null, $reviewRound = null) {
 		assert(is_a($categoryDataElement, 'Representation'));
 
 		// Retrieve all submission files for the given file stage.
@@ -108,4 +108,4 @@ class PublicationFormatCategoryGridDataProvider extends SubmissionFilesCategoryG
 	}
 }
 
-?>
+

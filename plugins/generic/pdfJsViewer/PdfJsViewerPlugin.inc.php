@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PdfJsViewerPlugin
@@ -70,11 +70,10 @@ class PdfJsViewerPlugin extends GenericPlugin {
 			$dispatcher = $request->getDispatcher();
 			$templateMgr = TemplateManager::getManager($request);
 			$templateMgr->assign(array(
-				'pluginTemplatePath' => $this->getTemplatePath(),
 				'pluginUrl' => $request->getBaseUrl() . DIRECTORY_SEPARATOR . $this->getPluginPath(),
 			));
 
-			$templateMgr->display($this->getTemplatePath() . '/display.tpl');
+			$templateMgr->display($this->getTemplateResource('display.tpl'));
 			return true;
 		}
 
@@ -114,4 +113,4 @@ class PdfJsViewerPlugin extends GenericPlugin {
 	}
 }
 
-?>
+

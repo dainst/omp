@@ -4,8 +4,8 @@
 <!--
   * registry/locales.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Locales registry file.
@@ -16,10 +16,12 @@
 
 <locales>
 	<locale key="ca_ES" complete="false" name="Català" iso639-2b="cat" iso639-3="cat" />
+	<locale key="da_DK" complete="false" name="Dansk" iso639-2b="dan" iso639-3="dan" />
 	<locale key="de_DE" complete="true"  name="Deutsch" iso639-2b="ger" iso639-3="deu" />
 	<locale key="el_GR" complete="false" name="ελληνικά" iso639-2b="gre" iso639-3="ell" />
 	<locale key="en_US" complete="true"  name="English" iso639-2b="eng" iso639-3="eng" />
-	<locale key="es_ES" complete="true" name="Español (España)" iso639-2b="spa" iso639-3="spa" />
+	<locale key="es_ES" complete="true"  name="Español (España)" iso639-2b="spa" iso639-3="spa" />
 	<locale key="fr_CA" complete="false" name="Français (Canada)" iso639-2b="fre" iso639-3="fra" />
-	<locale key="pt_BR" complete="true" name="Português (Brasil)" iso639-2b="por" iso639-3="por" />
+	<locale key="pt_BR" complete="true"  name="Português (Brasil)" iso639-2b="por" iso639-3="por" />
+	<locale key="sl_SI" complete="false" name="Slovenščina" iso639-2b="slv" iso639-3="slv" />
 </locales>

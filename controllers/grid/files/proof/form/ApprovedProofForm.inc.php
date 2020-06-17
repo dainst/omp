@@ -2,8 +2,8 @@
 /**
  * @file controllers/grid/files/proof/form/ApprovedProofForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ApprovedProofForm
@@ -51,7 +51,10 @@ class ApprovedProofForm extends Form {
 	//
 	// Extended methods from Form
 	//
-	function fetch($request) {
+	/**
+	 * @copydoc Form::fetch
+	 */
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('fileId', $this->approvedProof->getFileIdAndRevision());
 		$templateMgr->assign('submissionId', $this->monograph->getId());
@@ -65,7 +68,7 @@ class ApprovedProofForm extends Form {
 
 		$templateMgr->assign('salesTypes', $salesTypes);
 		$templateMgr->assign('salesType', $this->approvedProof->getSalesType());
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -86,9 +89,9 @@ class ApprovedProofForm extends Form {
 	}
 
 	/**
-	 * @see Form::execute()
+	 * @copydoc Form::execute()
 	 */
-	function execute($request) {
+	function execute() {
 		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
 		$salesType = $this->getData('salesType');
 		if ($salesType === 'notAvailable') {
@@ -108,4 +111,4 @@ class ApprovedProofForm extends Form {
 	}
 }
 
-?>
+

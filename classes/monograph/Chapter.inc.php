@@ -3,8 +3,8 @@
 /**
  * @file classes/monograph/Chapter.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class Chapter
@@ -15,13 +15,6 @@
  */
 
 class Chapter extends DataObject {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 	//
 	// Get/set methods
 	//
@@ -174,6 +167,62 @@ class Chapter extends DataObject {
 		return DAORegistry::getDAO('ChapterDAO');
 	}
 
+	/**
+	 * Get abstract of chapter (primary locale)
+	 * @param $locale string
+	 * @return string
+	 */
+	function getAbstract($locale = null) {
+		return $this->getData('abstract', $locale);
+	}
+
+	/**
+	 * Set abstract of chapter
+	 * @param $abstract string
+	 * @param $locale string
+	 */
+	function setAbstract($abstract, $locale = null) {
+		return $this->setData('abstract', $abstract, $locale);
+	}
+	/**
+	 * Get localized abstract of a chapter.
+	 */
+	function getLocalizedAbstract() {
+		return $this->getLocalizedData('abstract');
+	}
+
+	/**
+	 * get date published
+	 * @return date
+	 */
+	function getDatePublished() {
+		return $this->getData('datePublished');
+	}
+
+	/**
+	 * set date published
+	 * @param $datePublished date
+	 */
+	function setDatePublished($datePublished) {
+		return $this->setData('datePublished', $datePublished);
+	}
+
+	/**
+	 * get pages
+	 * @return string
+	 */
+	function getPages() {
+		return $this->getData('pages');
+	}
+
+	/**
+	 * set pages
+	 * @param $pages string
+	 */
+	function setPages($pages) {
+		$this->setData('pages',$pages);
+	}
+
 }
 
-?>
+

@@ -3,8 +3,8 @@
 /**
  * @file pages/manageCatalog/ManageCatalogHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ManageCatalogHandler
@@ -47,11 +47,11 @@ class ManageCatalogHandler extends Handler {
 	/**
 	 * @copydoc PKPHandler::initialize()
 	 */
-	function initialize($request, $args) {
+	function initialize($request) {
 		$this->setupTemplate($request);
 
 		// Call parent method.
-		parent::initialize($request, $args);
+		parent::initialize($request);
 	}
 
 
@@ -71,7 +71,7 @@ class ManageCatalogHandler extends Handler {
 		// Catalog list
 		import('controllers.list.submissions.CatalogSubmissionsListHandler');
 		$catalogListHandler = new CatalogSubmissionsListHandler(array(
-			'title' => 'submission.list.monographs',
+			'title' => 'common.publishedSubmissions',
 		));
 		$templateMgr->assign('catalogListData', json_encode($catalogListHandler->getConfig()));
 
@@ -80,4 +80,4 @@ class ManageCatalogHandler extends Handler {
 	}
 }
 
-?>
+

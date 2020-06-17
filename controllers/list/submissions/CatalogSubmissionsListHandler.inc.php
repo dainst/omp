@@ -2,8 +2,8 @@
 /**
  * @file controllers/list/submissions/CatalogSubmissionsListHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CatalogSubmissionsListHandler
@@ -25,6 +25,9 @@ class CatalogSubmissionsListHandler extends SubmissionsListHandler {
 
 		$request = Application::getRequest();
 		$context = $request->getContext();
+
+		// Bring in orderby constants
+		import('classes.monograph.PublishedMonographDAO');
 
 		list($catalogSortBy, $catalogSortDir) = explode('-', $context->getSetting('catalogSortOption'));
 		$catalogSortBy = empty($catalogSortBy) ? ORDERBY_DATE_PUBLISHED : $catalogSortBy;
@@ -85,10 +88,11 @@ class CatalogSubmissionsListHandler extends SubmissionsListHandler {
 		$config['filters'] = array();
 
 		if ($context) {
+			$config['contextId'] = $context->getId();
 
 			$categories = array();
 			$categoryDao = DAORegistry::getDAO('CategoryDAO');
-			$categoriesResult = $categoryDao->getByPressId($context->getId());
+			$categoriesResult = $categoryDao->getByContextId($context->getId());
 			while (!$categoriesResult->eof()) {
 				$category = $categoriesResult->next();
 				list($categorySortBy, $categorySortDir) = explode('-', $category->getSortOption());

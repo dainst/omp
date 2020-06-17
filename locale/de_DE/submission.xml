@@ -4,8 +4,8 @@
 <!--
   * locale/de_DE/submission.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * locale information: https://pkp.sfu.ca/wiki/index.php?title=OMP:_German_(de_DE)
   * Localization strings.
@@ -22,7 +22,6 @@
 	<message key="submission.workflowType.description">Eine Monografie ist ein Werk, das von einer Autorin/einem Autor oder mehreren Autor/innen gemeinsam verfasst worden ist. Ein Sammelband besteht aus mehreren Kapiteln jeweils unterschiedlicher Autor/innen (detaillierte Kapitelangaben sind erst zu einem späteren Zeitpunkt im Veröffentlichungsprozess zu machen).</message>
 	<message key="submission.workflowType.editedVolume">Sammelband</message>
 	<message key="submission.workflowType.authoredWork">Monografie</message>
-	<message key="submission.monograph">Monografie</message>
 	<message key="submission.published">Druckreif</message>
 	<message key="submission.fairCopy">Reinschrift</message>
 	<message key="submission.artwork.permissions">Rechte</message>
@@ -31,6 +30,9 @@
 	<message key="submission.chaptersDescription">Hier können Sie die Kapitel auflisten und ihnen Personen zuordnen, die in der oben stehenden Liste der Beiträger/innen (z.B. Kapitelautor/innen, Übersetzer/innen) verzeichnet sind. Beiträger/innen, die Sie an dieser Stelle dem Kapitel zuordnen, werden während des Veröffentlichungsprozesses Zugang zu dem Kapitel haben.</message>
 	<message key="submission.chapter.addChapter">Kapitel hinzufügen</message>
 	<message key="submission.chapter.editChapter">Kapitel bearbeiten</message>
+	<message key="submission.chapter.abstract">Abstrakt</message>
+	<message key="submission.chapter.pages">Seiten</message>
+	<message key="submission.chapter.datePublished">Veröffentlicht</message>
 	<message key="submission.copyedit">Lektorat</message>
 	<message key="submission.publicationFormats">Formate</message>
 	<message key="submission.proofs">Proofs</message>
@@ -78,8 +80,6 @@
 	<message key="submission.submit.whatNext.description">Der Verlag wurde über die Einsendung Ihres Manuskriptes informiert. Für Ihre Unterlagen haben wir Ihnen eine Bestätigung per E-Mail zugesandt. Sobald der/die Herausgeber/in das Manuskript geprüft hat, wird er sich mit Ihnen in Verbindung setzen.</message>
 	<message key="submission.submit.checklistErrors">Bitte lesen und bestätigen Sie die Punkte der Einreichungscheckliste. {$itemsRemaining} Punkte wurden bisher noch nicht bestätigt.</message>
 	<message key="submission.submit.placement">Manuskriptplatzierung</message>
-	<message key="submission.submit.placement.categories">Kategorien</message>
-	<message key="submission.submit.placement.categoriesDescription">Wählen Sie eine Kategorie aus, unter der dieses Werk klassifiziert werden soll.</message>
 	<message key="submission.submit.userGroup">Einreichen in meiner Funktion als ...</message>
 	<message key="submission.submit.userGroupDescription">Wenn Sie einen Sammelband einreichen, sollten Sie die Funktion "Sammelbandherausgeber/in" auswählen.</message>
 

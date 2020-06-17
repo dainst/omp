@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/csv/CSVImportExportPlugin.inc.php
  *
- * Copyright (c) 2013-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2013-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CSVImportExportPlugin
@@ -67,7 +67,7 @@ class CSVImportExportPlugin extends ImportExportPlugin {
 		switch (array_shift($args)) {
 			case 'index':
 			case '':
-				$templateMgr->display($this->getTemplatePath() . '/index.tpl');
+				$templateMgr->display($this->getTemplateResource('index.tpl'));
 				break;
 		}
 	}
@@ -244,7 +244,7 @@ class CSVImportExportPlugin extends ImportExportPlugin {
 
 						$submissionFileDao->insertObject($submissionFile, $temporaryFilename);
 						$fileManager = new FileManager();
-						$fileManager->deleteFile($temporaryFilename);
+						$fileManager->deleteByPath($temporaryFilename);
 
 						echo __('plugins.importexport.csv.import.submission', array('title' => $title)) . "\n";
 					} else {
@@ -268,4 +268,4 @@ class CSVImportExportPlugin extends ImportExportPlugin {
 	}
 }
 
-?>
+

@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/catalogEntry/PublicationFormatGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PublicationFormatGridHandler
@@ -87,11 +87,10 @@ class PublicationFormatGridHandler extends CategoryGridHandler {
 	// Overridden methods from PKPHandler
 	//
 	/**
-	 * Configure the grid
-	 * @param $request PKPRequest
+	 * @copydoc CategoryGridHandler::initialize
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 
 		// Retrieve the authorized submission.
 		$this->setSubmission($this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION));
@@ -258,7 +257,7 @@ class PublicationFormatGridHandler extends CategoryGridHandler {
 		$publicationFormatForm = new PublicationFormatForm($submission, $representation);
 		$publicationFormatForm->readInputData();
 		if ($publicationFormatForm->validate()) {
-			$publicationFormatForm->execute($request);
+			$publicationFormatForm->execute();
 			return DAO::getDataChangedEvent();
 		}
 		return new JSONMessage(true, $publicationFormatForm->fetch($request));
@@ -325,13 +324,13 @@ class PublicationFormatGridHandler extends CategoryGridHandler {
 		$assignPublicIdentifiersForm = new PKPAssignPublicIdentifiersForm($formTemplate, $representation, $request->getUserVar('newApprovedState'), $confirmationText);
 		if (!$request->getUserVar('confirmed')) {
 			// Display assign pub ids modal
-			$assignPublicIdentifiersForm->initData($args, $request);
+			$assignPublicIdentifiersForm->initData();
 			return new JSONMessage(true, $assignPublicIdentifiersForm->fetch($request));
 		}
 		if ($request->getUserVar('newApprovedState')) {
 			// Assign pub ids
 			$assignPublicIdentifiersForm->readInputData();
-			$assignPublicIdentifiersForm->execute($request);
+			$assignPublicIdentifiersForm->execute();
 		}
 
 		$newApprovedState = (int) $request->getUserVar('newApprovedState');
@@ -450,7 +449,7 @@ class PublicationFormatGridHandler extends CategoryGridHandler {
 		$approvedProofForm->readInputData();
 
 		if ($approvedProofForm->validate()) {
-			$approvedProofForm->execute($request);
+			$approvedProofForm->execute();
 			return DAO::getDataChangedEvent();
 		}
 		return new JSONMessage(true, $approvedProofForm->fetch($request));
@@ -524,13 +523,13 @@ class PublicationFormatGridHandler extends CategoryGridHandler {
 			$assignPublicIdentifiersForm = new PKPAssignPublicIdentifiersForm($formTemplate, $submissionFile, $request->getUserVar('approval'), $confirmationText);
 			if (!$request->getUserVar('confirmed')) {
 				// Display assign pub ids modal
-				$assignPublicIdentifiersForm->initData($args, $request);
+				$assignPublicIdentifiersForm->initData();
 				return new JSONMessage(true, $assignPublicIdentifiersForm->fetch($request));
 			}
 			if ($request->getUserVar('approval')) {
 				// Asign pub ids
 				$assignPublicIdentifiersForm->readInputData();
-				$assignPublicIdentifiersForm->execute($request);
+				$assignPublicIdentifiersForm->execute();
 			}
 			// Update the approval flag
 			$submissionFile->setViewable($request->getUserVar('approval')?1:0);
@@ -563,7 +562,7 @@ class PublicationFormatGridHandler extends CategoryGridHandler {
 
 		import('lib.pkp.controllers.grid.files.proof.form.ManageProofFilesForm');
 		$manageProofFilesForm = new ManageProofFilesForm($submission->getId(), $representation->getId());
-		$manageProofFilesForm->initData($args, $request);
+		$manageProofFilesForm->initData();
 		return new JSONMessage(true, $manageProofFilesForm->fetch($request));
 	}
 
@@ -582,7 +581,7 @@ class PublicationFormatGridHandler extends CategoryGridHandler {
 		);
 		import('lib.pkp.controllers.tab.pubIds.form.PKPPublicIdentifiersForm');
 		$form = new PKPPublicIdentifiersForm($representation);
-		$form->initData($request);
+		$form->initData();
 		return new JSONMessage(true, $form->fetch($request));
 	}
 
@@ -602,8 +601,8 @@ class PublicationFormatGridHandler extends CategoryGridHandler {
 		import('lib.pkp.controllers.tab.pubIds.form.PKPPublicIdentifiersForm');
 		$form = new PKPPublicIdentifiersForm($representation);
 		$form->readInputData();
-		if ($form->validate($request)) {
-			$form->execute($request);
+		if ($form->validate()) {
+			$form->execute();
 			return DAO::getDataChangedEvent();
 		} else {
 			return new JSONMessage(true, $form->fetch($request));
@@ -657,4 +656,4 @@ class PublicationFormatGridHandler extends CategoryGridHandler {
 	}
 }
 
-?>
+

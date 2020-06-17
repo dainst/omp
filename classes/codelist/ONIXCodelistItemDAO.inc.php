@@ -3,8 +3,8 @@
 /**
  * @file classes/codelist/ONIXCodelistItemDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ONIXCodelistItemDAO
@@ -97,7 +97,7 @@ class ONIXCodelistItemDAO extends DAO {
 				fwrite($fp, $filteredXml);
 				fclose($fp);
 				$data = $xmlDao->parseWithHandler($tmpName, $handler);
-				$fileManager->deleteFile($tmpName);
+				$fileManager->deleteByPath($tmpName);
 			} else {
 				fatalError('misconfigured directory permissions on: ' . $tmpDir);
 			}
@@ -237,4 +237,4 @@ class ONIXCodelistItemDAO extends DAO {
 		return $codelistItem;
 	}
 }
-?>
+

@@ -4,8 +4,8 @@
 <!--
   * locale/en_US/locale.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings.
@@ -13,9 +13,10 @@
 
 <locale name="en_US" full_name="U.S. English">
 	<!-- General monograph keys -->
+	<message key="common.publishedSubmission">Monograph</message>
+	<message key="common.publishedSubmissions">Monographs</message>
 	<message key="monograph.audience">Audience</message>
 	<message key="monograph.coverImage">Cover Image</message>
-	<message key="monograph.currentCoverImage">Current Image</message>
 	<message key="monograph.currentCoverImageReload">Save your changes to view the new cover image.</message>
 	<message key="monograph.audience.rangeQualifier">Audience Range Qualifier</message>
 	<message key="monograph.audience.rangeFrom">Audience Range (from)</message>
@@ -271,14 +272,12 @@
 	<message key="catalog.noTitles">No titles have been published yet.</message>
 	<message key="catalog.noTitlesNew">No new releases are available at this time.</message>
 	<message key="catalog.noTitlesSearch">No titles were found which matched your search for "{$searchQuery}".</message>
-	<message key="catalog.noTitlesSection">No titles have been published yet for this section.</message>
-	<message key="catalog.browseTitles">{$numTitles} Titles</message>
 	<message key="catalog.feature">Feature</message>
 	<message key="catalog.featured">Featured</message>
 	<message key="catalog.featuredBooks">Featured Books</message>
 	<message key="catalog.foundTitleSearch">One title was found which matched your search for "{$searchQuery}".</message>
 	<message key="catalog.foundTitlesSearch">{$number} titles were found which matched your search for "{$searchQuery}".</message>
-	<message key="catalog.allBooks">All Books</message>
+	<message key="catalog.category.heading">All Books</message>
 	<message key="catalog.newReleases">New Releases</message>
 	<message key="catalog.dateAdded">Added</message>
 	<message key="catalog.publicationInfo">Publication Info</message>
@@ -286,7 +285,7 @@
 	<message key="catalog.forthcoming">Forthcoming</message>
 	<message key="catalog.categories">Categories</message>
 	<message key="catalog.parentCategory">Parent Category</message>
-	<message key="catalog.subcategories">Subcategories</message>
+	<message key="catalog.category.subcategories">Subcategories</message>
 	<message key="catalog.aboutTheAuthor">About the {$roleName}</message>
 	<message key="catalog.coverImageTitle">Cover for {$monographTitle}</message>
 	<message key="catalog.loginRequiredForPayment">Please note: In order to purchase items, you will need to log in first. Selecting an item to purchase will direct you to the login page. Any item marked with an Open Access icon may be downloaded free of charge, without logging in.</message>
@@ -294,10 +293,6 @@
 	<message key="catalog.sortBy.seriesDescription">Choose how to order books in this series.</message>
 	<message key="catalog.sortBy.categoryDescription">Choose how to order books in this category.</message>
 	<message key="catalog.sortBy.catalogDescription">Choose how to order books in the catalog.</message>
-	<message key="catalog.sortBy.titleAsc">Title (A-Z)</message>
-	<message key="catalog.sortBy.titleDesc">Title (Z-A)</message>
-	<message key="catalog.sortBy.datePublishedAsc">Publication date (oldest first)</message>
-	<message key="catalog.sortBy.datePublishedDesc">Publication date (newest first)</message>
 	<message key="catalog.sortBy.seriesPositionAsc">Series position (lowest first)</message>
 	<message key="catalog.sortBy.seriesPositionDesc">Series position (highest first)</message>
 	<message key="catalog.viewableFile.title">{$type} view of the file {$title}</message>
@@ -342,6 +337,13 @@
 	<message key="navigation.wizard">Wizard</message>
 	<message key="navigation.linksAndMedia">Links and Social Media</message>
 	<message key="navigation.navigationMenus.catalog.description">Link to your catalog.</message>
+
+	<message key="navigation.navigationMenus.series.generic">Series</message>
+	<message key="navigation.navigationMenus.series.description">Link to a series.</message>
+	<message key="navigation.navigationMenus.category.generic">Category</message>
+	<message key="navigation.navigationMenus.category.description">Link to a category.</message>
+	<message key="navigation.navigationMenus.newRelease">New Releases</message>
+	<message key="navigation.navigationMenus.newRelease.description">Link to your New Releases.</message>
 
 	<!-- Common Press Terms -->
 	<message key="press.presses">Presses</message>
@@ -521,6 +523,7 @@ Your server currently supports mbstring: <strong>{$supportsMBString}</strong>]]>
 	<message key="notification.type.submissions">Submission Events</message>
 	<message key="notification.type.userComment">A reader has made a comment on "{$title}".</message>
 	<message key="notification.type.public">Public Announcements</message>
+	<message key="notification.type.editorialReport">Statistics report summary.</message>
 	<message key="notification.type.editorAssignmentTask">A new monograph has been submitted to which an editor needs to be assigned.</message>
 	<message key="notification.type.copyeditorRequest">You have been asked to review copyedits for "{$file}".</message>
 	<message key="notification.type.layouteditorRequest">You have been asked to review layouts for "{$title}".</message>
@@ -533,6 +536,7 @@ Your server currently supports mbstring: <strong>{$supportsMBString}</strong>]]>
 	<message key="notification.type.configurePaymentMethod">A configured payment method is required before you can define e-commerce settings.</message>
 	<message key="notification.type.visitCatalog">The monograph has been approved. Please visit Catalog to manage its catalog details, using the catalog link just above.</message>
 	<message key="notification.type.visitCatalogTitle">Catalog Management</message>
+	<message key="notification.type.editorialReport.contents">This is a kind reminder for you to check your press's health through the editorial report.</message>
 
 	<!-- Authorization -->
 	<message key="user.authorization.invalidReviewAssignment">You have been denied access because you do not seem to be a valid reviewer for this monograph.</message>
@@ -575,5 +579,5 @@ Your server currently supports mbstring: <strong>{$supportsMBString}</strong>]]>
 
 	<message key="user.profile.form.showOtherContexts">Register with other presses</message>
 	<message key="user.profile.form.hideOtherContexts">Hide other presses</message>
-	<message key="grid.category.categories">Categories</message>
+	<message key="submission.round">Round&amp;nbsp;{$round}</message>
 </locale>

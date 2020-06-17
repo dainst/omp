@@ -3,8 +3,8 @@
 /**
  * @file classes/monograph/RepresentativeDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class RepresentativeDAO
@@ -17,13 +17,6 @@
 import('classes.monograph.Representative');
 
 class RepresentativeDAO extends DAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 	/**
 	 * Retrieve a representative entry by id.
 	 * @param $representativeId int
@@ -193,4 +186,4 @@ class RepresentativeDAO extends DAO {
 	}
 }
 
-?>
+

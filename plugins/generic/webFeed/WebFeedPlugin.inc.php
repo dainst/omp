@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/webFeed/WebFeedPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class WebFeedPlugin
@@ -59,13 +59,6 @@ class WebFeedPlugin extends GenericPlugin {
 	 */
 	function getContextSpecificPluginSettingsFile() {
 		return $this->getPluginPath() . '/settings.xml';
-	}
-
-	/**
-	 * @copydoc PKPPlugin::getTemplatePath()
-	 */
-	function getTemplatePath($inCore = false) {
-		return parent::getTemplatePath($inCore) . 'templates/';
 	}
 
 	/**
@@ -140,7 +133,7 @@ class WebFeedPlugin extends GenericPlugin {
 
 				AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON,  LOCALE_COMPONENT_PKP_MANAGER);
 				$templateMgr = TemplateManager::getManager($request);
-				$templateMgr->register_function('plugin_url', array($this, 'smartyPluginUrl'));
+				$templateMgr->registerPlugin('function', 'plugin_url', array($this, 'smartyPluginUrl'));
 
 				$this->import('SettingsForm');
 				$form = new SettingsForm($this, $context->getId());
@@ -160,4 +153,4 @@ class WebFeedPlugin extends GenericPlugin {
 	}
 }
 
-?>
+

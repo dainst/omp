@@ -1,8 +1,8 @@
 {**
  * templates/controllers/grid/users/chapter/form/chapterForm.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * Chapters grid form
@@ -32,6 +32,20 @@
 	{fbvFormSection title="metadata.property.displayName.subTitle" for="subTitle"}
 		{fbvElement type="text" name="subtitle" id="subtitle" value=$subtitle maxlength="255" multilingual=true}
 	{/fbvFormSection}
+
+	{fbvFormSection title="submission.chapter.abstract" for="abstract"}
+		{fbvElement type="textarea" name="abstract" id="abstract" value=$abstract  rich="extended" multilingual=true}
+	{/fbvFormSection}
+
+	{fbvFormSection title="submission.chapter.pages" for="customExtras"}
+		{fbvElement type="text" id="pages" value=$pages inline=true size=$fbvStyles.size.LARGE}
+	{/fbvFormSection}
+
+	{if $enableChapterPublicationDates}
+		{fbvFormSection title="submission.chapter.datePublished" for="customExtras"}
+		{fbvElement type="text" id="datePublished" value=$datePublished inline=true size=$fbvStyles.size.LARGE  class="datepicker"}
+		{/fbvFormSection}
+	{/if}
 
 	{fbvFormSection}
 		<!--  Chapter Contributors -->

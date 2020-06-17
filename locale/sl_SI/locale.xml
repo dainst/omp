@@ -4,8 +4,8 @@
 <!--
   * locale/sl_SI/locale.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings.
@@ -13,9 +13,9 @@
 
 <locale name="sl_SI" full_name="Slovenščina">
 	<!-- General monograph keys -->
+	<message key="common.publishedSubmission">Monografska publikacija</message>
 	<message key="monograph.audience">Ciljna skupina</message>
 	<message key="monograph.coverImage">Naslovna slika</message>
-	<message key="monograph.currentCoverImage">Trenutna slika</message>
 	<message key="monograph.currentCoverImageReload">Shranite spremembe, da vidite novo naslovno sliko.</message>
 	<message key="monograph.audience.rangeQualifier">Kvalifikator razpona ciljnega občinstva</message>
 	<message key="monograph.audience.rangeFrom">Razpon ciljnega občinstva (od)</message>
@@ -271,21 +271,19 @@
 	<message key="catalog.noTitles">Zaenkrat še ni objavljenih naslovov.</message>
 	<message key="catalog.noTitlesNew">Trenutno ni na voljo nobene nove izdaje.</message>
 	<message key="catalog.noTitlesSearch">Za vašo iskalno zahtevo "{$searchQuery}"ni bilo najdenih naslovov.</message>
-	<message key="catalog.noTitlesSection">Zaenkrat še ni objavljenih naslovov v tem razdelku.</message>
-	<message key="catalog.browseTitles">{$numTitles} Naslovi</message>
 	<message key="catalog.feature">Lastnosti</message>
 	<message key="catalog.featured">Izbrano</message>
 	<message key="catalog.featuredBooks">Izbrane knjige</message>
 	<message key="catalog.foundTitleSearch">Za vašo iskalno zahtevo "{$searchQuery}" je bil najden en naslov.</message>
 	<message key="catalog.foundTitlesSearch">{$number} število najdenih naslovov se je ujemalo z vašo iskalno zahtevo "{$searchQuery}".</message>
-	<message key="catalog.allBooks">Vse knjige</message>
+	<message key="catalog.category.heading">Vse knjige</message>
 	<message key="catalog.newReleases">Nove izdaje</message>
 	<message key="catalog.dateAdded">Dodano</message>
 	<message key="catalog.publicationInfo">Podrobnosti o publikaciji</message>
 	<message key="catalog.published">Izdano</message>
 	<message key="catalog.categories">Kategorije</message>
 	<message key="catalog.parentCategory">Nadrejena kategorija</message>
-	<message key="catalog.subcategories">Podkategorije</message>
+	<message key="catalog.category.subcategories">Podkategorije</message>
 	<message key="catalog.aboutTheAuthor">O {$roleName}</message>
 	<message key="catalog.coverImageTitle">Naslovnica za {$monographTitle}</message>
 	<message key="catalog.loginRequiredForPayment">Pomembno: Za nakup se boste morali najprej prijaviti. Izbor predmeta za nakup vas bo preusmeril na stran za prijavo. Katero koli knjigo, označena z ikono Prost dostop, lahko prenesete brez plačila in brez prijave. </message>
@@ -293,10 +291,6 @@
 	<message key="catalog.sortBy.seriesDescription">Izberite, kako želite razvrstiti knjige v zbirki.</message>
 	<message key="catalog.sortBy.categoryDescription">Izberite, kako želite razvrstiti knjige v kategoriji.</message>
 	<message key="catalog.sortBy.catalogDescription">Izberite, kako želite razvrstiti knjige v katalogu.</message>
-	<message key="catalog.sortBy.titleAsc">Po naslovu (A-Ž)</message>
-	<message key="catalog.sortBy.titleDesc">Po naslovu (Ž-A)</message>
-	<message key="catalog.sortBy.datePublishedAsc">Po datumu izdaje (najprej najstarejše)</message>
-	<message key="catalog.sortBy.datePublishedDesc">Po datumu izdaje (najprej najnovejše)</message>
 	<message key="catalog.sortBy.seriesPositionAsc">Po položaju v zbirku (najprej najnižji)</message>
 	<message key="catalog.sortBy.seriesPositionDesc">Po položaju v zbirki (najprej najvišji)</message>
 	<message key="catalog.viewableFile.title">{$type} poglej datoteko {$title}</message>
@@ -548,5 +542,5 @@
 
 	<message key="user.profile.form.showOtherContexts">Registriraj se pri ostali založbah</message>
 	<message key="user.profile.form.hideOtherContexts">Skrij ostale založbe</message>
-	<message key="grid.category.categories">Kategorije</message>
+	<message key="submission.round">Krog &amp;nbsp;{$round}</message>
 </locale>

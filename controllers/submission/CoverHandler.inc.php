@@ -3,8 +3,8 @@
 /**
  * @file controllers/submission/CoverHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CoverHandler
@@ -85,7 +85,7 @@ class CoverHandler extends PKPHandler {
 
 		import('classes.file.SimpleMonographFileManager');
 		$simpleMonographFileManager = new SimpleMonographFileManager($publishedMonograph->getPressId(), $publishedMonograph->getId());
-		$simpleMonographFileManager->downloadFile($simpleMonographFileManager->getBasePath() . $coverImage['name'], null, true);
+		$simpleMonographFileManager->downloadByPath($simpleMonographFileManager->getBasePath() . $coverImage['name'], null, true);
 	}
 
 	/**
@@ -108,9 +108,9 @@ class CoverHandler extends PKPHandler {
 
 		import('classes.file.SimpleMonographFileManager');
 		$simpleMonographFileManager = new SimpleMonographFileManager($publishedMonograph->getPressId(), $publishedMonograph->getId());
-		$simpleMonographFileManager->downloadFile($simpleMonographFileManager->getBasePath() . $coverImage['thumbnailName'], null, true);
+		$simpleMonographFileManager->downloadByPath($simpleMonographFileManager->getBasePath() . $coverImage['thumbnailName'], null, true);
 	}
 
 }
 
-?>
+

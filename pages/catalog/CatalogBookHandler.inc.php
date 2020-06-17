@@ -3,8 +3,8 @@
 /**
  * @file pages/catalog/CatalogBookHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CatalogBookHandler
@@ -89,7 +89,11 @@ class CatalogBookHandler extends Handler {
 			'licenseUrl' => $publishedMonograph->getLicenseURL(),
 			'ccLicenseBadge' => Application::getCCLicenseBadge($publishedMonograph->getLicenseURL())
 		));
-
+		
+		// Keywords
+		$submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO');
+		$templateMgr->assign('keywords', $submissionKeywordDao->getKeywords($publishedMonograph->getId(), array(AppLocale::getLocale())));
+		
 		// Citations
 		$citationDao = DAORegistry::getDAO('CitationDAO');
 		$parsedCitations = $citationDao->getBySubmissionId($publishedMonograph->getId());
@@ -200,7 +204,7 @@ class CatalogBookHandler extends Handler {
 				$genreDao = DAORegistry::getDAO('GenreDAO');
 				$genre = $genreDao->getById($submissionFile->getGenreId());
 				if (!$genre->getDependent()) fatalError('Invalid monograph file specified!');
-				return $monographFileManager->downloadFile($fileId, $revision);
+				return $monographFileManager->downloadById($fileId, $revision);
 				break;
 			default: fatalError('Invalid monograph file specified!');
 		}
@@ -238,7 +242,7 @@ class CatalogBookHandler extends Handler {
 				// If the plugin handled the hook, prevent further default activity.
 				exit();
 			}
-			return $monographFileManager->downloadFile($fileId, $revision, $inline);
+			return $monographFileManager->downloadById($fileId, $revision, $inline);
 		}
 
 		// Fall-through: user needs to pay for purchase.
@@ -284,4 +288,4 @@ class CatalogBookHandler extends Handler {
 	}
 }
 
-?>
+

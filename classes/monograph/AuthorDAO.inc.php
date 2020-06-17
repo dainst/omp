@@ -3,8 +3,8 @@
 /**
  * @file classes/monograph/AuthorDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class AuthorDAO
@@ -22,13 +22,6 @@ import('classes.monograph.Monograph');
 import('lib.pkp.classes.submission.PKPAuthorDAO');
 
 class AuthorDAO extends PKPAuthorDAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 	/**
 	 * Retrieve all published authors for a press in an associative array by
 	 * the first letter of the last name, for example:
@@ -107,4 +100,4 @@ class AuthorDAO extends PKPAuthorDAO {
 	}
 }
 
-?>
+

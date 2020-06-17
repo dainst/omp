@@ -3,8 +3,8 @@
 /**
  * @file controllers/modals/submissionMetadata/CatalogEntryHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CatalogEntryHandler
@@ -33,11 +33,11 @@ class CatalogEntryHandler extends PublicationEntryHandler {
 	// Overridden methods from Handler
 	//
 	/**
-	 * @see PKPHandler::initialize()
+	 * @copydoc PublicationEntryHandler::initialize()
 	 */
-	function initialize($request, $args = null) {
+	function initialize($request) {
 		$this->_selectedFormatId = (int) $request->getUserVar('selectedFormatId');
-		parent::initialize($request, $args);
+		parent::initialize($request);
 	}
 
 	// Getters and Setters
@@ -75,7 +75,7 @@ class CatalogEntryHandler extends PublicationEntryHandler {
 			$publicationFormats[] = $publicationFormat;
 		}
 
-		$templateMgr->assign_by_ref('publicationFormats', $publicationFormats);
+		$templateMgr->assign('publicationFormats', $publicationFormats);
 
 		$request = Application::getRequest();
 		$router = $request->getRouter();
@@ -114,4 +114,4 @@ class CatalogEntryHandler extends PublicationEntryHandler {
 	}
 }
 
-?>
+

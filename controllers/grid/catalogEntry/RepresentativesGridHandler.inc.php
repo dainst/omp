@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/catalogEntry/RepresentativesGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class RepresentativesGridHandler
@@ -77,11 +77,10 @@ class RepresentativesGridHandler extends CategoryGridHandler {
 	}
 
 	/*
-	 * Configure the grid
-	 * @param $request PKPRequest
+	 * @copydoc CategoryGridHandler::initialize
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 
 		// Retrieve the authorized monograph.
 		$this->setMonograph($this->getAuthorizedContextObject(ASSOC_TYPE_MONOGRAPH));
@@ -169,7 +168,7 @@ class RepresentativesGridHandler extends CategoryGridHandler {
 	/**
 	 * @see CategoryGridHandler::loadCategoryData()
 	 */
-	function loadCategoryData($request, $category, $filter) {
+	function loadCategoryData($request, &$category, $filter = null) {
 		$representativeDao = DAORegistry::getDAO('RepresentativeDAO');
 		if ($category['isSupplier']) {
 			$representatives = $representativeDao->getSuppliersByMonographId($this->getMonograph()->getId());
@@ -321,4 +320,4 @@ class RepresentativesGridHandler extends CategoryGridHandler {
 	}
 }
 
-?>
+

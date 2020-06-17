@@ -3,8 +3,8 @@
 /**
  * @file tests/classes/monograph/SubmissionFileDAOTest.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionFileDAOTest
@@ -15,7 +15,7 @@
  */
 
 import('lib.pkp.tests.DatabaseTestCase');
-import('classes.monograph.SubmissionFileDAO');
+import('lib.pkp.classes.submission.SubmissionFileDAO');
 import('lib.pkp.classes.submission.SubmissionArtworkFileDAODelegate');
 import('lib.pkp.classes.submission.SubmissionFile');
 import('lib.pkp.classes.submission.SubmissionArtworkFile');
@@ -91,7 +91,7 @@ class SubmissionFileDAOTest extends DatabaseTestCase {
 
 	/**
 	 * @covers SubmissionFileDAO
-	 * @covers PKPSubmissionFileDAO
+	 * @covers SubmissionFileDAO
 	 * @covers SubmissionFileDAODelegate
 	 * @covers SubmissionArtworkFileDAODelegate
 	 * @covers SubmissionFileDAODelegate
@@ -557,4 +557,4 @@ class SubmissionFileDAOTest extends DatabaseTestCase {
 		$submissionFileDao->deleteAllRevisionsBySubmissionId($submissionId);
 	}
 }
-?>
+

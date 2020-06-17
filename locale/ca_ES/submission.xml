@@ -4,8 +4,8 @@
 <!--
   * locale/ca_ES/submission.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Credits: https://pkp.sfu.ca/wiki/index.php?title=OMP:_Catalan_(ca_ES)
   * Localization strings.
@@ -21,7 +21,6 @@
 	<message key="submission.workflowType.description">Una monografia és un treball escrit completament per un o diversos autors/ores. Un volum editat té un autor/a diferent per a cada capítol (els detalls del capítol s'hi afegeixen en etapes posteriors del procés).</message>
 	<message key="submission.workflowType.editedVolume">Volum editat: els autors/ores tenen el seu capítol associat.</message>
 	<message key="submission.workflowType.authoredWork">Monografia: els autors/ores s'associen a tot el llibre.</message>
-	<message key="submission.monograph">Monografia</message>
 	<message key="submission.published">Producció preparada</message>
 	<message key="submission.fairCopy">Còpia original</message>
 	<message key="submission.artwork.permissions">Permisos</message>
@@ -76,8 +75,6 @@
 	<message key="submission.submit.whatNext.description">Hem informat de la publicació de la vostra tramesa i rebreu un correu electrònic per confirmar els vostres registres.  Un cop l'editor/a hagi revisat la tramesa, es posarà en contacte amb vós.</message>
 	<message key="submission.submit.checklistErrors">Llegiu i marqueu els elements de la llista de verificació de la tramesa.  Hi ha {$itemsRemaining} elements sense marcar.</message>
 	<message key="submission.submit.placement">Ubicació de la tramesa</message>
-	<message key="submission.submit.placement.categories">Categories</message>
-	<message key="submission.submit.placement.categoriesDescription">Seleccioneu una de les categories de la publicació en la qual s'ha de valorar aquest treball.</message>
 	<message key="submission.submit.userGroup">Envia amb el rol de...</message>
 	<message key="submission.submit.userGroupDescription">Si envieu un volum editat, és recomanable que seleccioneu el rol d'editor/a de volum.</message>
 	<!-- Chapters Grid -->

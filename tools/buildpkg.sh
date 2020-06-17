@@ -3,8 +3,8 @@
 #
 # buildpkg.sh
 #
-# Copyright (c) 2014-2018 Simon Fraser University
-# Copyright (c) 2003-2018 John Willinsky
+# Copyright (c) 2014-2019 Simon Fraser University
+# Copyright (c) 2003-2019 John Willinsky
 # Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
 #
 # Script to create an OMP package for distribution.
@@ -59,8 +59,6 @@ lib/pkp/tests										\
 .openshift										\
 .travis.yml										\
 lib/pkp/.git										\
-lib/pkp/lib/components/*.js								\
-lib/pkp/lib/components/*.css								\
 lib/pkp/lib/vendor/components								\
 lib/pkp/lib/vendor/ezyang/htmlpurifier/art						\
 lib/pkp/lib/vendor/ezyang/htmlpurifier/benchmarks					\
@@ -87,8 +85,6 @@ lib/pkp/lib/vendor/sebastian/diff/tests							\
 lib/pkp/lib/vendor/oyejorge/less.php/test						\
 lib/pkp/js/lib/pnotify/build-tools							\
 lib/pkp/lib/vendor/alex198710/pnotify/.git						\
-lib/pkp/lib/swordappv2/.git								\
-lib/pkp/lib/swordappv2/test								\
 node_modules										\
 .babelrc										\
 .editorconfig										\
@@ -113,14 +109,10 @@ echo "Done"
 
 echo "Installing composer dependencies ... "
 echo -n " - lib/pkp ... "
-cd lib/pkp
-composer.phar install
-cd ../..
+composer.phar --working-dir=lib/pkp install --no-dev
 
 echo -n " - plugins/paymethod/paypal ... "
-cd plugins/paymethod/paypal
-composer.phar install --no-dev
-cd ../../..
+composer.phar --working-dir=plugins/paymethod/paypal install --no-dev
 echo "Done"
 
 echo -n "Installing node dependencies... "

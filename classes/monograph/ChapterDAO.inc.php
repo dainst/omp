@@ -3,8 +3,8 @@
 /**
  * @file classes/monograph/ChapterDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ChapterDAO
@@ -19,13 +19,6 @@ import('classes.monograph.Chapter');
 import('classes.monograph.ChapterAuthor');
 
 class ChapterDAO extends DAO implements PKPPubIdPluginDAO {
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 	/**
 	 * Retrieve a chapter by ID.
 	 * @param $chapterId int
@@ -60,7 +53,7 @@ class ChapterDAO extends DAO implements PKPPubIdPluginDAO {
 	 */
 	function getChapters($monographId, $rangeInfo = null) {
 		$result = $this->retrieveRange(
-			'SELECT chapter_id, submission_id, chapter_seq FROM submission_chapters WHERE submission_id = ? ORDER BY chapter_seq',
+			'SELECT chapter_id, submission_id, seq FROM submission_chapters WHERE submission_id = ? ORDER BY seq',
 			(int) $monographId,
 			$rangeInfo
 		);
@@ -90,7 +83,7 @@ class ChapterDAO extends DAO implements PKPPubIdPluginDAO {
 	 * @return array
 	 */
 	function getLocaleFieldNames() {
-		return array('title', 'subtitle');
+		return array('title', 'subtitle','abstract');
 	}
 
 	/**
@@ -102,6 +95,9 @@ class ChapterDAO extends DAO implements PKPPubIdPluginDAO {
 		$additionalFields = parent::getAdditionalFieldNames();
 		// FIXME: Move this to a PID plug-in.
 		$additionalFields[] = 'pub-id::publisher-id';
+		$additionalFields[] = 'datePublished';
+		$additionalFields[] = 'pages';
+
 		return $additionalFields;
 	}
 
@@ -122,7 +118,7 @@ class ChapterDAO extends DAO implements PKPPubIdPluginDAO {
 		$chapter = $this->newDataObject();
 		$chapter->setId($row['chapter_id']);
 		$chapter->setMonographId($row['submission_id']);
-		$chapter->setSequence($row['chapter_seq']);
+		$chapter->setSequence($row['seq']);
 		$this->getDataObjectSettings('submission_chapter_settings', 'chapter_id', $row['chapter_id'], $chapter);
 
 		HookRegistry::call('ChapterDAO::_returnFromRow', array(&$chapter, &$row));
@@ -147,7 +143,7 @@ class ChapterDAO extends DAO implements PKPPubIdPluginDAO {
 	function insertChapter($chapter) {
 		$this->update(
 			'INSERT INTO submission_chapters
-				(submission_id, chapter_seq)
+				(submission_id, seq)
 				VALUES
 				(?, ?)',
 			array(
@@ -169,7 +165,7 @@ class ChapterDAO extends DAO implements PKPPubIdPluginDAO {
 		$this->update(
 			'UPDATE submission_chapters
 				SET	submission_id = ?,
-					chapter_seq = ?
+					seq = ?
 				WHERE
 					chapter_id = ?',
 			array(
@@ -226,7 +222,7 @@ class ChapterDAO extends DAO implements PKPPubIdPluginDAO {
 		for ($i=1; !$result->EOF; $i++) {
 			list($chapterId) = $result->fields;
 			$this->update(
-				'UPDATE submission_chapters SET chapter_seq = ? WHERE chapter_id = ?',
+				'UPDATE submission_chapters SET seq = ? WHERE chapter_id = ?',
 				array(
 					(int) $i,
 					(int) $chapterId
@@ -254,7 +250,7 @@ class ChapterDAO extends DAO implements PKPPubIdPluginDAO {
 		$result = $this->retrieve(
 			'SELECT COUNT(*)
 			FROM submission_chapter_settings scs
-			INNER JOIN submission_cahpers sc ON scs.chapter_id = sc.chapter_id
+			INNER JOIN submission_chapters sc ON scs.chapter_id = sc.chapter_id
 			INNER JOIN submissions s ON sc.submission_id = s.submission_id
 			WHERE scs.setting_name = ? and scs.setting_value = ? and sc.chapter_id <> ? AND s.context_id = ?',
 			array(
@@ -320,5 +316,3 @@ class ChapterDAO extends DAO implements PKPPubIdPluginDAO {
 		$this->flushCache();
 	}
 }
-
-?>

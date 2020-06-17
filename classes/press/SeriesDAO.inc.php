@@ -3,8 +3,8 @@
 /**
  * @file classes/press/SeriesDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SeriesDAO
@@ -18,13 +18,6 @@ import ('classes.press.Series');
 import ('lib.pkp.classes.context.PKPSectionDAO');
 
 class SeriesDAO extends PKPSectionDAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 	/**
 	 * Retrieve an series by ID.
 	 * @param $seriesId int
@@ -263,10 +256,9 @@ class SeriesDAO extends PKPSectionDAO {
 	}
 
 	/**
-	 * Retrieve all series for a press.
-	 * @return DAOResultFactory containing Series ordered by sequence
+	 * @copydoc PKPSectionDAO::getByContextId()
 	 */
-	function getByContextId($pressId, $rangeInfo = null) {
+	function getByContextId($pressId, $rangeInfo = null, $submittableOnly = false) {
 		$params = array(
 			'title', AppLocale::getPrimaryLocale(),
 			'title', AppLocale::getLocale(),
@@ -394,7 +386,7 @@ class SeriesDAO extends PKPSectionDAO {
 				series s
 			WHERE	c.category_id = sc.category_id AND
 				s.series_id = ? AND
-				' . ($pressId?' c.press_id = s.press_id AND s.press_id = ? AND':'') . '
+				' . ($pressId?' c.context_id = s.press_id AND s.press_id = ? AND':'') . '
 				s.series_id = sc.series_id',
 			$params
 		);
@@ -416,7 +408,7 @@ class SeriesDAO extends PKPSectionDAO {
 		$result = $this->retrieve(
 			'SELECT	c.*
 			FROM	series s
-				JOIN categories c ON (c.press_id = s.press_id)
+				JOIN categories c ON (c.context_id = s.press_id)
 				LEFT JOIN series_categories sc ON (s.series_id = sc.series_id AND sc.category_id = c.category_id)
 			WHERE	s.series_id = ? AND
 				' . ($pressId?' s.press_id = ? AND':'') . '
@@ -446,4 +438,4 @@ class SeriesDAO extends PKPSectionDAO {
 	}
 }
 
-?>
+

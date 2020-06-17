@@ -7,8 +7,8 @@
 /**
  * @file classes/monograph/Monograph.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class Monograph
@@ -25,13 +25,6 @@ import('lib.pkp.classes.submission.Submission');
 import('classes.monograph.Author');
 
 class Monograph extends Submission {
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 	/**
 	 * get press id
 	 * @return int
@@ -241,6 +234,24 @@ class Monograph extends Submission {
 	function setCoverImageAltText($coverImageAltText) {
 		$this->setData('coverImageAltText', $coverImageAltText);
 	}
+
+	/**
+	 * get enableChapterPublicationDates status
+	 * @return int
+	 */
+	function getEnableChapterPublicationDates() {
+		return $this->getData('enableChapterPublicationDates');
+	}
+
+	/**
+	 * set  enableChapterPublicationDates status
+	 * @param $enableChapterPublicationDates int
+	 */
+	function setEnableChapterPublicationDates($enableChapterPublicationDates) {
+		$this->setData('enableChapterPublicationDates', $enableChapterPublicationDates);
+	}
+
+
 }
 
-?>
+

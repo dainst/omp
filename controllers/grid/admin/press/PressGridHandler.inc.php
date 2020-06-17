@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/admin/press/PressGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PressGridHandler
@@ -65,7 +65,7 @@ class PressGridHandler extends ContextGridHandler {
 			// The press settings form will return a press path in two cases:
 			// 1 - if a new press was created;
 			// 2 - if a press path of an existing press was edited.
-			$newPressPath = $settingsForm->execute($request);
+			$newPressPath = $settingsForm->execute();
 
 			// Create the notification.
 			$notificationMgr = new NotificationManager();
@@ -142,4 +142,4 @@ class PressGridHandler extends ContextGridHandler {
 	}
 }
 
-?>
+

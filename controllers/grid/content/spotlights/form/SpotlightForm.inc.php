@@ -2,8 +2,8 @@
 /**
  * @file controllers/grid/content/spotlights/form/SpotlightForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SpotlightForm
@@ -52,24 +52,26 @@ class SpotlightForm extends Form {
 	// Extended methods from Form
 	//
 	/**
-	 * @see Form::fetch()
+	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 
 		$spotlightDao = DAORegistry::getDAO('SpotlightDAO');
 		$spotlight = $spotlightDao->getById($this->getSpotlightId());
-		$templateMgr->assign_by_ref('spotlight', $spotlight);
-		$templateMgr->assign('pressId', $this->getPressId());
+		$templateMgr->assign(array(
+			'spotlight' => $spotlight,
+			'pressId' => $this->getPressId()
+		));
 
-		if (isset($spotlight)) {
-			$templateMgr->assign('title', $spotlight->getTitle(null));
-			$templateMgr->assign('description', $spotlight->getDescription(null));
-			$templateMgr->assign('assocTitle', $this->getAssocTitle($spotlight->getAssocId(), $spotlight->getAssocType()));
-			$templateMgr->assign('assocId', $spotlight->getAssocId() . ':' . $spotlight->getAssocType());
-		}
+		if (isset($spotlight)) $templateMgr->assign(array(
+			'title' => $spotlight->getTitle(null),
+			'description' => $spotlight->getDescription(null),
+			'assocTitle' => $this->getAssocTitle($spotlight->getAssocId(), $spotlight->getAssocType()),
+			'assocId' => $spotlight->getAssocId() . ':' . $spotlight->getAssocType(),
+		));
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	//
@@ -83,9 +85,9 @@ class SpotlightForm extends Form {
 	}
 
 	/**
-	 * @see Form::execute()
+	 * @copydoc Form::execute()
 	 */
-	function execute($request) {
+	function execute() {
 
 		$spotlightDao = DAORegistry::getDAO('SpotlightDAO');
 
@@ -173,4 +175,4 @@ class SpotlightForm extends Form {
 	}
 }
 
-?>
+

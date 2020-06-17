@@ -3,8 +3,8 @@
 /**
  * @file classes/monograph/PublishedMonograph.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PublishedMonograph
@@ -22,14 +22,6 @@ define('ARTICLE_ACCESS_ISSUE_DEFAULT', 0);
 define('ARTICLE_ACCESS_OPEN', 1);
 
 class PublishedMonograph extends Monograph {
-
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 	/**
 	 * Get views of the published monograph.
 	 * @return int
@@ -247,4 +239,4 @@ class PublishedMonograph extends Monograph {
 	}
 }
 
-?>
+

@@ -1,8 +1,8 @@
 {**
  * plugins/paymethod/manual/templates/paymentForm.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * Manual payment page
@@ -12,6 +12,7 @@
 
 <div class="page page_payment">
 	{include file="frontend/components/breadcrumbs.tpl" currentTitleKey="plugins.paymethod.manual"}
+	<h1>{translate key="plugins.paymethod.manual"}</h1>
 
 	<p>{$manualInstructions|nl2br}</p>
 
@@ -29,7 +30,7 @@
 	</table>
 
 	<p>
-		<a href="{url page="payment" op="plugin" path="ManualPayment"|to_array:"notify":$queuedPaymentId|escape}" class="action">{translate key="plugins.paymethod.manual.sendNotificationOfPayment"}</a>
+		<a href="{url page="payment" op="plugin" path="ManualPayment"|to_array:"notify":$queuedPaymentId}" class="action">{translate key="plugins.paymethod.manual.sendNotificationOfPayment"}</a>
 	</p>
 
 </div><!-- .page -->

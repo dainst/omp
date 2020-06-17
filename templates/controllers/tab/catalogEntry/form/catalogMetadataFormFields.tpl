@@ -1,8 +1,8 @@
 {**
  * catalog/form/catalogMetadataFormFields.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  *}
@@ -53,6 +53,13 @@
 		{fbvElement type="text" id="datePublished" value=$datePublished|date_format:$dateFormatShort class="datepicker"}
 	{/fbvFormSection}
 
+	{fbvFormArea id="chapterPublicationDates" class="border" title="submission.catalogEntry.chapterPublicationDates"}
+		{fbvFormSection list=true}
+			{fbvElement type="radio" id="enableChapterPublicationDates-0" name="enableChapterPublicationDates" value="0" checked=!$enableChapterPublicationDates label="submission.catalogEntry.disableChapterPublicationDates"}
+			{fbvElement type="radio" id="enableChapterPublicationDates-1" name="enableChapterPublicationDates" value="1" checked=$enableChapterPublicationDates label="submission.catalogEntry.enableChapterPublicationDates"}
+		{/fbvFormSection}
+	{/fbvFormArea}
+
 	{fbvFormSection label="submission.workflowType"}
 		{fbvElement type="select" id="workType" from=$workTypeOptions selected=$workType translate=false disabled=$formParams.readOnly size=$fbvStyles.size.SMALL}
 	{/fbvFormSection}
@@ -81,7 +88,7 @@
 
 	{fbvFormSection title="monograph.coverImage"}
 		<div class="currentCoverImage">
-			{capture assign="altTitle"}{translate key="monograph.currentCoverImage"}{/capture}
+			{capture assign="altTitle"}{translate key="submission.currentCoverImage"}{/capture}
 			<img height="{$coverImage.thumbnailHeight}" width="{$coverImage.thumbnailWidth}" src="{url router=$smarty.const.ROUTE_COMPONENT component="submission.CoverHandler" op="thumbnail" submissionId=$submissionId random=$submissionId|uniqid}" alt="{$altTitle|escape}" />
 			<span class="coverImageMessage description"></span>
 		</div>

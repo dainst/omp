@@ -3,8 +3,8 @@
 /**
  * @file classes/services/QueryBuilders/SubmissionListQueryBuilder.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionListQueryBuilder
@@ -19,29 +19,11 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 
 class SubmissionListQueryBuilder extends \PKP\Services\QueryBuilders\PKPSubmissionListQueryBuilder {
 
-	/** @var int|array Category ID(s) */
-	protected $categoryIds = null;
-
 	/** @var int|array Series ID(s) */
 	protected $seriesIds = null;
 
 	/** @var bool Order featured items first */
 	protected $orderByFeaturedSeq = null;
-
-	/**
-	 * Set category filter
-	 *
-	 * @param int|array $categoryIds
-	 *
-	 * @return \OMP\Services\QueryBuilders\SubmissionListQueryBuilder
-	 */
-	public function filterByCategories($categoryIds) {
-		if (!is_null($categoryIds) && !is_array($categoryIds)) {
-			$categoryIds = array($categoryIds);
-		}
-		$this->categoryIds = $categoryIds;
-		return $this;
-	}
 
 	/**
 	 * Set series filter
@@ -125,11 +107,6 @@ class SubmissionListQueryBuilder extends \PKP\Services\QueryBuilders\PKPSubmissi
 			$q->whereIn('s.series_id', $this->seriesIds);
 		}
 
-		if (!empty($this->categoryIds)) {
-			$q->leftJoin('submission_categories as sc', 's.submission_id', '=', 'sc.submission_id')
-				->whereIn('sc.category_id', $this->categoryIds);
-		}
-
 		if (!empty($this->orderByFeaturedSeq)) {
 			if (!empty($this->seriesIds)) {
 				$assocType = ASSOC_TYPE_SERIES;
@@ -152,6 +129,8 @@ class SubmissionListQueryBuilder extends \PKP\Services\QueryBuilders\PKPSubmissi
 			// Featured sorting should be the first sort parameter. We sort by
 			// the seq parameter, with null values last
 			$q->groupBy(Capsule::raw('psf.seq'));
+			$this->columns[] = 'psf.seq';
+			$this->columns[] = Capsule::raw('case when psf.seq is null then 1 else 0 end');
 			array_unshift(
 				$q->orders,
 				array('type' => 'raw', 'sql' => 'case when psf.seq is null then 1 else 0 end'),

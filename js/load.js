@@ -1,8 +1,8 @@
 /**
  * @file js/load.js
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Compiler entry point for building the JavaScript package. File imports
@@ -17,6 +17,8 @@ import SelectListPanel from '@/components/SelectListPanel/SelectListPanel.vue';
 import SelectSubmissionsListPanel from '@/components/SelectListPanel/submissions/SelectSubmissionsListPanel.vue';
 import CatalogSubmissionsListPanel from '@/components/ListPanel/submissions/CatalogSubmissionsListPanel.vue';
 import SelectReviewerListPanel from '@/components/SelectListPanel/users/SelectReviewerListPanel.vue';
+import StatisticsEditorial from '@/components/Statistics/StatisticsEditorial.vue';
+import StatisticsSubmissions from '@/components/Statistics/StatisticsSubmissions.vue';
 
 // Expose Vue, the registry and controllers in a global var
 window.pkp = Object.assign(PkpLoad, {
@@ -27,5 +29,7 @@ window.pkp = Object.assign(PkpLoad, {
 		SelectSubmissionsListPanel,
 		CatalogSubmissionsListPanel,
 		SelectReviewerListPanel,
+		StatisticsEditorial,
+		StatisticsSubmissions,
 	},
 });

@@ -3,8 +3,8 @@
 /**
  * @file controllers/tab/settings/appearance/form/AppearanceForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class AppearanceForm
@@ -36,10 +36,11 @@ class AppearanceForm extends PKPAppearanceForm {
 	}
 
 	/**
-	 * @copydoc ContextSettingsForm::initData()
+	 * @copydoc PKPAppearanceForm::initData()
 	 */
-	function initData($request) {
-		parent::initData($request);
+	function initData() {
+		parent::initData();
+		$request = Application::getRequest();
 		$context = $request->getContext();
 		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
 		$sortOption = $context->getSetting('catalogSortOption') ? $context->getSetting('catalogSortOption') : $publishedMonographDao->getDefaultSortOption();
@@ -47,25 +48,25 @@ class AppearanceForm extends PKPAppearanceForm {
 	}
 
 	/**
-	 * @copydoc ContextSettingsForm::fetch()
+	 * @copydoc PKPAppearanceForm::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false, $params = null) {
 		// Sort options.
 		$templateMgr = TemplateManager::getManager($request);
 		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
 		$templateMgr->assign('sortOptions', $publishedMonographDao->getSortSelectOptions());
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display, $params);
 	}
 
 	/**
 	 * @copydoc ContextSettingsForm::execute()
 	 */
-	function execute($request) {
-		parent::execute($request);
+	function execute() {
+		parent::execute();
 
 		$coverThumbnailsResize = $this->getData('coverThumbnailsResize');
 		if ($coverThumbnailsResize) {
-			$context = $request->getContext();
+			$context = Application::getRequest()->getContext();
 			// new thumbnails max width and max height
 			$coverThumbnailsMaxWidth = $this->getData('coverThumbnailsMaxWidth');
 			$coverThumbnailsMaxHeight = $this->getData('coverThumbnailsMaxHeight');
@@ -101,7 +102,7 @@ class AppearanceForm extends PKPAppearanceForm {
 		import('lib.pkp.classes.file.FileManager');
 		$fileManager = new FileManager();
 
-		$objects = $objectDao->getByPressId($context->getId());
+		$objects = $objectDao->getByContextId($context->getId());
 		while ($object = $objects->next()) {
 			if (is_a($object, 'PublishedMonograph')) {
 				$cover = $object->getCoverImage();
@@ -112,7 +113,7 @@ class AppearanceForm extends PKPAppearanceForm {
 			}
 			if ($cover) {
 				// delete old cover thumbnail
-				$fileManager->deleteFile($basePath . $cover['thumbnailName']);
+				$fileManager->deleteByPath($basePath . $cover['thumbnailName']);
 
 				// get settings necessary for the new thumbnail
 				$coverExtension = $fileManager->getExtension($cover['name']);
@@ -177,4 +178,4 @@ class AppearanceForm extends PKPAppearanceForm {
 
 }
 
-?>
+

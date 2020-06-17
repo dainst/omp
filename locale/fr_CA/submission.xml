@@ -4,8 +4,8 @@
 <!--
   * locale/fr_CA/submission.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings.
@@ -19,7 +19,6 @@
 	<message key="submission.workflowType.description">Une monographie est un ouvrage écrit par un ou plusieurs auteurs. Un volume édité est un livre dont les chapitres ont été écrits par différents auteurs (les renseignements sur les chapitres sont ajoutés plus tard).</message>
 	<message key="submission.workflowType.editedVolume">Volume édité</message>
 	<message key="submission.workflowType.authoredWork">Monographie</message>
-	<message key="submission.monograph">Monographie</message>
 	<message key="submission.published">Prêt pour la production</message>
 	<message key="submission.fairCopy">Copie au net</message>
 	<message key="submission.artwork.permissions">Permissions</message>
@@ -78,8 +77,6 @@
 	<message key="submission.submit.placement">Place de la soumission</message>
 	<message key="submission.submit.placement.seriesDescription">Si le livre pourrait aussi faire partie d'une série...</message>
 	<message key="submission.submit.placement.seriesPositionDescription">Les livres d'une série sont généralement conservés dans l'ordre inverse de celui dans lequel ils sont publiés. Ainsi, on montre que la série progresse et les articles les plus récents apparaissent au début.</message>
-	<message key="submission.submit.placement.categories">Catégories</message>
-	<message key="submission.submit.placement.categoriesDescription">Choisir l'une des catégories de la presse pour votre article.</message>
 	<message key="submission.submit.userGroup">Soumettre selon mon rôle à titre de...</message>
 	<message key="submission.submit.userGroupDescription">S'il s'agit d'un volume édité, vous devriez choisir le rôle de rédacteur en chef du volume.</message>
 	<message key="submission.submit.titleAndSummary">Titre et sommaire</message>

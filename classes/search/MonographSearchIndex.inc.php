@@ -3,8 +3,8 @@
 /**
  * @file classes/search/MonographSearchIndex.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class MonographSearchIndex
@@ -123,7 +123,9 @@ class MonographSearchIndex extends SubmissionSearchIndex {
 		self::updateTextIndex($monographId, SUBMISSION_SEARCH_TITLE, $monograph->getTitle(null, false));
 		self::updateTextIndex($monographId, SUBMISSION_SEARCH_ABSTRACT, $monograph->getAbstract(null));
 
-		self::updateTextIndex($monographId, SUBMISSION_SEARCH_DISCIPLINE, (array) $monograph->getDiscipline(null));
+		$submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO');
+		self::updateTextIndex($monographId, SUBMISSION_SEARCH_DISCIPLINE, array_filter($submissionDisciplineDao->getDisciplines($monographId, array_keys(\PKPLocale::getAllLocales()))));
+
 		self::updateTextIndex($monographId, SUBMISSION_SEARCH_TYPE, $monograph->getType(null));
 		self::updateTextIndex($monographId, SUBMISSION_SEARCH_COVERAGE, (array) $monograph->getCoverage(null));
 		// FIXME Index sponsors too?
@@ -198,4 +200,4 @@ class MonographSearchIndex extends SubmissionSearchIndex {
 
 }
 
-?>
+

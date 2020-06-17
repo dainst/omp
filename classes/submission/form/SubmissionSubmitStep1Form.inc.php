@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/form/SubmissionSubmitStep1Form.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionSubmitStep1Form
@@ -26,9 +26,9 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 	}
 
 	/**
-	 * Fetch the form.
+	 * @copydoc PKPSubmissionSubmitStep1Form::fetch
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 
 		// Get series for this context
@@ -36,13 +36,13 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 		$seriesOptions = array('' => __('submission.submit.selectSeries')) + $seriesDao->getTitlesByPressId($this->context->getId(), true);
 		$templateMgr->assign('seriesOptions', $seriesOptions);
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
-	 * Initialize form data from current submission.
+	 * @copydoc PKPSubmissionSubmitStep1Form::initData
 	 */
-	function initData() {
+	function initData($data = array()) {
 		if (isset($this->submission)) {
 			parent::initData(array(
 				'seriesId' => $this->submission->getSeriesId(),
@@ -76,4 +76,4 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 	}
 }
 
-?>
+

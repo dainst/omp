@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/catalogEntry/form/PublicationFormatForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PublicationFormatForm
@@ -95,10 +95,9 @@ class PublicationFormatForm extends Form {
 	}
 
 	/**
-	 * Fetch the form.
-	 * @see Form::fetch()
+	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
 		$templateMgr->assign('entryKeys', $onixCodelistItemDao->getCodes('List7')); // List7 is for object formats
@@ -109,7 +108,7 @@ class PublicationFormatForm extends Form {
 		if ($publicationFormat != null) {
 			$templateMgr->assign('representationId', $publicationFormat->getId());
 		}
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -127,11 +126,10 @@ class PublicationFormatForm extends Form {
 
 	/**
 	 * Save the assigned format
-	 * @param PKPRequest request
 	 * @return int Publication format ID
 	 * @see Form::execute()
 	 */
-	function execute($request) {
+	function execute() {
 		$publicationFormatDao = DAORegistry::getDAO('PublicationFormatDAO');
 		$monograph = $this->getMonograph();
 		$publicationFormat = $this->getPublicationFormat();
@@ -158,11 +156,11 @@ class PublicationFormatForm extends Form {
 			// log the creation of the format.
 			import('lib.pkp.classes.log.SubmissionLog');
 			import('classes.log.SubmissionEventLogEntry');
-			SubmissionLog::logEvent($request, $monograph, SUBMISSION_LOG_PUBLICATION_FORMAT_CREATE, 'submission.event.publicationFormatCreated', array('formatName' => $publicationFormat->getLocalizedName()));
+			SubmissionLog::logEvent(Application::getRequest(), $monograph, SUBMISSION_LOG_PUBLICATION_FORMAT_CREATE, 'submission.event.publicationFormatCreated', array('formatName' => $publicationFormat->getLocalizedName()));
 		}
 
 		return $representationId;
 	}
 }
 
-?>
+

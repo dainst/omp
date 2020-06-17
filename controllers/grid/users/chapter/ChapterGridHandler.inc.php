@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/chapter/ChapterGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ChapterGridHandler
@@ -93,7 +93,7 @@ class ChapterGridHandler extends CategoryGridHandler {
 	}
 
 	/**
-	 * @copydoc GridHandler::initialize()
+	 * @copydoc CategoryGridHandler::initialize()
 	 */
 	function initialize($request, $args = null) {
 		parent::initialize($request, $args);
@@ -238,7 +238,7 @@ class ChapterGridHandler extends CategoryGridHandler {
 	/**
 	 * @see CategoryGridHandler::loadCategoryData()
 	 */
-	function loadCategoryData($request, &$chapter, $filter) {
+	function loadCategoryData($request, &$chapter, $filter = null) {
 		$authorFactory = $chapter->getAuthors(); /* @var $authorFactory DAOResultFactory */
 		return $authorFactory->toAssociativeArray();
 	}
@@ -281,7 +281,7 @@ class ChapterGridHandler extends CategoryGridHandler {
 
 		import('controllers.tab.pubIds.form.PublicIdentifiersForm');
 		$form = new PublicIdentifiersForm($chapter);
-		$form->initData($request);
+		$form->initData();
 		return new JSONMessage(true, $form->fetch($request));
 	}
 
@@ -298,8 +298,8 @@ class ChapterGridHandler extends CategoryGridHandler {
 		import('controllers.tab.pubIds.form.PublicIdentifiersForm');
 		$form = new PublicIdentifiersForm($chapter);
 		$form->readInputData();
-		if ($form->validate($request)) {
-			$form->execute($request);
+		if ($form->validate()) {
+			$form->execute();
 			return DAO::getDataChangedEvent();
 		} else {
 			return new JSONMessage(true, $form->fetch($request));
@@ -387,7 +387,7 @@ class ChapterGridHandler extends CategoryGridHandler {
 
 		// Form validation
 		if ($chapterForm->validate()) {
-			$chapterForm->execute($request);
+			$chapterForm->execute();
 
 			$newChapter = $chapterForm->getChapter();
 
@@ -432,4 +432,4 @@ class ChapterGridHandler extends CategoryGridHandler {
 	}
 }
 
-?>
+

@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/form/SubmissionSubmitStep4Form.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionSubmitStep4Form
@@ -25,18 +25,17 @@ class SubmissionSubmitStep4Form extends PKPSubmissionSubmitStep4Form {
 
 	/**
 	 * Save changes to submission.
-	 * @param $args array
-	 * @param $request PKPRequest
 	 * @return int the submission ID
 	 */
-	function execute($args, $request) {
-		parent::execute($args, $request);
+	function execute() {
+		parent::execute();
 
 		// Send author notification email
 		import('classes.mail.MonographMailTemplate');
 		$mail = new MonographMailTemplate($this->submission, 'SUBMISSION_ACK', null, null, false);
 		$authorMail = new MonographMailTemplate($this->submission, 'SUBMISSION_ACK_NOT_USER', null, null, false);
 
+		$request = Application::getRequest();
 		$context = $request->getContext();
 		$router = $request->getRouter();
 		if ($mail->isEnabled()) {
@@ -89,11 +88,19 @@ class SubmissionSubmitStep4Form extends PKPSubmissionSubmitStep4Form {
 				'editorialContactSignature' => $context->getSetting('contactName') . "\n" . $context->getLocalizedName(),
 			));
 
-			$mail->send($request);
+			if (!$mail->send($request)) {
+				import('classes.notification.NotificationManager');
+				$notificationMgr = new NotificationManager();
+				$notificationMgr->createTrivialNotification($request->getUser()->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('email.compose.error')));
+			}
 
 			$recipients = $authorMail->getRecipients();
 			if (!empty($recipients)) {
-				$authorMail->send($request);
+				if (!$authorMail->send($request)) {
+					import('classes.notification.NotificationManager');
+					$notificationMgr = new NotificationManager();
+					$notificationMgr->createTrivialNotification($request->getUser()->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('email.compose.error')));
+				}
 			}
 		}
 
@@ -106,4 +113,4 @@ class SubmissionSubmitStep4Form extends PKPSubmissionSubmitStep4Form {
 	}
 }
 
-?>
+

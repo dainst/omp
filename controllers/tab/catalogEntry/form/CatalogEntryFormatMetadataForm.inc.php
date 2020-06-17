@@ -3,8 +3,8 @@
 /**
  * @file controllers/tab/catalogEntry/form/CatalogEntryFormatMetadataForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CatalogEntryFormatMetadataForm
@@ -72,11 +72,9 @@ class CatalogEntryFormatMetadataForm extends Form {
 	}
 
 	/**
-	 * Fetch the HTML contents of the form.
-	 * @param $request PKPRequest
-	 * return string
+	 * @copydoc Form::fetch
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$monograph = $this->getMonograph();
 		$publicationFormat = $this->getPublicationFormat();
 		$press = $request->getPress();
@@ -115,7 +113,7 @@ class CatalogEntryFormatMetadataForm extends Form {
 		);
 
 		foreach ($codes as $templateVarName => $list) {
-			$templateMgr->assign_by_ref($templateVarName, $onixCodelistItemDao->getCodes($list));
+			$templateMgr->assign($templateVarName, $onixCodelistItemDao->getCodes($list));
 		}
 
 		// consider public identifiers
@@ -130,7 +128,7 @@ class CatalogEntryFormatMetadataForm extends Form {
 			NOTIFICATION_LEVEL_TRIVIAL => array()
 		));
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -214,18 +212,18 @@ class CatalogEntryFormatMetadataForm extends Form {
 	/**
 	 * @copydoc Form::validate()
 	 */
-	function validate() {
+	function validate($callHooks = true) {
 		$monograph = $this->getMonograph();
 		$publicationFormat = $this->getPublicationFormat();
 		$pubIdPluginHelper = $this->_getPubIdPluginHelper();
 		$pubIdPluginHelper->validate($monograph->getContextId(), $this, $publicationFormat);
-		return parent::validate();
+		return parent::validate($callHooks);
 	}
 
 	/**
 	 * Save the metadata and store the catalog data for this specific publication format.
 	 */
-	function execute($request) {
+	function execute() {
 		parent::execute();
 
 		$monograph = $this->getMonograph();
@@ -319,4 +317,4 @@ class CatalogEntryFormatMetadataForm extends Form {
 
 }
 
-?>
+

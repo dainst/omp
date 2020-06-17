@@ -1,8 +1,8 @@
 {**
  * templates/frontend/pages/catalog.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Display the page to view the catalog.
@@ -18,6 +18,8 @@
 
 <div class="page page_catalog">
 	{include file="frontend/components/breadcrumbs.tpl" currentTitleKey="navigation.catalog"}
+	<h1>{translate key="navigation.catalog"}</h1>
+
 	<div class="monograph_count">
 		{translate key="catalog.browseTitles" numTitles=$total}
 	</div>
@@ -25,7 +27,7 @@
 	{* No published titles *}
 	{if !$publishedMonographs|@count}
 		<h2>
-			{translate key="catalog.allBooks"}
+			{translate key="catalog.category.heading"}
 		</h2>
 		<p>{translate key="catalog.noTitles"}</p>
 

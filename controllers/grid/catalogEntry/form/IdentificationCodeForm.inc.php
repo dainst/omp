@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/catalogEntry/form/IdentificationCodeForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class IdentificationCodeForm
@@ -93,10 +93,9 @@ class IdentificationCodeForm extends Form {
 	}
 
 	/**
-	 * Fetch the form.
-	 * @see Form::fetch()
+	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		$monograph = $this->getMonograph();
 		$templateMgr->assign('submissionId', $monograph->getId());
@@ -129,12 +128,12 @@ class IdentificationCodeForm extends Form {
 				}
 			}
 			$codes = $onixCodelistItemDao->getCodes('List5', $assignedCodes); // ONIX list for these
-			$templateMgr->assign_by_ref('identificationCodes', $codes);
+			$templateMgr->assign('identificationCodes', $codes);
 		} else {
 			fatalError('Format not in authorized monograph');
 		}
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -190,4 +189,4 @@ class IdentificationCodeForm extends Form {
 	}
 }
 
-?>
+

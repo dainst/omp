@@ -3,8 +3,8 @@
 /**
  * @file plugins/blocks/browse/BrowseBlockSettingsForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class BrowseBlockSettingsForm
@@ -40,7 +40,7 @@ class BrowseBlockSettingsForm extends Form {
 		$this->setPressId($pressId);
 		$this->setPlugin($plugin);
 
-		parent::__construct($plugin->getTemplatePath() . 'settingsForm.tpl');
+		parent::__construct($plugin->getTemplateResource('settingsForm.tpl'));
 
 		$this->addCheck(new FormValidatorPost($this));
 		$this->addCheck(new FormValidatorCSRF($this));
@@ -128,4 +128,4 @@ class BrowseBlockSettingsForm extends Form {
 	}
 }
 
-?>
+

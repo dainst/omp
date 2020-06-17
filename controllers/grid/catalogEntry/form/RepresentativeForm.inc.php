@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/catalogEntry/form/RepresentativeForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class RepresentativeForm
@@ -106,10 +106,9 @@ class RepresentativeForm extends Form {
 	}
 
 	/**
-	 * Fetch the form.
-	 * @see Form::fetch()
+	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 
 		$templateMgr = TemplateManager::getManager($request);
 
@@ -136,7 +135,7 @@ class RepresentativeForm extends Form {
 			$templateMgr->assign('representativeIdType', '06'); // pre-populate new forms with GLN as it is recommended
 		}
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -203,4 +202,4 @@ class RepresentativeForm extends Form {
 		return $representativeId;
 	}
 }
-?>
+

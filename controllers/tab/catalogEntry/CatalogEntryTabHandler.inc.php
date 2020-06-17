@@ -3,8 +3,8 @@
 /**
  * @file controllers/tab/catalogEntry/CatalogEntryTabHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CatalogEntryTabHandler
@@ -53,7 +53,7 @@ class CatalogEntryTabHandler extends PublicationEntryTabHandler {
 
 		$catalogEntryCatalogMetadataForm = new CatalogEntryCatalogMetadataForm($submission->getId(), $user->getId(), $stageId, array('displayedInContainer' => true));
 
-		$catalogEntryCatalogMetadataForm->initData($args, $request);
+		$catalogEntryCatalogMetadataForm->initData();
 		return new JSONMessage(true, $catalogEntryCatalogMetadataForm->fetch($request));
 	}
 
@@ -78,7 +78,7 @@ class CatalogEntryTabHandler extends PublicationEntryTabHandler {
 
 		import('controllers.tab.catalogEntry.form.CatalogEntryFormatMetadataForm');
 		$catalogEntryPublicationMetadataForm = new CatalogEntryFormatMetadataForm($submission->getId(), $representationId, $publicationFormat->getPhysicalFormat(), $publicationFormat->getRemoteURL(), $stageId, array('displayedInContainer' => true, 'tabPos' => $this->getTabPosition()));
-		$catalogEntryPublicationMetadataForm->initData($args, $request);
+		$catalogEntryPublicationMetadataForm->initData();
 		return new JSONMessage(true, $catalogEntryPublicationMetadataForm->fetch($request));
 	}
 
@@ -154,8 +154,8 @@ class CatalogEntryTabHandler extends PublicationEntryTabHandler {
 		$stageId = $this->getStageId();
 		$form = new PKPPublicIdentifiersForm($submission, $stageId, array('displayedInContainer' => true));
 		$form->readInputData();
-		if ($form->validate($request)) {
-			$form->execute($request);
+		if ($form->validate()) {
+			$form->execute();
 			$json = new JSONMessage();
 			if ($request->getUserVar('displayedInContainer')) {
 				$router = $request->getRouter();
@@ -234,4 +234,4 @@ class CatalogEntryTabHandler extends PublicationEntryTabHandler {
 	}
 }
 
-?>
+

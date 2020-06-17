@@ -1,8 +1,8 @@
 {**
  * templates/frontend/objects/monograph_full.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Display a full view of a monograph. Expected to be primary object on
@@ -144,7 +144,7 @@
 			{* DOI (requires plugin) *}
 			{foreach from=$pubIdPlugins item=pubIdPlugin}
 				{if $pubIdPlugin->getPubIdType() != 'doi'}
-					{php}continue;{/php}
+					{continue}
 				{/if}
 				{assign var=pubId value=$monograph->getStoredPubId($pubIdPlugin->getPubIdType())}
 				{if $pubId}
@@ -161,6 +161,23 @@
 					</div>
 				{/if}
 			{/foreach}
+
+			{* Keywords *}
+			{if !empty($keywords[$currentLocale])}
+			<div class="item keywords">
+				<span class="label">
+					{capture assign=translatedKeywords}{translate key="common.keywords"}{/capture}
+					{translate key="semicolon" label=$translatedKeywords}
+				</span>
+				<span class="value">
+				{foreach from=$keywords item=keyword}
+					{foreach name=keywords from=$keyword item=keywordItem}
+						{$keywordItem|escape}{if !$smarty.foreach.keywords.last}, {/if}
+					{/foreach}
+				{/foreach}
+				</span>
+			</div>
+			{/if}
 
 			{* Abstract *}
 			<div class="item abstract">
@@ -183,7 +200,7 @@
 							{assign var=chapterId value=$chapter->getId()}
 							<li>
 								<div class="title">
-									{$chapter->getLocalizedTitle()}
+									{$chapter->getLocalizedTitle()|escape}
 									{if $chapter->getLocalizedSubtitle() != ''}
 										<div class="subtitle">
 											{$chapter->getLocalizedSubtitle()|escape}
@@ -200,7 +217,7 @@
 								{* DOI (requires plugin) *}
 								{foreach from=$pubIdPlugins item=pubIdPlugin}
 									{if $pubIdPlugin->getPubIdType() != 'doi'}
-										{php}continue;{/php}
+										{continue}
 									{/if}
 									{assign var=pubId value=$chapter->getStoredPubId($pubIdPlugin->getPubIdType())}
 									{if $pubId}
@@ -467,13 +484,13 @@
 							{assign var=pubIdType value=$pubIdPlugin->getPubIdType()}
 							{if $publicationFormat->getStoredPubId($pubIdType)}
 								{assign var=hasPubId value=true}
-								{php}break;{/php}
+								{break}
 							{/if}
 						{/foreach}
 
 						{* Skip if we don't have any information to print about this pub format *}
 						{if !$identificationCodes && !$publicationDates && !$hasPubId && !$publicationFormat->getPhysicalFormat()}
-							{php}continue;{/php}
+							{continue}
 						{/if}
 
 						<div class="item publication_format">
