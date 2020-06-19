@@ -10,6 +10,8 @@ You will find detailed guides in [docs](docs) folder.
 
 ## Using Git development source
 
+Instead of cloning this repository for development, see: https://github.com/dainst/omp-docker. These are OMP's default instructions, the Docker setup should take care of these steps:
+
 Checkout submodules and copy default configuration :
 
     git submodule update --init --recursive
