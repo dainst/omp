@@ -19,8 +19,8 @@ Checkout submodules and copy default configuration :
 
 Install or update dependencies via Composer (https://getcomposer.org/):
 
-    composer --working-dir=lib/pkp update
-    composer --working-dir=plugins/paymethod/paypal update
+    composer install --working-dir=lib/pkp
+    composer install --working-dir=plugins/paymethod/paypal
 
 Install or update dependencies via [NPM](https://www.npmjs.com/):
 
