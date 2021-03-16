@@ -43,3 +43,6 @@
 [submodule "plugins/generic/cilantro"]
 	path = plugins/generic/cilantro
 	url = https://github.com/dainst/ojs-cilantro-plugin
+[submodule "plugins/generic/daiBookViewer"]
+	path = plugins/generic/daiBookViewer
+	url = https://github.com/dainst/dai-book-viewer-ojs-plugin.git
