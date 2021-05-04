@@ -44,7 +44,7 @@ session_lifetime = 30
 ; Enable support for running scheduled tasks
 ; Set this to On if you have set up the scheduled tasks script to
 ; execute periodically
-scheduled_tasks = Off
+scheduled_tasks = On
 
 ; Scheduled tasks will send email about processing
 ; only in case of errors. Set to off to receive
@@ -108,11 +108,11 @@ enable_cdn = On
 ; Set the following parameter to off if you want to work with the uncompiled
 ; (non-minified) JavaScript source for debugging or if you are working off a
 ; development branch without compiled JavaScript.
-enable_minified = On
+enable_minified = Off
 
 ; Provide a unique site ID and OAI base URL to PKP for statistics and security
 ; alert purposes only.
-enable_beacon = On
+enable_beacon = 1
 
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -126,10 +126,6 @@ host = 127.0.0.1
 username = omp
 password = omp
 name = omp
-; Set the non-standard port and/or socket, if used
-; port = 3306
-; unix_socket = /var/run/mysqld/mysqld.sock
-
 
 ; Enable persistent connections (recommended)
 persistent = Off
@@ -189,12 +185,15 @@ client_charset = utf-8
 ; Must be set to "Off" if not supported by the database server
 ; If enabled, must be the same character set as "client_charset"
 ; (although the actual name may differ slightly depending on the server)
-connection_charset = Off
+connection_charset = utf8
 
 ; Database storage character set
 ; Must be set to "Off" if not supported by the database server
-database_charset = Off
+database_charset = utf8
 
+; Enable character normalization to utf-8 (recommended)
+; If disabled, strings will be passed through in their native encoding
+charset_normalization = Off
 
 ;;;;;;;;;;;;;;;;;
 ; File Settings ;
@@ -205,7 +204,7 @@ database_charset = Off
 ; Complete path to directory to store uploaded files
 ; (This directory should not be directly web-accessible)
 ; Windows users should use forward slashes
-files_dir = /var/www/files
+files_dir = /media/omp_repository
 
 ; Path to the directory to store public uploaded files
 ; (This directory should be web-accessible and the specified path
@@ -214,7 +213,7 @@ files_dir = /var/www/files
 public_files_dir = public
 
 ; Permissions mask for created files and directories
-umask = 0022
+umask = 000
 
 ; The minimum percentage similarity between filenames that should be considered
 ; a possible revision
@@ -235,7 +234,7 @@ filename_revision_match = 70
 [security]
 
 ; Force SSL connections site-wide
-force_ssl = Off
+force_ssl = On
 
 ; Force SSL connections for login only
 force_login_ssl = Off
@@ -318,23 +317,6 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 ; The reply-to field will be set with the reply-to or from address.
 ; force_default_envelope_sender = Off
 
-; Force a DMARC compliant from header (RFC5322.From)
-; If any of your users have email addresses in domains not under your control
-; you may need to set this to be compliant with DMARC policies published by
-; those 3rd party domains.
-; Setting this will move the users address into the reply-to field and the
-; from field wil be rewritten with the default_envelope_sender.
-; To use this you must set force_default_enveloper_sender = On and
-; default_envelope_sender must be set to a valid address in a domain you own.
-; force_dmarc_compliant_from = Off
-
-; The display name to use with a DMARC compliant from header
-; By default the DMARC compliant from will have an empty name but this can
-; be changed by adding a text here.
-; You can use '%n' to insert the users name from the original from header
-; and '%s' to insert the localized sitename.
-; dmarc_compliant_from_displayname = '%n via %s'
-
 ; Amount of time required between attempts to send non-editorial emails
 ; in seconds. This can be used to help prevent email relaying via OMP.
 time_between_emails = 3600
@@ -397,7 +379,7 @@ result_cache_hours = 1
 oai = On
 
 ; OAI Repository identifier
-repository_id = omp.pkp.sfu.ca
+repository_id = "omp.publications.dainst.org"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -507,3 +489,8 @@ deprecation_warnings = Off
 
 ; Log web service request information for debugging
 log_web_service_info = Off
+
+[dainst]
+;viewerUrl = https://publications.dainst.org/dai-book-viewer-built/viewer.html
+; viewerUrl = http://195.37.232.186/DAIbookViewer/dbv/build/viewer.html
+;restrictAnnotationTypes=locations
