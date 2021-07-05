@@ -38,7 +38,7 @@
 				</p>
 			{/if}
 		{else} {* pub id preview *}
-			<p>{$pubIdPlugin->getPubId($pubObject)|escape}</p>
+			<p>10.34780/####-####</p>
 			{if $canBeAssigned}
 				<p class="pkp_help">{translate key="plugins.pubIds.doi.editor.canBeAssigned"}</p>
 				{assign var=templatePath value=$pubIdPlugin->getTemplateResource('doiAssignCheckBox.tpl')}

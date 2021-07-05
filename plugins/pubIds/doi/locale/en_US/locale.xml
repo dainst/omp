@@ -10,7 +10,7 @@
   *
   * DOI plugin localization strings
   -->
- 
+
 <locale name="en_US" full_name="U.S. English">
 	<message key="plugins.pubIds.doi.displayName">DOI</message>
 	<message key="plugins.pubIds.doi.description">This plugin enables the assignment of the Digital Object Identifiers to monographs, chapters, publication formats and files in OMP.</message>
@@ -42,11 +42,12 @@
 	<message key="plugins.pubIds.doi.manager.settings.doiSuffixDefault">Use default patterns.</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiSuffixDefault.description"><![CDATA[%p.%m for monographs<br />%p.%m.c%c for chapters<br />%p.%m.%f for publication formats<br />%p.%m.%f.%s for files.]]></message>
 	<message key="plugins.pubIds.doi.manager.settings.doiSuffixCustomIdentifier">Enter an individual DOI suffix for each published item. You'll find an additional DOI input field on each item's meta-data page.</message>
+	<message key="plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier">This option generates an 8-digit, randomly generated ID (consisting of numbers and letters).</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiSubmissionSuffixPatternRequired">Please enter the DOI suffix pattern for monographs.</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiChapterSuffixPatternRequired">Please enter the DOI suffix pattern for chapters.</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiRepresentationSuffixPatternRequired">Please enter the DOI suffix pattern for publication formats.</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiSubmissionFileSuffixPatternRequired">Please enter the DOI suffix pattern for files.</message>
-	
+
 	<message key="plugins.pubIds.doi.manager.settings.doiReassign">Reassign DOIs</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiReassign.description">If you change your DOI configuration, DOIs that have already been assigned will not be affected. Once the DOI configuration is saved, use this button to clear all existing DOIs so that the new settings will take effect with all existing objects.</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiReassign.confirm">Are you sure you wish to delete all existing DOIs?</message>
@@ -59,7 +60,7 @@
 	<message key="plugins.pubIds.doi.editor.doiObjectTypeSubmissionFile">file</message>
 	<message key="plugins.pubIds.doi.editor.customSuffixMissing">The DOI cannot be assigned because the custom suffix is missing.</message>
 	<message key="plugins.pubIds.doi.editor.patternNotResolved">The DOI cannot be assigned because it contains an unresolved pattern.</message>
-	<message key="plugins.pubIds.doi.editor.canBeAssigned">What you see is a preview of the DOI. Select the checkbox and save the form to assign the DOI.</message>
+	<message key="plugins.pubIds.doi.editor.canBeAssigned">Activate the checkbox and save the form in order to assign a DOI with a DOI prefix and a randomly generated DOI suffix (8 digits) to the object.</message>
 	<message key="plugins.pubIds.doi.editor.assigned">The DOI is assigned to this {$pubObjectType}.</message>
 	<message key="plugins.pubIds.doi.editor.doiSuffixCustomIdentifierNotUnique">The given DOI suffix is already in use for another published item. Please enter a unique DOI suffix for each item.</message>
 	<message key="plugins.pubIds.doi.editor.clearObjectsDoi">Clear DOI</message>

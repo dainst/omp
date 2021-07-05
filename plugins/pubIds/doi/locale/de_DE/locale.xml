@@ -10,7 +10,7 @@
   * locale information: https://pkp.sfu.ca/wiki/index.php?title=OMP:_German_(de_DE)
   * DOI plugin localization strings
   -->
- 
+
 <locale name="de_DE" full_name="Deutsch (Deutschland)">
 	<message key="plugins.pubIds.doi.displayName">DOI</message>
 	<message key="plugins.pubIds.doi.description">Dieses Plugin ermöglicht die Zuweisung eines Digital Object Identifiers (DOI) zu einem Publikationsformat in OMP.</message>
@@ -30,8 +30,11 @@
 	<message key="plugins.pubIds.doi.manager.settings.doiSuffix.description">Ein DOI-Suffix kann jegliche Form haben, darf aber nur ein einziges Mal in Verbindung mit dem DOi-Präfix vergeben werden, um einen eindeutige Gesamt-DOI zu erzeugen.</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiSuffixPattern.representations">für Publikationsformate</message>
 
+	<message key="plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier">Mit dieser Option wird eine 8-stellige, zufallsgenerierte ID (bestehend aus Zahlen und Buchstaben) generiert.</message>
+
 	<!-- metadata form -->
 	<message key="plugins.pubIds.doi.editor.doi">DOI</message>
+	<message key="plugins.pubIds.doi.editor.canBeAssigned">Aktivieren Sie die Checkbox und speichern Sie das Formular, um dem Objekt einen DOI mit DOI-Präfix und einem zufallsgeneriertem DOI-Suffix (8-stellig) zuzuweisen.</message>
 	<message key="plugins.pubIds.doi.editor.doiSuffixCustomIdentifierNotUnique">Der angegebene DOI-Suffix wird bereits für ein anderes veröffentlichtes Element benutzt. Bitte vergeben Sie einen eindeutigen DOI-Suffix für jedes Element.</message>
 
 	<!-- assignment form -->
