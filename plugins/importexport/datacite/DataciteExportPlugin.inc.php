@@ -195,7 +195,7 @@ class DataciteExportPlugin extends ImportExportPlugin {
 
 	function getDoiStatusFromDataCite($doi) {
 
-		$returnDoiURl= "https://api.datacite.org/dois/". $doi;
+		$returnDoiURl= "https://api.datacite.org/dois/" . $doi;
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $returnDoiURl);
@@ -206,7 +206,7 @@ class DataciteExportPlugin extends ImportExportPlugin {
 
 		if(isset($response_code) AND $response_code === 200) {
 
-			$dataCiteStatus = $response_data["data"]["attributes"]["status"];
+			$dataCiteStatus = $response_data["data"]["attributes"]["state"];
 		}
 		else {
 			$dataCiteStatus = "new";
