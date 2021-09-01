@@ -34,6 +34,7 @@
 
 	<!-- metadata form -->
 	<message key="plugins.pubIds.doi.editor.doi">DOI</message>
+	<message key="plugins.pubIds.doi.editor.assignDoi">DOI diesem Objekt zuweisen</message>
 	<message key="plugins.pubIds.doi.editor.canBeAssigned">Aktivieren Sie die Checkbox und speichern Sie das Formular, um dem Objekt einen DOI mit DOI-Präfix und einem zufallsgeneriertem DOI-Suffix (8-stellig) zuzuweisen.</message>
 	<message key="plugins.pubIds.doi.editor.doiSuffixCustomIdentifierNotUnique">Der angegebene DOI-Suffix wird bereits für ein anderes veröffentlichtes Element benutzt. Bitte vergeben Sie einen eindeutigen DOI-Suffix für jedes Element.</message>
 
