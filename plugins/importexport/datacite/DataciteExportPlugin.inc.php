@@ -195,7 +195,7 @@ class DataciteExportPlugin extends ImportExportPlugin {
 
 	function getDoiStatusFromDataCite($doi) {
 
-		$returnDoiURl= "https://api.datacite.org/dois/10.34780/". $doi;
+		$returnDoiURl= "https://api.datacite.org/dois/". $doi;
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $returnDoiURl);
