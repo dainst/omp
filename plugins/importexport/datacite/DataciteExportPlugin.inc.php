@@ -51,20 +51,17 @@ class DataciteExportPlugin extends ImportExportPlugin {
 				// create DataCite-XML;
 				$exports = $this->exportSubmissions((array)$request->getUserVar('selectedSubmissions'));
 
-				// import('classes.notification.NotificationManager');
-				// $this->createNotifications($request, $export);
+				import('classes.notification.NotificationManager');
+				$this->createNotifications($request, $exports);
 
 				// export DataCite-XML:
 				import('lib.pkp.classes.file.FileManager');
 				$fileManager = new FileManager();
 
-				// TO-DO: export multiple files, s. OJS-DataCite-Export-Plugin
 				foreach ($exports as $exportFileName) {
 					$fileManager->downloadByPath($exportFileName);
 					$fileManager->deleteByPath($exportFileName);
 				}
-
-				// $request->redirect(null, 'management', 'importexport', array('plugin', 'DataciteExportPlugin'));
 
 				break;
 
@@ -116,11 +113,9 @@ class DataciteExportPlugin extends ImportExportPlugin {
 	private function ListTemplateHandler($request, TemplateManager $templateMgr) {
 
 		$context = $request->getContext();
-		$press = $request->getPress();
 		$submissionService = ServicesContainer::instance()->get('submission');
 		$submissions = $submissionService->getSubmissions($context->getId());
 		$locale = AppLocale::getLocale();
-		$registry = $this->getRegistry($press);
 
 		$monographsList = [];
 		$chaptersList = [];
@@ -128,18 +123,18 @@ class DataciteExportPlugin extends ImportExportPlugin {
 		foreach ($submissions as $submission) {
 
 			$submissionId = $submission->getId();
+
 			$doi = ($submission->getData('pub-id::doi')) ? $submission->getData('pub-id::doi') : false;
 
 			if($doi !== FALSE) {
 
-				$dataCiteStatus = $this->getDoiStatusFromDataCite($doi);
+				// $dataCiteStatus = $this->getDoiStatusFromDataCite($doi);
 
 				$monographsList[] = array(
 					'id' => $submissionId,
 					'title' => $submission->getLocalizedTitle($locale),
 					'authors' => $submission->getAuthorString($locale),
-					'doi' => $doi,
-					'dataCiteStatus' => $dataCiteStatus
+					'doi' => $doi
 				);
 			};
 
@@ -159,7 +154,9 @@ class DataciteExportPlugin extends ImportExportPlugin {
 					$monographTitleOfChapter = $submission->getLocalizedTitle($locale);
 
 					$chaptersList[] = array(
-						'id' => $chapterId,
+						'id' => $submissionId . "#" . $chapterId,
+						'submissionId' => $submissionId,
+						'chapterId' => $chapterId,
 						'title' => $chapterTitle,
 						'authors' => $chapterAuthorNamesString,
 						'monographTitleOfChapter' => $monographTitleOfChapter,
@@ -188,7 +185,7 @@ class DataciteExportPlugin extends ImportExportPlugin {
 			$chapterAuthorNames[] = $givenName . " " . $familyName;
 		}
 
-		$chapterAuthorNamesString = (!empty($chapterAuthorNames)) ? implode(" - ", $chapterAuthorNames) : "[kein Eintrag]";
+		$chapterAuthorNamesString = (!empty($chapterAuthorNames)) ? implode(" - ", $chapterAuthorNames) : "[Kein Eintrag]";
 
 		return ($chapterAuthorNamesString);
 	}
@@ -241,49 +238,44 @@ class DataciteExportPlugin extends ImportExportPlugin {
 		import('lib.pkp.classes.file.FileManager');
 		$fileManager = new FileManager();
 		$submissionDao = Application::getSubmissionDAO();
+		$chapterDao = DAORegistry::getDAO('ChapterDAO');
 		$request = Application::getRequest();
 		$press = $request->getPress();
+		$deployment = new DataciteExportDeployment($request, $this);
+
 		$result = array();
 
-		foreach ($submissionIds as $submissionId) {
+		foreach ($submissionIds as $objectId) {
 
-			$deployment = new DataciteExportDeployment($request, $this);
-			$submission = $submissionDao->getById($submissionId, $request->getContext()->getId());
+			$ids = explode("#", $objectId);
+			$submissionType = (count($ids) == 1) ? "Monograph" : "Chapter";
+			$submissionId = $ids[0]; // monograph
 
-			if ($submission->getData('pub-id::doi')) {
+			// define object to export:
+			if ($submissionType == "Monograph") {
+				$object = $submissionDao->getById($submissionId);
+				$isSubmission = true;
+				$parent = null;
+			}
+			else {
+				$chapterId = $ids[1];
+				$object = $chapterDao->getChapter($chapterId, $submissionId);
+				$isSubmission = false;
+				$parent = $submissionDao->getById($submissionId);
+			};
+
+			// create export XML
+			if($object->getData('pub-id::doi')) {
 
 				$DOMDocument = new DOMDocument('1.0', 'utf-8');
 				$DOMDocument->formatOutput = true;
-				$DOMDocument = $deployment->createNodes($DOMDocument, $submission, null, true);
+				$DOMDocument = $deployment->createNodes($DOMDocument, $object, $parent, $isSubmission);
 				$exportXml = $DOMDocument->saveXML();
-				$exportFileName = $this->getExportFileName($this->getExportPath(), 'datacite-' . $submissionId, $press, '.xml');
+				$objectFilenamePart = $submissionType . "-" . $objectId;
+				$exportFileName = $this->getExportFileName($this->getExportPath(), $objectFilenamePart, $press, '.xml');
 				$xmlWritten = $fileManager->writeFile($exportFileName, $exportXml);
-
 				$result[$submissionId] = ($xmlWritten !== false) ? $exportFileName : "XML konnte nicht erstellt werden";
 			}
-
-			/*
-
-			$chapterDao = DAORegistry::getDAO('ChapterDAO');
-			$chaptersList = $chapterDao->getChapters($submissionId);
-			$chapters = $chaptersList->toAssociativeArray();
-
-			foreach ($chapters as $chapter) {
-				if ($chapter->getData('pub-id::doi')) {
-					$DOMDocumentChapter = new DOMDocument('1.0', 'utf-8');
-					$DOMDocumentChapter->formatOutput = true;
-					$DOMDocumentChapter = $deployment->createNodes($DOMDocumentChapter, $chapter, $submission, false);
-					$exportFileName = $this->getExportFileName($this->getExportPath(), 'datacite-' . $submissionId . 'c' . $chapter->getId(), $press, '.xml');
-					$exportXml = $DOMDocumentChapter->saveXML();
-					$fileManager->writeFile($exportFileName, $exportXml);
-
-					// deposit
-					$response = $this->depositXML($chapter, $exportFileName, false);
-					$result[$submissionId . ".c" . $chapter->getId()] = ($response != "") ? implode($chapter->getTitle()) . " : " . $response : '';
-					$fileManager->deleteByPath($exportFileName);
-				}
-			}
-			*/
 		}
 
 		return $result;

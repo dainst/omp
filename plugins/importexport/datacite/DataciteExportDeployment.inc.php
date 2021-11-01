@@ -36,6 +36,7 @@ define('DATACITE_ORCID_SCHEME_URI', 'https://orcid.org');
 // Title types
 define('DATACITE_TITLETYPE_TRANSLATED', 'TranslatedTitle');
 define('DATACITE_TITLETYPE_ALTERNATIVE', 'AlternativeTitle');
+define('DATACITE_TITLETYPE_SUBTITLE', 'Subtitle');
 
 // Date types
 define('DATACITE_DATE_AVAILABLE', 'Available');
@@ -191,10 +192,11 @@ class DataciteExportDeployment extends PKPImportExportDeployment {
 		$documentNode = $this->createTitles($documentNode, $object, $parent, $isSubmission);
 		$documentNode = $this->createResourceType($documentNode, $isSubmission);
 		$documentNode = $this->createPublicationYear($documentNode, $object, $parent, $isSubmission);
-		$documentNode = $this->createSubmissionLanguage($documentNode, $object);
+		$documentNode = $this->createSubmissionLanguage($documentNode, $object, $parent, $isSubmission);
 		$documentNode = $this->createPublisher($documentNode);
-		$documentNode = $this->createDescriptions($documentNode, $object);
+		$documentNode = $this->createDescriptions($documentNode, $object, $parent, $isSubmission);
 		$documentNode = $this->createSubjects($documentNode, $object);
+		$documentNode = $this->createRelatedIdentifiers($documentNode, $object, $parent, $isSubmission);
 
 		return $documentNode;
 	}
@@ -218,18 +220,13 @@ class DataciteExportDeployment extends PKPImportExportDeployment {
 	function createResourceIdentifier($documentNode, $object) {
 
 		$request = Application::getRequest();
-		$press = $request->getPress();
 		$pubId = $object->getData('pub-id::doi');
 
 		if (isset($pubId)) {
-			if ($this->getPlugin()->isTestMode($press)) {
-				$pubId = preg_replace('/^[\d]+(.)[\d]+/', $this->getPlugin()->getSetting($press->getId(), "testPrefix"), $pubId);
-			}
+			$identifier = $documentNode->createElement("identifier", $pubId);
+			$identifier->setAttribute("identifierType", "DOI");
+			$documentNode->documentElement->appendChild($identifier);
 		}
-
-		$identifier = $documentNode->createElement("identifier", $pubId);
-		$identifier->setAttribute("identifierType", "DOI");
-		$documentNode->documentElement->appendChild($identifier);
 
 		return $documentNode;
 	}
@@ -237,11 +234,13 @@ class DataciteExportDeployment extends PKPImportExportDeployment {
 	// Creators (mandatory):
 	function createAuthors($documentNode, $object, $parent, $isSubmission) {
 
-		$locale = ($isSubmission == true) ? $object->getData('locale') : $parent->getData('locale');
 		$creators = $documentNode->createElement("creators");
-		$authors = $object->getAuthors();
 
-		if ($isSubmission == true) {
+		// Monograph
+		if($isSubmission == true) {
+			$locale = $object->getData('locale');
+			$authors = $object->getAuthors();
+
 			foreach ($authors as $author) {
 				$creator = $this->createAuthor($documentNode, $author, $locale);
 
@@ -249,18 +248,37 @@ class DataciteExportDeployment extends PKPImportExportDeployment {
 					$creators->appendChild($creator);
 					$documentNode->documentElement->appendChild($creators);
 				}
-			}
-		} else {
-			$chapterAuthorDao = DAORegistry::getDAO('ChapterAuthorDAO');
-			$chapterAuthors = $chapterAuthorDao->getAuthors($object->getMonographId(), $object->getId());
-			while ($author = $chapterAuthors->next()) {
-				$creator = $this->createAuthor($documentNode, $author, $locale);
-				if ($creator) {
-					$creators->appendChild($creator);
-					$documentNode->documentElement->appendChild($creators);
-				}
-			}
+			};
 		}
+		// Chapter
+		else {
+			$locale = $parent->getData('locale');
+			$submissionId = $parent->getId();
+			$parentAuthors = $parent->getAuthors();
+			$chapterId = $object->getId();
+			$chapterAuthorDAO = DAORegistry::getDAO('ChapterAuthorDAO');
+			$chapterAuthors = $chapterAuthorDAO->getAuthors($submissionId, $chapterId);
+
+			while ($chapterAuthor = $chapterAuthors->next()) {
+
+				$chapterAuthorId = $chapterAuthor->getId();
+
+				foreach ($parentAuthors as $parentAuthor) {
+					$parentAuthorId = $parentAuthor->getId();
+					$creator = false;
+
+					// map chapterAuthor to parentAuthor:
+					if ($chapterAuthorId == $parentAuthorId) {
+						$creator = $this->createAuthor($documentNode, $parentAuthor, $locale);
+					}
+
+					if($creator) {
+						$creators->appendChild($creator);
+						$documentNode->documentElement->appendChild($creators);
+					}
+				};
+			};
+		};
 
 		return $documentNode;
 	}
@@ -299,6 +317,7 @@ class DataciteExportDeployment extends PKPImportExportDeployment {
 	// Titles (mandatory):
 	function createTitles($documentNode, $object, $parent, $isSubmission) {
 
+		// title
 		$locale = ($isSubmission == true) ? $object->getData('locale') : $parent->getData('locale');
 		$localizedTitle = $object->getLocalizedTitle($locale);
 		$titles = $documentNode->createElement("titles");
@@ -307,31 +326,19 @@ class DataciteExportDeployment extends PKPImportExportDeployment {
 		$title->setAttribute("xml:lang", str_replace_first("_", "-", $locale));
 		$titles->appendChild($title);
 
-		$documentNode->documentElement->appendChild($titles);
-
-		return $documentNode;
-	}
-
-	function createOtherTitles($documentNode, $object, $parent, $isSubmission) {
-
-		$locale = ($isSubmission == true) ? $object->getData('locale') : $parent->getData('locale');
+		// subtitle
 		$localizedSubtitle = $object->getLocalizedSubtitle($locale);
 
 		if (strlen($localizedSubtitle) > 0) {
-			$otherTitles = $documentNode->createElement("otherTitles");
 
-			$otherTitle = $documentNode->createElement("otherTitle");
-			$language = $documentNode->createElement("language", substr($locale, 0, 2));
-			$titleName = $documentNode->createElement("titleName", $this->xmlEscape($localizedSubtitle));
-			$titleType = $documentNode->createElement("titleType", "Subtitle");
-
-			$otherTitle->appendChild($language);
-			$otherTitle->appendChild($titleName);
-			$otherTitle->appendChild($titleType);
-			$otherTitles->appendChild($otherTitle);
-
-			$documentNode->documentElement->appendChild($otherTitles);
+			$subTitleValue = $this->xmlEscape($localizedSubtitle);
+			$subtitle = $documentNode->createElement("title", $subTitleValue);
+			$subtitle->setAttribute("xml:lang", str_replace_first("_", "-", $locale));
+			$subtitle->setAttribute("titleType", DATACITE_TITLETYPE_SUBTITLE);
+			$titles->appendChild($subtitle);
 		}
+
+		$documentNode->documentElement->appendChild($titles);
 
 		return $documentNode;
 	}
@@ -365,9 +372,11 @@ class DataciteExportDeployment extends PKPImportExportDeployment {
 	}
 
 	// Language:
-	function createSubmissionLanguage($documentNode, $object) {
+	function createSubmissionLanguage($documentNode, $object, $parent, $isSubmission) {
 
-		$language = $object->getData('locale'); // is language of submission (text)
+		// get language of submission (text)
+		/** @var $language undefined for Chapters in OMP */
+		$language = ($isSubmission) ? $object->getData('locale') : "";
 		$submissionLanguage = (!$language == "") ? $language : false;
 
 		if($submissionLanguage !== FALSE) {
@@ -390,89 +399,106 @@ class DataciteExportDeployment extends PKPImportExportDeployment {
 		return $documentNode;
 	}
 
-	// Alternate Identifiers:
-	function createRelationsOfParent($documentNode, $parent) {
+	// Related Identifiers:
+	function createRelatedIdentifiers($documentNode, $object, $parent, $isSubmission) {
 
-		$relations = $documentNode->createElement("relations");
-		$pubId = $parent->getStoredPubId('doi');
+		$relatedIdentifiers = $documentNode->createElement("relatedIdentifiers");
+		$type = ($isSubmission == true) ? 'Monograph' : 'Chapter';
+		$zenonId = $object->getStoredPubId('other::zenon');
 
-		if (isset($pubId)) {
-
-			$relation = $documentNode->createElement("relation");
-			$identifier = $documentNode->createElement("identifier", $pubId);
-			$identifierType = $documentNode->createElement("identifierType", "DOI");
-			$relationType = $documentNode->createElement("relationType", "IsPartOf");
-			$resourceType = $documentNode->createElement("resourceType", "Text");
-			$relation->appendChild($identifier);
-			$relation->appendChild($identifierType);
-			$relation->appendChild($relationType);
-			$relation->appendChild($resourceType);
-			$relations->appendChild($relation);
-
-			$documentNode->documentElement->appendChild($relations);
-
-			return $documentNode;
+		// add zenonId as url
+		if (!empty($zenonId )) {
+			$zenonUrl = "https://zenon.dainst.org/Record/" . $zenonId;
+			$relatedIdentifier = $documentNode->createElement("relatedIdentifier", $zenonUrl);
+			$relatedIdentifier->setAttribute('relatedIdentifierType', DATACITE_IDTYPE_URL);
+			$relatedIdentifier->setAttribute('relationType', DATACITE_RELTYPE_HASMETADATA);
+			$relatedIdentifiers->appendChild($relatedIdentifier);
 		}
-	}
 
-	//  Related Identifiers:
-	function createRelationsOfChildren($documentNode, $object) {
+		// add relations between monograph and chapter:
+		switch($type) {
 
-		$relationCount = 0;
-		$chapterDao = DAORegistry::getDAO('ChapterDAO');
-		$chaptersList = $chapterDao->getChapters($object->getId());
-		$chapters = $chaptersList->toAssociativeArray();
+			case "Monograph":
 
-		$relations = $documentNode->createElement("relations");
+				$chapterDao = DAORegistry::getDAO('ChapterDAO');
+				$chaptersList = $chapterDao->getChapters($object->getId());
+				$chapters = $chaptersList->toAssociativeArray();
 
-		foreach ($chapters as $chapter) {
+				foreach ($chapters as $chapter) {
 
-			$pubId = $chapter->getStoredPubId('doi');
-			if (isset($pubId)) {
+					$chapterDoi = $chapter->getStoredPubId('doi');
 
-				$relation = $documentNode->createElement("relation");
-				$identifier = $documentNode->createElement("identifier", $pubId);
-				$identifierType = $documentNode->createElement("identifierType", "DOI");
-				$relationType = $documentNode->createElement("relationType", "HasPart");
-				$resourceType = $documentNode->createElement("resourceType", "Text");
-				$relation->appendChild($identifier);
-				$relation->appendChild($identifierType);
-				$relation->appendChild($relationType);
-				$relation->appendChild($resourceType);
-				$relations->appendChild($relation);
+					if(isset($chapterDoi) AND $chapterDoi !== FALSE) {
+						$relatedIdentifier = $documentNode->createElement("relatedIdentifier", $chapterDoi);
+						$relatedIdentifier->setAttribute("relatedIdentifierType", DATACITE_IDTYPE_DOI);
+						$relatedIdentifier->setAttribute("relationType", DATACITE_RELTYPE_ISPARTOF);
+						$relatedIdentifiers->appendChild($relatedIdentifier);
+					};
+				};
 
-				$relationCount += 1;
+				break;
 
-			}
+			case "Chapter":
+				$parentDOI = $parent->getStoredPubId('doi');
+
+				if(isset($parentDOI) AND $parentDOI !== FALSE) {
+					$relatedIdentifier = $documentNode->createElement("relatedIdentifier", $parentDOI);
+					$relatedIdentifier->setAttribute("relatedIdentifierType", DATACITE_IDTYPE_DOI);
+					$relatedIdentifier->setAttribute("relationType", DATACITE_RELTYPE_ISPARTOF);
+					$relatedIdentifiers->appendChild($relatedIdentifier);
+				};
+
+				break;
 		}
-		if ($relationCount > 0) {
-			$documentNode->documentElement->appendChild($relations);
-		}
+
+		$documentNode->documentElement->appendChild($relatedIdentifiers);
 
 		return $documentNode;
+
 	}
 
 	//  Descriptions:
-	function createDescriptions($documentNode, $object) {
-
-		// get series information for monograph (= "Reihe"):
-		$seriesId = $object->getSeriesId();
-		$seriesDao = DAORegistry::getDAO('SeriesDAO');
-		$series = $seriesDao->getById($seriesId);
-		$seriesTitle = ($series != null) ? $series->getLocalizedTitle() : false;
-		$seriesPosition = $object->getSeriesPosition();
-		$seriesInformation = ($seriesTitle !== false) ? $seriesTitle . ", " . $seriesPosition : false;
-
-		// get abstract:
-		$abstracts = $object->getAbstract(null);
+	function createDescriptions($documentNode, $object, $parent, $isSubmission) {
 
 		// create description node:
 		$descriptions = $documentNode->createElement("descriptions");
 		$documentNode->documentElement->appendChild($descriptions);
 
+		// get series information (= "Reihe") for monograph:
+		if($isSubmission) {
+			$seriesId = $object->getSeriesId();
+			$seriesDao = DAORegistry::getDAO('SeriesDAO');
+			$series = $seriesDao->getById($seriesId);
+			$seriesTitle = ($series != null) ? $series->getLocalizedTitle() : false;
+			$seriesPosition = $object->getSeriesPosition();
+			$seriesInformation = ($seriesTitle !== false) ? $seriesTitle . ", " . $seriesPosition : false;
+		}
+		// get container information (Monograph) of chapter:
+		else {
+			$parentDoi = $parent->getStoredPubId('doi');
+			$parentLocalizedTitle = $parent->getLocalizedTitle($parent->getData('locale'));
+			$relatedItems = $documentNode->createElement("relatedItems");
+			$relatedItem = $documentNode->createElement("relatedItem");
+			$relatedItem->setAttribute("relatedItemType", "ConferenceProceeding");
+			$relatedItem->setAttribute("relationType", "IsPublishedIn");
+			$relatedItemIdentifier = $documentNode->createElement("relatedItemIdentifier", $parentDoi);
+			$relatedItemIdentifier->setAttribute("relatedItemIdentifierType", "DOI");
+			$relatedItem->appendChild($relatedItemIdentifier);
+			$titles = $documentNode->createElement("titles");
+			$title = $documentNode->createElement("title", $parentLocalizedTitle);
+			$titles->appendChild($title);
+			$relatedItem->appendChild($titles);
+			$relatedItems->appendChild($relatedItem);
+			$descriptions->appendChild($relatedItems);
+			$seriesInformation = false;
+		}
+
+		// get abstract:
+		$abstracts = $object->getAbstract(null);
+
 		if($seriesInformation !== FALSE) {
 			$description_seriesInformation = $documentNode->createElement("description", strip_tags(trim($seriesInformation)));
-			$description_seriesInformation->setAttribute('descriptionType', 'seriesInformation');
+			$description_seriesInformation->setAttribute('descriptionType', DATACITE_DESCTYPE_SERIESINFO);
 			$descriptions->appendChild($description_seriesInformation);
 		};
 
@@ -482,7 +508,7 @@ class DataciteExportDeployment extends PKPImportExportDeployment {
 
 				if (!$abstract == "") {
 					$description_abstract = $documentNode->createElement("description", strip_tags(trim($abstract)));
-					$description_abstract->setAttribute('xml:lang', $locale_key);
+					$description_abstract->setAttribute('xml:lang', str_replace_first("_", "-", $locale_key));
 					$description_abstract->setAttribute('descriptionType', 'Abstract');
 					$descriptions->appendChild($description_abstract);
 				}
@@ -526,7 +552,6 @@ class DataciteExportDeployment extends PKPImportExportDeployment {
 		}
 
 		return $documentNode;
-
 	}
 
 	// Not supported here?
