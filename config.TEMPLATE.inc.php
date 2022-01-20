@@ -29,7 +29,7 @@
 installed = Off
 
 ; The canonical URL to the OMP installation (excluding the trailing slash)
-base_url = "https://publications.dainst.org/books"
+base_url = base_url
 
 ; Session cookie name
 session_cookie_name = OMPSID
@@ -122,10 +122,10 @@ enable_beacon = 1
 [database]
 
 driver = mysqli
-host = 127.0.0.1
-username = omp
-password = omp
-name = omp
+host = db_host
+username = db_user_name
+password = db_user_pw
+name = db_name
 
 ; Enable persistent connections (recommended)
 persistent = Off
@@ -234,7 +234,7 @@ filename_revision_match = 70
 [security]
 
 ; Force SSL connections site-wide
-force_ssl = On
+force_ssl = Off
 
 ; Force SSL connections for login only
 force_login_ssl = Off
