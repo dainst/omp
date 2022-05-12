@@ -295,13 +295,12 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 ; Use SMTP for sending mail instead of mail()
 ; smtp = On
 
-; SMTP server settings
-; smtp_server = mail.example.com
-; smtp_port = 25
+smtp_server = mail.dainst.org
+smtp_port = 587
 
 ; Enable SMTP authentication
 ; Supported mechanisms: ssl, tls
-; smtp_auth = ssl
+smtp_auth = tls
 ; smtp_username = username
 ; smtp_password = password
 
