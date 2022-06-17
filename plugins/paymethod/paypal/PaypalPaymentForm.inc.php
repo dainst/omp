@@ -3,9 +3,9 @@
 /**
  * @file PaypalPaymentForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PaypalPaymentForm
  *
@@ -37,13 +37,13 @@ class PaypalPaymentForm extends Form {
 	 */
 	function display($request = null, $template = null) {
 		try {
-			$press = $request->getPress();
-			$paymentManager = Application::getPaymentManager($press);
+			$context = $request->getContext();
+			$paymentManager = Application::getPaymentManager($context);
 			$gateway = Omnipay\Omnipay::create('PayPal_Rest');
 			$gateway->initialize(array(
-				'clientId' => $this->_paypalPaymentPlugin->getSetting($press->getId(), 'clientId'),
-				'secret' => $this->_paypalPaymentPlugin->getSetting($press->getId(), 'secret'),
-				'testMode' => $this->_paypalPaymentPlugin->getSetting($press->getId(), 'testMode'),
+				'clientId' => $this->_paypalPaymentPlugin->getSetting($context->getId(), 'clientId'),
+				'secret' => $this->_paypalPaymentPlugin->getSetting($context->getId(), 'secret'),
+				'testMode' => $this->_paypalPaymentPlugin->getSetting($context->getId(), 'testMode'),
 			));
 			$transaction = $gateway->purchase(array(
 				'amount' => number_format($this->_queuedPayment->getAmount(), 2),

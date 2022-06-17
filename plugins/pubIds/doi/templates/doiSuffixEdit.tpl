@@ -1,9 +1,9 @@
 {**
  * @file plugins/pubIds/doi/templates/doiSuffixEdit.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Edit custom DOI suffix for an object (submission, representation, file)
  *}
@@ -11,7 +11,6 @@
 {assign var=pubObjectType value=$pubIdPlugin->getPubObjectType($pubObject)}
 {assign var=enableObjectDoi value=$pubIdPlugin->getSetting($currentContext->getId(), "enable`$pubObjectType`Doi")}
 {if $enableObjectDoi}
-	<p></p>
 	{assign var=storedPubId value=$pubObject->getStoredPubId($pubIdPlugin->getPubIdType())}
 	{fbvFormArea id="pubIdDOIFormArea" class="border" title="plugins.pubIds.doi.editor.doi"}
 		{assign var=formArea value=true}
@@ -39,7 +38,7 @@
 				</p>
 			{/if}
 		{else} {* pub id preview *}
-			<p>10.34780/####-####</p>
+			<p>{$pubIdPlugin->getPubId($pubObject)|escape}</p>
 			{if $canBeAssigned}
 				<p class="pkp_help">{translate key="plugins.pubIds.doi.editor.canBeAssigned"}</p>
 				{assign var=templatePath value=$pubIdPlugin->getTemplateResource('doiAssignCheckBox.tpl')}

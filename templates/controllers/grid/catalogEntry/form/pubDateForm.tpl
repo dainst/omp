@@ -1,9 +1,9 @@
 {**
  * templates/controllers/grid/catalogEntry/form/pubDateForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Publication Date form.
  *}
@@ -18,6 +18,7 @@
 <form class="pkp_form" id="addPubDateForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT component="grid.catalogEntry.PublicationDateGridHandler" op="updateDate"}">
 	{csrf}
 	<input type="hidden" name="submissionId" value="{$submissionId|escape}" />
+	<input type="hidden" name="publicationId" value="{$publicationId|escape}" />
 	<input type="hidden" name="representationId" value="{$representationId|escape}" />
 	<input type="hidden" name="publicationDateId" value="{$publicationDateId|escape}" />
 	{fbvFormArea id="addDate"}

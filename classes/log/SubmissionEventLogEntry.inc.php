@@ -3,9 +3,9 @@
 /**
  * @file classes/log/SubmissionEventLogEntry.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionEventLogEntry
  * @ingroup log
@@ -30,12 +30,5 @@ define('SUBMISSION_LOG_PUBLICATION_FORMAT_AVAILABLE',	0x10000014);
 define('SUBMISSION_LOG_PUBLICATION_FORMAT_UNAVAILABLE',	0x10000015);
 
 class SubmissionEventLogEntry extends PKPSubmissionEventLogEntry {
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 }
-
 

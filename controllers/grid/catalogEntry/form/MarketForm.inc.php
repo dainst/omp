@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/catalogEntry/form/MarketForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class MarketForm
  * @ingroup controllers_grid_catalogEntry_form
@@ -16,8 +16,8 @@
 import('lib.pkp.classes.form.Form');
 
 class MarketForm extends Form {
-	/** The monograph associated with the format being edited **/
-	var $_monograph;
+	/** The submission associated with the format being edited **/
+	var $_submission;
 
 	/** Market the entry being edited **/
 	var $_market;
@@ -25,9 +25,10 @@ class MarketForm extends Form {
 	/**
 	 * Constructor.
 	 */
-	function __construct($monograph, $market) {
+	public function __construct($submission, $publication, $market) {
 		parent::__construct('controllers/grid/catalogEntry/form/marketForm.tpl');
-		$this->setMonograph($monograph);
+		$this->setSubmission($submission);
+		$this->setPublication($publication);
 		$this->setMarket($market);
 
 		// Validation checks for this form
@@ -45,7 +46,7 @@ class MarketForm extends Form {
 	 * Get the entry
 	 * @return Market
 	 */
-	function getMarket() {
+	public function getMarket() {
 		return $this->_market;
 	}
 
@@ -53,24 +54,40 @@ class MarketForm extends Form {
 	 * Set the entry
 	 * @param @market Market
 	 */
-	function setMarket($market) {
+	public function setMarket($market) {
 		$this->_market = $market;
 	}
 
 	/**
-	 * Get the Monograph
-	 * @return Monograph
+	 * Get the Submission
+	 * @return Submission
 	 */
-	function getMonograph() {
-		return $this->_monograph;
+	public function getSubmission() {
+		return $this->_submission;
 	}
 
 	/**
-	 * Set the Monograph
-	 * @param Monograph
+	 * Set the Submission
+	 * @param Submission
 	 */
-	function setMonograph($monograph) {
-		$this->_monograph = $monograph;
+	public function setSubmission($submission) {
+		$this->_submission = $submission;
+	}
+
+	/**
+	 * Get the Publication
+	 * @return Publication
+	 */
+	public function getPublication() {
+		return $this->_publication;
+	}
+
+	/**
+	 * Set the Publication
+	 * @param Publication
+	 */
+	public function setPublication($publication) {
+		$this->_publication = $publication;
 	}
 
 
@@ -80,7 +97,7 @@ class MarketForm extends Form {
 	/**
 	 * Initialize form data from the market entry.
 	 */
-	function initData() {
+	public function initData() {
 		$market = $this->getMarket();
 
 		if ($market) {
@@ -103,12 +120,13 @@ class MarketForm extends Form {
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request, $template = null, $display = false) {
+	public function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
-		$monograph = $this->getMonograph();
-		$templateMgr->assign('submissionId', $monograph->getId());
+		$submission = $this->getSubmission();
+		$templateMgr->assign('submissionId', $submission->getId());
+		$templateMgr->assign('publicationId', $this->getPublication()->getId());
 		$market = $this->getMarket();
-		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
+		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO'); /* @var $onixCodelistItemDao ONIXCodelistItemDAO */
 		$templateMgr->assign(array(
 			'countryCodes' => $onixCodelistItemDao->getCodes('List91'), // countries (CA, US, GB, etc)
 			'regionCodes' => $onixCodelistItemDao->getCodes('List49'), // regions (British Columbia, England, etc)
@@ -121,16 +139,14 @@ class MarketForm extends Form {
 			'taxTypeCodes' => $onixCodelistItemDao->getCodes('List171'), // VAT, GST
 		));
 
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		$publishedMonograph = $publishedMonographDao->getById($monograph->getId());
-		$availableAgents = $publishedMonograph->getAgents();
+		$availableAgents = DAORegistry::getDAO('RepresentativeDAO')->getAgentsByMonographId($submission->getId());
 		$agentOptions = array();
 		while ($agent = $availableAgents->next()) {
 			$agentOptions[$agent->getId()] = $agent->getName();
 		}
 		$templateMgr->assign('availableAgents', $agentOptions);
 
-		$availableSuppliers = $publishedMonograph->getSuppliers();
+		$availableSuppliers = DAORegistry::getDAO('RepresentativeDAO')->getSuppliersByMonographId($submission->getId());
 		$supplierOptions = array();
 		while ($supplier = $availableSuppliers->next()) {
 			$supplierOptions[$supplier->getId()] = $supplier->getName();
@@ -156,7 +172,7 @@ class MarketForm extends Form {
 				'agentId' => $market->getAgentId(),
 				'supplierId' => $market->getSupplierId(),
 			));
-		
+
 			$representationId = $market->getPublicationFormatId();
 		} else { // loading a blank form
 			$representationId = (int) $request->getUserVar('representationId');
@@ -167,13 +183,13 @@ class MarketForm extends Form {
 			));
 		}
 
-		$publicationFormatDao = DAORegistry::getDAO('PublicationFormatDAO');
-		$publicationFormat = $publicationFormatDao->getById($representationId, $monograph->getId());
+		$publicationFormatDao = DAORegistry::getDAO('PublicationFormatDAO'); /* @var $publicationFormatDao PublicationFormatDAO */
+		$publicationFormat = $publicationFormatDao->getById($representationId, $this->getPublication()->getId());
 
-		if ($publicationFormat) { // the format exists for this monograph
+		if ($publicationFormat) { // the format exists for this submission
 			$templateMgr->assign('representationId', $representationId);
 		} else {
-			fatalError('Format not in authorized monograph');
+			fatalError('Format not in authorized submission');
 		}
 
 		return parent::fetch($request, $template, $display);
@@ -183,7 +199,7 @@ class MarketForm extends Form {
 	 * Assign form data to user-submitted data.
 	 * @see Form::readInputData()
 	 */
-	function readInputData() {
+	public function readInputData() {
 		$this->readUserVars(array(
 			'marketId',
 			'representationId',
@@ -206,29 +222,29 @@ class MarketForm extends Form {
 	}
 
 	/**
-	 * Save the entry
-	 * @see Form::execute()
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
-		$marketDao = DAORegistry::getDAO('MarketDAO');
-		$publicationFormatDao = DAORegistry::getDAO('PublicationFormatDAO');
+	public function execute(...$functionArgs) {
+		parent::execute(...$functionArgs);
+		$marketDao = DAORegistry::getDAO('MarketDAO'); /* @var $marketDao MarketDAO */
+		$publicationFormatDao = DAORegistry::getDAO('PublicationFormatDAO'); /* @var $publicationFormatDao PublicationFormatDAO */
 
-		$monograph = $this->getMonograph();
+		$submission = $this->getSubmission();
 		$market = $this->getMarket();
-		$publicationFormat = $publicationFormatDao->getById($this->getData('representationId'), $monograph->getId());
+		$publicationFormat = $publicationFormatDao->getById($this->getData('representationId'), $this->getPublication()->getId());
 
 		if (!$market) {
-			// this is a new assigned format to this published monograph
+			// this is a new assigned format to this published submission
 			$market = $marketDao->newDataObject();
 			$existingFormat = false;
-			if ($publicationFormat != null) { // ensure this assigned format is in this monograph
+			if ($publicationFormat != null) { // ensure this assigned format is in this submission
 				$market->setPublicationFormatId($publicationFormat->getId());
 			} else {
-				fatalError('This assigned format not in authorized monograph context!');
+				fatalError('This assigned format not in authorized submission context!');
 			}
 		} else {
 			$existingFormat = true;
-			if ($publicationFormat->getId() !== $market->getPublicationFormatId()) fatalError('Invalid format!');
+			if ($publicationFormat->getId() != $market->getPublicationFormatId()) throw new Exception('Invalid format!');
 		}
 
 		$market->setCountriesIncluded($this->getData('countriesIncluded') ? $this->getData('countriesIncluded') : array());

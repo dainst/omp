@@ -24,7 +24,7 @@ if [ \( -n "$libModuleHash" \) -a \( "$strLength" -eq 40 \) ]; then
 	echo "4 - Trying to get user and branch from commit message:"
 	userAndBranch=$(git log --pretty=oneline -1 "$commitHash" | grep -o "##.*##" | sed "s:^##\(.*\)##$:\1:")
 	gitUser=$(echo "$userAndBranch" | cut -f1 -d"/")
-	branch=$(echo "$userAndBranch" | cut -f2 -d"/")
+	branch=$(echo "$userAndBranch" | cut -f2- -d"/")
 	echo "    User and branch: $userAndBranch - User: $gitUser - Branch: $branch"
 	if [ \( -n "$gitUser" \) -a \( -n "$branch" \) ]; then
 		echo "    Found user and branch in commit message."
@@ -34,7 +34,7 @@ if [ \( -n "$libModuleHash" \) -a \( "$strLength" -eq 40 \) ]; then
 		git submodule update --init --recursive
 		cd lib/pkp
 		echo "7 - Updating pkp-lib with code from $gitUser repository, $branch branch."
-		git remote add "$gitUser" git://github.com/"$gitUser"/pkp-lib
+		git remote add "$gitUser" https://github.com/"$gitUser"/pkp-lib
 		git reset --hard HEAD
 		git pull --rebase "$gitUser" "$branch"
 		exit 0

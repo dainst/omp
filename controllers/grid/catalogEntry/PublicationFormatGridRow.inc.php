@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/catalogEntry/PublicationFormatGridRow.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PublicationFormatGridRow
  * @ingroup controllers_grid_catalogEntry
@@ -26,6 +26,7 @@ class PublicationFormatGridRow extends SubmissionFilesGridRow {
 	 */
 	function __construct($canManage) {
 		$this->_canManage = $canManage;
+
 		parent::__construct(
 			new FilesGridCapabilities(
 				$canManage?FILE_GRID_ADD|FILE_GRID_DELETE|FILE_GRID_MANAGE|FILE_GRID_EDIT|FILE_GRID_VIEW_NOTES:0
@@ -47,15 +48,15 @@ class PublicationFormatGridRow extends SubmissionFilesGridRow {
 		$submissionFile =& $submissionFileData['submissionFile']; /* @var $submissionFile SubmissionFile */
 		import('lib.pkp.classes.linkAction.request.AjaxModal');
 		$router = $request->getRouter();
-		if ($this->_canManage && in_array($submissionFile->getFileType(), array('application/xml', 'text/html'))) {
+		$mimetype = $submissionFile->getData('mimetype');
+		if ($this->_canManage && in_array($mimetype, array('application/xml', 'text/html'))) {
 			$this->addAction(new LinkAction(
 				'dependentFiles',
 				new AjaxModal(
 					$router->url($request, null, null, 'dependentFiles', null, array_merge(
 						$this->getRequestArgs(),
 						array(
-							'fileId' => $submissionFile->getFileId(),
-							'revision' => $submissionFile->getRevision(),
+							'submissionFileId' => $submissionFile->getId(),
 						)
 					)),
 					__('submission.dependentFiles'),

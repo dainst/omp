@@ -3,13 +3,14 @@
 #
 # buildpkg.sh
 #
-# Copyright (c) 2014-2019 Simon Fraser University
-# Copyright (c) 2003-2019 John Willinsky
-# Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+# Copyright (c) 2014-2021 Simon Fraser University
+# Copyright (c) 2003-2021 John Willinsky
+# Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 #
 # Script to create an OMP package for distribution.
 #
 # Usage: buildpkg.sh <version> [<tag>]
+#
 #
 
 GITREP=git://github.com/pkp/omp.git
@@ -25,41 +26,32 @@ PREFIX=omp
 BUILD=$PREFIX-$VERSION
 TMPDIR=`mktemp -d $PREFIX.XXXXXX` || exit 1
 
-EXCLUDE="dbscripts/xml/data/locale/en_US/sample.xml					\
-dbscripts/xml/data/locale/te_ST								\
-dbscripts/xml/data/sample.xml								\
-docs/dev										\
-docs/doxygen										\
-lib/adodb/CHANGED_FILES									\
-lib/adodb/diff										\
-lib/smarty/CHANGED_FILES								\
-lib/smarty/diff										\
-locale/te_ST										\
-cache/*.php										\
+EXCLUDE="docs/dev									\
+tests											\
+cypress											\
 tools/buildpkg.sh									\
-tools/genLocaleReport.sh								\
-tools/genTestLocale.php									\
+lib/pkp/cypress										\
 tools/test										\
 lib/pkp/tools/travis									\
+lib/pkp/plugins/*/*/tests								\
+docs/dev										\
+docs/doxygen										\
+lib/pkp/tools/travis									\
 lib/pkp/lib/vendor/smarty/smarty/demo							\
-plugins/generic/translator								\
 plugins/generic/customBlockManager/.git							\
-plugins/generic/emailLogger								\
 plugins/generic/staticPages/.git							\
 plugins/paymethod/paypal/vendor/omnipay/common/tests/					\
 plugins/paymethod/paypal/vendor/omnipay/paypal/tests/					\
 plugins/paymethod/paypal/vendor/guzzle/guzzle/docs/					\
 plugins/paymethod/paypal/vendor/guzzle/guzzle/tests/					\
 plugins/paymethod/paypal/vendor/symfony/http-foundation/Tests/				\
+plugins/paymethod/paypal/vendor/clue/stream-filter/tests/				\
 lib/pkp/plugins/*/*/tests								\
-plugins/*/*/tests									\
-tests											\
 lib/pkp/tests										\
 .git											\
 .openshift										\
 .travis.yml										\
 lib/pkp/.git										\
-lib/pkp/lib/vendor/components								\
 lib/pkp/lib/vendor/ezyang/htmlpurifier/art						\
 lib/pkp/lib/vendor/ezyang/htmlpurifier/benchmarks					\
 lib/pkp/lib/vendor/ezyang/htmlpurifier/configdog					\
@@ -76,6 +68,8 @@ lib/pkp/lib/vendor/phpmailer/phpmailer/examples						\
 lib/pkp/lib/vendor/phpmailer/phpmailer/test						\
 lib/pkp/lib/vendor/robloach								\
 lib/pkp/lib/vendor/smarty/smarty/demo							\
+lib/pkp/lib/vendor/pimple/pimple/ext/pimple/tests					\
+lib/pkp/lib/vendor/adodb/adodb-php/.git							\
 lib/pkp/lib/vendor/phpunit								\
 lib/pkp/lib/vendor/phpdocumentor/reflection-docblock					\
 lib/pkp/lib/vendor/doctrine/instantiator/tests						\
@@ -83,16 +77,18 @@ lib/pkp/lib/vendor/sebastian/global-state/tests						\
 lib/pkp/lib/vendor/sebastian/comparator/tests						\
 lib/pkp/lib/vendor/sebastian/diff/tests							\
 lib/pkp/lib/vendor/oyejorge/less.php/test						\
+lib/pkp/lib/vendor/dragonmantank/cron-expression/tests/					\
+lib/pkp/lib/vendor/cweagans/composer-patches/tests					\
+lib/pkp/lib/vendor/moxiecode/plupload/examples/						\
+lib/pkp/lib/vendor/swiftmailer/swiftmailer/tests/					\
 lib/pkp/js/lib/pnotify/build-tools							\
 lib/pkp/lib/vendor/alex198710/pnotify/.git						\
 node_modules										\
-.babelrc										\
 .editorconfig										\
-.eslintignore										\
-.eslintrc.js										\
-.postcssrc.js										\
+babel.config.js										\
+package-lock.json										\
 package.json										\
-webpack.config.js									\
+vue.config.js									\
 lib/ui-library"
 
 cd $TMPDIR

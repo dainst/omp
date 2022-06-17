@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/settings/series/form/SeriesForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SeriesForm
  * @ingroup controllers_grid_settings_series_form
@@ -46,7 +46,7 @@ class SeriesForm extends PKPSectionForm {
 		$this->addCheck(new FormValidatorCustom(
 			$this, 'path', 'required', 'grid.series.pathExists',
 			function($path) use ($form, $pressId) {
-				$seriesDao = DAORegistry::getDAO('SeriesDAO');
+				$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 				return !$seriesDao->getByPath($path,$pressId) || ($form->getData('oldPath') != null && $form->getData('oldPath') == $path);
 		}));
 	}
@@ -55,10 +55,10 @@ class SeriesForm extends PKPSectionForm {
 	 * Initialize form data from current settings.
 	 */
 	function initData() {
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$press = $request->getPress();
 
-		$seriesDao = DAORegistry::getDAO('SeriesDAO');
+		$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 		$seriesId = $this->getSeriesId();
 		if ($seriesId) {
 			$series = $seriesDao->getById($seriesId, $press->getId());
@@ -71,8 +71,7 @@ class SeriesForm extends PKPSectionForm {
 		}
 
 		if (isset($series) ) {
-			$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-			$sortOption = $series->getSortOption() ? $series->getSortOption() : $publishedMonographDao->getDefaultSortOption();
+			$sortOption = $series->getSortOption() ? $series->getSortOption() : DAORegistry::getDAO('SubmissionDAO')->getDefaultSortOption();
 			$this->_data = array(
 				'seriesId' => $seriesId,
 				'title' => $series->getTitle(null, false),
@@ -83,10 +82,10 @@ class SeriesForm extends PKPSectionForm {
 				'subtitle' => $series->getSubtitle(null),
 				'image' => $series->getImage(),
 				'restricted' => $series->getEditorRestricted(),
+				'isInactive' => $series->getIsInactive(),
 				'onlineIssn' => $series->getOnlineISSN(),
 				'printIssn' => $series->getPrintISSN(),
 				'sortOption' => $sortOption,
-				'subEditors' => $this->_getAssignedSubEditorIds($seriesId, $press->getId()),
 				'categories' => $categoryIds,
 			);
 		}
@@ -99,7 +98,7 @@ class SeriesForm extends PKPSectionForm {
 		if ($temporaryFileId = $this->getData('temporaryFileId')) {
 			import('lib.pkp.classes.file.TemporaryFileManager');
 			$temporaryFileManager = new TemporaryFileManager();
-			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /* @var $temporaryFileDao TemporaryFileDAO */
 			$temporaryFile = $temporaryFileDao->getTemporaryFile($temporaryFileId, $this->_userId);
 			if (	!$temporaryFile ||
 					!($this->_imageExtension = $temporaryFileManager->getImageExtension($temporaryFile->getFileType())) ||
@@ -110,6 +109,26 @@ class SeriesForm extends PKPSectionForm {
 				return false;
 			}
 		}
+
+		// Validate if it can be inactive
+		if ($this->getData('isInactive')) {
+			$request = Application::get()->getRequest();
+			$context = $request->getContext();
+			$seriesId = $this->getSeriesId();
+
+			$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
+			$seriesIterator = $seriesDao->getByContextId($context->getId());
+			$activeSeriesCount = 0;
+			while ($series = $seriesIterator->next()) {
+				if (!$series->getIsInactive() && ($seriesId != $series->getId())) {
+					$activeSeriesCount++;
+				}
+			}
+			if ($activeSeriesCount < 1 && $this->getData('isInactive')) {
+				$this->addError('isInactive', __('manager.series.confirmDeactivateSeries.error'));
+			}
+		}
+
 		return parent::validate($callHooks);
 	}
 
@@ -120,37 +139,51 @@ class SeriesForm extends PKPSectionForm {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('seriesId', $this->getSeriesId());
 
-		$press = $request->getPress();
+		$context = $request->getContext();
 
-		$categoryDao = DAORegistry::getDAO('CategoryDAO');
-		$categoryCount = $categoryDao->getCountByContextId($press->getId());
+		$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
+		$categoryCount = $categoryDao->getCountByContextId($context->getId());
 		$templateMgr->assign('categoryCount', $categoryCount);
 
 		// Sort options.
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		$templateMgr->assign('sortOptions', $publishedMonographDao->getSortSelectOptions());
+		$templateMgr->assign('sortOptions', DAORegistry::getDAO('SubmissionDAO')->getSortSelectOptions());
 
 		// Series Editors
-		$seriesEditorsListData = $this->_getSubEditorsListPanelData($press->getId(), $request);
-		$templateMgr->assign(array(
-			'hasSubEditors' => !empty($seriesEditorsListData['items']),
-			'subEditorsListData' => json_encode($seriesEditorsListData),
-		));
+		$usersIterator = Services::get('user')->getMany([
+			'contextId' => $context->getId(),
+			'roleIds' => ROLE_ID_SUB_EDITOR,
+		]);
+		$availableSubeditors = [];
+		foreach ($usersIterator as $user) {
+			$availableSubeditors[(int) $user->getId()] = $user->getFullName();
+		}
+		$assignedToSeries = [];
+		if ($this->getSeriesId()) {
+			$assignedToSeries = Services::get('user')->getIds([
+				'contextId' => $context->getId(),
+				'roleIds' => ROLE_ID_SUB_EDITOR,
+				'assignedToSection' => (int) $this->getSeriesId(),
+			]);
+		}
 
-		// Get SelectCategoryListHandler data
-		import('lib.pkp.controllers.list.SelectCategoryListHandler');
-		$categoriesList = new SelectCategoryListHandler(array(
-			'title' => 'grid.category.categories',
-			'inputName' => 'categories[]',
-			'selected' => $this->getData('categories'),
-		));
+		// Categories list
+		$allCategories = [];
+		$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
+		$categoriesResult = $categoryDao->getByContextId($context->getId())->toAssociativeArray();
+		foreach ($categoriesResult as $category) {
+			$title = $category->getLocalizedTitle();
+			if ($category->getParentId()) {
+				$title = $categoriesResult[$category->getParentId()]->getLocalizedTitle() . ' > ' . $title;
+			}
+			$allCategories[(int) $category->getId()] = $title;
+		}
 
-		$categoriesListData = $categoriesList->getConfig();
-
-		$templateMgr->assign(array(
-			'hasCategories' => !empty($categoriesListData['items']),
-			'categoriesListData' => json_encode($categoriesListData),
-		));
+		$templateMgr->assign([
+			'availableSubeditors' => $availableSubeditors,
+			'assignedToSeries' => $assignedToSeries,
+			'allCategories' => $allCategories,
+			'selectedCategories' => (array) $this->getData('categories'),
+		]);
 
 		return parent::fetch($request, $template, $display);
 	}
@@ -161,10 +194,10 @@ class SeriesForm extends PKPSectionForm {
 	 */
 	function readInputData() {
 		parent::readInputData();
-		$this->readUserVars(array('seriesId', 'path', 'featured', 'restricted', 'description', 'categories', 'prefix', 'subtitle', 'temporaryFileId', 'onlineIssn', 'printIssn', 'sortOption'));
+		$this->readUserVars(array('seriesId', 'path', 'featured', 'restricted', 'description', 'categories', 'prefix', 'subtitle', 'temporaryFileId', 'onlineIssn', 'printIssn', 'sortOption', 'isInactive'));
 		// For path duplicate checking; excuse the current path.
 		if ($seriesId = $this->getSeriesId()) {
-			$seriesDao = DAORegistry::getDAO('SeriesDAO');
+			$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 			$series = $seriesDao->getById($seriesId, $this->_pressId);
 			$this->setData('oldPath', $series->getPath());
 		}
@@ -173,9 +206,11 @@ class SeriesForm extends PKPSectionForm {
 	/**
 	 * Save series.
 	 */
-	function execute() {
-		$seriesDao = DAORegistry::getDAO('SeriesDAO');
-		$request = Application::getRequest();
+	function execute(...$functionParams) {
+		parent::execute(...$functionParams);
+
+		$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
+		$request = Application::get()->getRequest();
 		$press = $request->getPress();
 
 		// Get or create the series object
@@ -194,6 +229,7 @@ class SeriesForm extends PKPSectionForm {
 		$series->setPrefix($this->getData('prefix'), null); // Localized
 		$series->setSubtitle($this->getData('subtitle'), null); // Localized
 		$series->setEditorRestricted($this->getData('restricted'));
+		$series->setIsInactive($this->getData('isInactive') ? 1 : 0);
 		$series->setOnlineISSN($this->getData('onlineIssn'));
 		$series->setPrintISSN($this->getData('printIssn'));
 		$series->setSortOption($this->getData('sortOption'));
@@ -208,7 +244,7 @@ class SeriesForm extends PKPSectionForm {
 		// Handle the image upload if there was one.
 		if ($temporaryFileId = $this->getData('temporaryFileId')) {
 			// Fetch the temporary file storing the uploaded library file
-			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /* @var $temporaryFileDao TemporaryFileDAO */
 
 			$temporaryFile = $temporaryFileDao->getTemporaryFile($temporaryFileId, $this->_userId);
 			$temporaryFilePath = $temporaryFile->getFilePath();
@@ -281,11 +317,21 @@ class SeriesForm extends PKPSectionForm {
 		// Update series object to store image information.
 		$seriesDao->updateObject($series);
 
-		// Save the series editor associations.
-		$this->_saveSubEditors($press->getId());
+		// Update series editors
+		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO'); /* @var $subEditorsDao SubEditorsDAO */
+		$subEditorsDao->deleteBySubmissionGroupId($series->getId(), ASSOC_TYPE_SERIES, $series->getContextId());
+		$subEditors = $this->getData('subEditors');
+		if (!empty($subEditors)) {
+			$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
+			foreach ($subEditors as $subEditor) {
+				if ($roleDao->userHasRole($series->getContextId(), $subEditor, ROLE_ID_SUB_EDITOR)) {
+					$subEditorsDao->insertEditor($series->getContextId(), $series->getId(), $subEditor, ASSOC_TYPE_SERIES);
+				}
+			}
+		}
 
 		// Save the category associations.
-		$seriesDao = DAORegistry::getDAO('SeriesDAO');
+		$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 		$seriesDao->removeCategories($this->getSeriesId());
 		$categoryIds = $this->getData('categories');
 		if (!empty($categoryIds)) {
@@ -313,5 +359,3 @@ class SeriesForm extends PKPSectionForm {
 		$this->setSectionId($seriesId);
 	}
 }
-
-

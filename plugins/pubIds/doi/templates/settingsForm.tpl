@@ -1,9 +1,9 @@
 {**
  * plugins/pubIds/doi/templates/settingsForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * DOI plugin settings
  *
@@ -24,7 +24,7 @@
 	{fbvFormArea id="doiObjectsFormArea" title="plugins.pubIds.doi.manager.settings.doiObjects"}
 		{fbvFormSection list="true"}
 			<p class="pkp_help">{translate key="plugins.pubIds.doi.manager.settings.explainDois"}</p>
-			{fbvElement type="checkbox" id="enableSubmissionDoi" label="plugins.pubIds.doi.manager.settings.enableSubmissionDoi" maxlength="40" checked=$enableSubmissionDoi|compare:true}
+			{fbvElement type="checkbox" id="enablePublicationDoi" label="plugins.pubIds.doi.manager.settings.enablePublicationDoi" maxlength="40" checked=$enablePublicationDoi|compare:true}
 			{fbvElement type="checkbox" id="enableChapterDoi" label="plugins.pubIds.doi.manager.settings.enableChapterDoi" maxlength="40" checked=$enableChapterDoi|compare:true}
 			{fbvElement type="checkbox" id="enableRepresentationDoi" label="plugins.pubIds.doi.manager.settings.enableRepresentationDoi" maxlength="40" checked=$enableRepresentationDoi|compare:true}
 			{fbvElement type="checkbox" id="enableSubmissionFileDoi" label="plugins.pubIds.doi.manager.settings.enableSubmissionFileDoi" maxlength="40" checked=$enableSubmissionFileDoi|compare:true}
@@ -39,7 +39,7 @@
 	{fbvFormArea id="doiSuffixFormArea" title="plugins.pubIds.doi.manager.settings.doiSuffix"}
 		<p class="pkp_help">{translate key="plugins.pubIds.doi.manager.settings.doiSuffix.description"}</p>
 		{fbvFormSection list="true"}
-			{if !in_array($doiSuffix, array("pattern", "customId", "randomId"))}
+			{if !in_array($doiSuffix, array("pattern", "customId"))}
 				{assign var="checked" value=true}
 			{else}
 				{assign var="checked" value=false}
@@ -51,12 +51,9 @@
 			{fbvElement type="radio" id="doiSuffixCustomId" name="doiSuffix" value="customId" required="true" label="plugins.pubIds.doi.manager.settings.doiSuffixCustomIdentifier" checked=$doiSuffix|compare:"customId"}
 		{/fbvFormSection}
 		{fbvFormSection list="true"}
-			{fbvElement type="radio" id="doiSuffixCustomId" name="doiSuffix" value="randomId" required="true" label="plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier" checked=$doiSuffix|compare:"randomId"}
-		{/fbvFormSection}
-		{fbvFormSection list="true"}
 			{fbvElement type="radio" id="doiSuffixPattern" name="doiSuffix" value="pattern" label="plugins.pubIds.doi.manager.settings.doiSuffixPattern" checked=$doiSuffix|compare:"pattern"}
 			<p class="pkp_help">{translate key="plugins.pubIds.doi.manager.settings.doiSuffixPattern.example"}</p>
-			{fbvElement type="text" id="doiSubmissionSuffixPattern" value=$doiSubmissionSuffixPattern label="plugins.pubIds.doi.manager.settings.doiSuffixPattern.submissions" maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}
+			{fbvElement type="text" id="doiPublicationSuffixPattern" value=$doiPublicationSuffixPattern label="plugins.pubIds.doi.manager.settings.doiSuffixPattern.submissions" maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}
 			{fbvElement type="text" id="doiChapterSuffixPattern" value=$doiChapterSuffixPattern label="plugins.pubIds.doi.manager.settings.doiSuffixPattern.chapters" maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}
 			{fbvElement type="text" id="doiRepresentationSuffixPattern" value=$doiRepresentationSuffixPattern label="plugins.pubIds.doi.manager.settings.doiSuffixPattern.representations" maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}
 			{fbvElement type="text" id="doiSubmissionFileSuffixPattern" value=$doiSubmissionFileSuffixPattern label="plugins.pubIds.doi.manager.settings.doiSuffixPattern.files" maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}

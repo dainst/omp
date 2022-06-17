@@ -3,9 +3,9 @@
 /**
  * @file pages/information/InformationHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class InformationHandler
  * @ingroup pages_information
@@ -58,7 +58,7 @@ class InformationHandler extends Handler {
 				$pageTitle = $pageCrumbTitle = 'navigation.competingInterestPolicy';
 				break;
 			case 'sampleCopyrightWording':
-				$content = __('manager.setup.authorCopyrightNotice.sample');
+				$content = __('manager.setup.copyrightNotice.sample');
 				$pageTitle = $pageCrumbTitle = 'manager.setup.copyrightNotice';
 				break;
 			default:

@@ -3,9 +3,9 @@
 /**
  * @file classes/monograph/Chapter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Chapter
  * @ingroup monograph
@@ -15,34 +15,78 @@
  */
 
 class Chapter extends DataObject {
+	/**
+	 * Constructor
+	 */
+	function __construct() {
+		parent::__construct();
+	}
+
 	//
 	// Get/set methods
 	//
+
 	/**
-	 * Get the monographId this chapter belongs to
-	 * @return int
+	 * Get localized data for this object.
+	 *
+	 * It selects the locale in the following order:
+	 * - $preferredLocale
+	 * - the user's current locale
+	 * - the first locale we find data for
+	 *
+	 * @todo Chapters should have access to their publication's locale
+	 *  and should fall back to that after the user's current locale
+	 *  and before the last fall back to the first data available.
+	 * @param string $key
+	 * @param string $preferredLocale
+	 * @return mixed
 	 */
-	function getMonographId() {
-		return $this->getData('monographId');
+	public function getLocalizedData($key, $preferredLocale = null) {
+		// 1. Preferred locale
+		if ($preferredLocale && $this->getData($key, $preferredLocale)) {
+			return $this->getData($key, $preferredLocale);
+		}
+		// 2. User's current locale
+		if (!empty($this->getData($key, AppLocale::getLocale()))) {
+			return $this->getData($key, AppLocale::getLocale());
+		}
+		// 3. The first locale we can find data for
+		$data = $this->getData($key, null);
+		foreach ((array) $data as $value) {
+			if (!empty($value)) {
+				return $value;
+			}
+		}
+
+		return null;
 	}
 
 	/**
-	 * Set the monographId this chapter belongs to
-	 * @param int $monographId
+	 * Get the combined prefix, title and subtitle for all locales
+	 * @return array
 	 */
-	function setMonographId($monographId) {
-		return $this->setData('monographId', $monographId);
+	function getFullTitles() {
+		$allTitles = (array) $this->getData('title');
+		$return = [];
+		foreach ($allTitles as $locale => $title) {
+			if (!$title) {
+				continue;
+			}
+			$return[$locale] = $this->getLocalizedFullTitle($locale);
+		}
+		return $return;
 	}
 
 	/**
 	 * Get the chapter full title (with title and subtitle).
+	 * @param string $preferedLocale
 	 * @return string
 	 */
-	function getLocalizedFullTitle() {
+	function getLocalizedFullTitle($preferedLocale = null) {
 
-		$fullTitle = $this->getLocalizedTitle();
+		$fullTitle = $this->getLocalizedTitle($preferedLocale);
 
-		if ($subtitle = $this->getLocalizedSubtitle()) {
+		if ($subtitle = $this->getLocalizedSubtitle($preferedLocale)) {
 			$fullTitle = PKPString::concatTitleFields(array($fullTitle, $subtitle));
 		}
 
@@ -52,8 +96,8 @@ class Chapter extends DataObject {
 	/**
 	 * Get localized title of a chapter.
 	 */
-	function getLocalizedTitle() {
-		return $this->getLocalizedData('title');
+	function getLocalizedTitle($preferedLocale = null) {
+		return $this->getLocalizedData('title', $preferedLocale);
 	}
 
 	/**
@@ -77,8 +121,8 @@ class Chapter extends DataObject {
 	/**
 	 * Get localized sub title of a chapter.
 	 */
-	function getLocalizedSubtitle() {
-		return $this->getLocalizedData('subtitle');
+	function getLocalizedSubtitle($preferedLocale = null) {
+		return $this->getLocalizedData('subtitle', $preferedLocale);
 	}
 
 	/**
@@ -121,7 +165,7 @@ class Chapter extends DataObject {
 	 */
 	function getAuthors() {
 		$chapterAuthorDao = DAORegistry::getDAO('ChapterAuthorDAO'); /* @var $chapterAuthorDao ChapterAuthorDAO */
-		return $chapterAuthorDao->getAuthors($this->getMonographId(), $this->getId());
+		return $chapterAuthorDao->getAuthors($this->getData('publicationId'), $this->getId());
 	}
 
 	/**
@@ -220,9 +264,8 @@ class Chapter extends DataObject {
 	 * @param $pages string
 	 */
 	function setPages($pages) {
-		$this->setData('pages',$pages);
+		$this->setData('pages', $pages);
 	}
-
 }
 
 

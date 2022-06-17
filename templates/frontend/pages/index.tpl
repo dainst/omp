@@ -1,9 +1,9 @@
 {**
  * templates/frontend/pages/index.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Display the front page of the site
  *
@@ -22,15 +22,13 @@
 <div class="page page_homepage">
 
 	{* Homepage Image *}
-	{if $homepageImage}
-		<div class="homepage_image">
-			<img src="{$publicFilesDir}/{$homepageImage.uploadName|escape:"url"}" alt="{$homepageImage.altText|escape}">
-		</div>
+	{if !$activeTheme->getOption('useHomepageImageAsHeader') && $homepageImage}
+		<img src="{$publicFilesDir}/{$homepageImage.uploadName|escape:"url"}" alt="{$homepageImageAltText|escape}">
 	{/if}
 
 	{* Spotlights *}
 	{if !empty($spotlights)}
-		<h2 class="pkp_screen_reader">
+		<h2 id="homepageSpotlights" class="pkp_screen_reader">
 			{translate key="spotlight.spotlights"}
 		</h2>
 		{include file="frontend/components/spotlights.tpl"}
@@ -49,7 +47,7 @@
 
 	{* Announcements *}
 	{if $numAnnouncementsHomepage && $announcements|@count}
-		<div class="cmp_announcements highlight_first">
+		<div id="homepageAnnouncements" class="cmp_announcements highlight_first">
 			<h2>
 				{translate key="announcement.announcements"}
 			</h2>
@@ -68,7 +66,7 @@
 							</a>
 						</h4>
 						<div class="date">
-							{$announcement->getDatePosted()}
+							{$announcement->getDatePosted()|date_format:$dateFormatShort}
 						</div>
 					</article>
 				{/if}

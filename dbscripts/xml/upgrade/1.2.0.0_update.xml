@@ -4,9 +4,9 @@
 <!--
   * 1.2.0.0_update.xml
   *
-  * Copyright (c) 2014-2019 Simon Fraser University
-  * Copyright (c) 2003-2019 John Willinsky
-  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  * Copyright (c) 2014-2021 Simon Fraser University
+  * Copyright (c) 2003-2021 John Willinsky
+  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
   *
   * 1.2.0.0 database updates XML file.
   -->
@@ -17,8 +17,8 @@
 	  - henceforth as reader roles should never be active in workflow.
 	  -->
 	<sql>
-		<query driver="mysql">DELETE ugs FROM user_group_stage ugs JOIN user_groups ug WHERE ug.role_id=1048576 AND ug.user_group_id=ugs.user_group_id</query>
-		<query driver="postgres7">DELETE FROM user_group_stage ugs USING user_groups ug WHERE ug.role_id=1048576 AND ug.user_group_id=ugs.user_group_id</query>
+		<query driver="mysql,mysqli">DELETE ugs FROM user_group_stage ugs JOIN user_groups ug WHERE ug.role_id=1048576 AND ug.user_group_id=ugs.user_group_id</query>
+		<query driver="postgres,postgres64,postgres7,postgres8,postgres9">DELETE FROM user_group_stage ugs USING user_groups ug WHERE ug.role_id=1048576 AND ug.user_group_id=ugs.user_group_id</query>
 	</sql>
 
 	<!-- Bug #8912: consider browse block settings -->

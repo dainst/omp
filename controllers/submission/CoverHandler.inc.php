@@ -3,9 +3,9 @@
 /**
  * @file controllers/submission/CoverHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CoverHandler
  * @ingroup controllers_submission
@@ -29,8 +29,8 @@ class CoverHandler extends PKPHandler {
 	 * @param $roleAssignments array
 	 */
 	function authorize($request, &$args, $roleAssignments) {
-		import('classes.security.authorization.OmpPublishedMonographAccessPolicy');
-		$this->addPolicy(new OmpPublishedMonographAccessPolicy($request, $args, $roleAssignments, 'submissionId', false));
+		import('classes.security.authorization.OmpPublishedSubmissionAccessPolicy');
+		$this->addPolicy(new OmpPublishedSubmissionAccessPolicy($request, $args, $roleAssignments));
 		return parent::authorize($request, $args, $roleAssignments);
 	}
 
@@ -67,50 +67,41 @@ class CoverHandler extends PKPHandler {
 	}
 
 	/**
-	 * Serve the cover image for a published monograph.
+	 * Serve the cover image for a published submission.
 	 */
 	function cover($args, $request) {
-		// this function is only used on the book page i.e. for published monographes
-		$monograph = $this->getAuthorizedContextObject(ASSOC_TYPE_MONOGRAPH);
+		// this function is only used on the book page i.e. for published submissiones
+		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_MONOGRAPH);
 
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		$publishedMonograph = $publishedMonographDao->getById($monograph->getId(), null, false);
-
-		if (!$coverImage = $publishedMonograph->getCoverImage()) {
-			// Can't use Request::redirectUrl; FireFox doesn't
-			// seem to like it for images.
-			header('Location: ' . $request->getBaseUrl() . '/templates/images/book-default.png');
-			exit;
+		$coverImageUrl = $submission->getCurrentPublication()->getLocalizedCoverImageUrl($submission->getData('contextId'));
+		if (!$coverImageUrl) {
+			$coverImageUrl = $request->getBaseUrl() . '/templates/images/book-default.png';
 		}
 
-		import('classes.file.SimpleMonographFileManager');
-		$simpleMonographFileManager = new SimpleMonographFileManager($publishedMonograph->getPressId(), $publishedMonograph->getId());
-		$simpleMonographFileManager->downloadByPath($simpleMonographFileManager->getBasePath() . $coverImage['name'], null, true);
+		// Can't use Request::redirectUrl; FireFox doesn't
+		// seem to like it for images.
+		header('Location: ' . $coverImageUrl);
+		exit;
 	}
 
 	/**
-	 * Serve the cover thumbnail for a published monograph.
+	 * Serve the cover thumbnail for a published submission.
 	 */
 	function thumbnail($args, $request) {
 		// use ASSOC_TYPE_MONOGRAPH to set the cover at any workflow stage
 		// i.e. also if the monograph has not been published yet
-		$monograph = $this->getAuthorizedContextObject(ASSOC_TYPE_MONOGRAPH);
+		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_MONOGRAPH);
 
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		$publishedMonograph = $publishedMonographDao->getById($monograph->getId(), null, false);
-
-		if (!$publishedMonograph || !$coverImage = $publishedMonograph->getCoverImage()) {
-			// Can't use Request::redirectUrl; FireFox doesn't
-			// seem to like it for images.
-			header('Location: ' . $request->getBaseUrl() . '/templates/images/book-default-small.png');
-			exit;
+		$coverImageThumbnailUrl = $submission->getCurrentPublication()->getLocalizedCoverImageThumbnailUrl($submission->getData('contextId'));
+		if (!$coverImageThumbnailUrl) {
+			$coverImageThumbnailUrl = $request->getBaseUrl() . '/templates/images/book-default_t.png';
 		}
 
-		import('classes.file.SimpleMonographFileManager');
-		$simpleMonographFileManager = new SimpleMonographFileManager($publishedMonograph->getPressId(), $publishedMonograph->getId());
-		$simpleMonographFileManager->downloadByPath($simpleMonographFileManager->getBasePath() . $coverImage['thumbnailName'], null, true);
+		// Can't use Request::redirectUrl; FireFox doesn't
+		// seem to like it for images.
+		header('Location: ' . $coverImageThumbnailUrl);
+		exit;
 	}
-
 }
 
 

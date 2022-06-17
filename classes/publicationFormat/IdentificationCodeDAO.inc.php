@@ -3,9 +3,9 @@
 /**
  * @file classes/publicationFormat/IdentificationCodeDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IdentificationCodeDAO
  * @ingroup publicationFormat
@@ -18,39 +18,25 @@ import('classes.publicationFormat.IdentificationCode');
 
 class IdentificationCodeDAO extends DAO {
 	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
-	/**
 	 * Retrieve an identification code by type id.
 	 * @param $identificationCodeId int
-	 * @param $monographId optional int
-	 * @return IdentificationCode
+	 * @param $publicationId optional int
+	 * @return IdentificationCode|null
 	 */
-	function getById($identificationCodeId, $monographId = null){
-		$sqlParams = array((int) $identificationCodeId);
-		if ($monographId) {
-			$sqlParams[] = (int) $monographId;
-		}
+	function getById($identificationCodeId, $publicationId = null){
+		$params = [(int) $identificationCodeId];
+		if ($publicationId) $params[] = (int) $publicationId;
 
 		$result = $this->retrieve(
 			'SELECT	i.*
 			FROM	identification_codes i
 				JOIN publication_formats pf ON (i.publication_format_id = pf.publication_format_id)
 			WHERE i.identification_code_id = ?
-				' . ($monographId?' AND pf.submission_id = ?':''),
-			$sqlParams
+				' . ($publicationId?' AND pf.publication_id = ?':''),
+			$params
 		);
-
-		$returner = null;
-		if ($result->RecordCount() != 0) {
-			$returner = $this->_fromRow($result->GetRowAssoc(false));
-		}
-		$result->Close();
-		return $returner;
+		$row = $result->current();
+		return $row ? $this->_fromRow((array) $row) : null;
 	}
 
 	/**
@@ -59,10 +45,14 @@ class IdentificationCodeDAO extends DAO {
 	 * @return DAOResultFactory containing matching identification codes
 	 */
 	function getByPublicationFormatId($publicationFormatId) {
-		$result = $this->retrieveRange(
-			'SELECT * FROM identification_codes WHERE publication_format_id = ?', (int) $publicationFormatId);
-
-		return new DAOResultFactory($result, $this, '_fromRow');
+		return new DAOResultFactory(
+			$result = $this->retrieveRange(
+				'SELECT * FROM identification_codes WHERE publication_format_id = ?',
+				[(int) $publicationFormatId]
+			),
+			$this,
+			'_fromRow'
+		);
 	}
 
 	/**
@@ -86,7 +76,7 @@ class IdentificationCodeDAO extends DAO {
 		$identificationCode->setValue($row['value']);
 		$identificationCode->setPublicationFormatId($row['publication_format_id']);
 
-		if ($callHooks) HookRegistry::call('IdentificationCodeDAO::_fromRow', array(&$identificationCode, &$row));
+		if ($callHooks) HookRegistry::call('IdentificationCodeDAO::_fromRow', [&$identificationCode, &$row]);
 
 		return $identificationCode;
 	}
@@ -101,11 +91,11 @@ class IdentificationCodeDAO extends DAO {
 				(publication_format_id, code, value)
 			VALUES
 				(?, ?, ?)',
-			array(
+			[
 				(int) $identificationCode->getPublicationFormatId(),
 				$identificationCode->getCode(),
 				$identificationCode->getValue()
-			)
+			]
 		);
 
 		$identificationCode->setId($this->getInsertId());
@@ -121,11 +111,11 @@ class IdentificationCodeDAO extends DAO {
 			'UPDATE identification_codes
 				SET code = ?, value = ?
 			WHERE identification_code_id = ?',
-			array(
+			[
 				$identificationCode->getCode(),
 				$identificationCode->getValue(),
 				(int) $identificationCode->getId()
-			)
+			]
 		);
 	}
 
@@ -143,7 +133,7 @@ class IdentificationCodeDAO extends DAO {
 	 */
 	function deleteById($entryId) {
 		return $this->update(
-			'DELETE FROM identification_codes WHERE identification_code_id = ?', array((int) $entryId)
+			'DELETE FROM identification_codes WHERE identification_code_id = ?', [(int) $entryId]
 		);
 	}
 

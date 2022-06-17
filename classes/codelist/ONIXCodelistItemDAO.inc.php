@@ -3,9 +3,9 @@
 /**
  * @file classes/codelist/ONIXCodelistItemDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ONIXCodelistItemDAO
  * @ingroup codelist
@@ -41,7 +41,7 @@ class ONIXCodelistItemDAO extends DAO {
 			$cacheManager = CacheManager::getManager();
 			$cache = $cacheManager->getFileCache(
 				$this->getListName() . '_codelistItems', $locale,
-				array($this, '_cacheMiss')
+				[$this, '_cacheMiss']
 			);
 			$cacheTime = $cache->getCacheTime();
 			if ($cacheTime !== null && $cacheTime < filemtime($this->getFilename($locale))) {
@@ -62,7 +62,7 @@ class ONIXCodelistItemDAO extends DAO {
 				$locale = AppLocale::getLocale();
 			}
 			$filename = $this->getFilename($locale);
-			$notes[] = array('debug.notes.codelistItemListLoad', array('filename' => $filename));
+			$notes[] = ['debug.notes.codelistItemListLoad', ['filename' => $filename]];
 
 			// Reload locale registry file
 			$xmlDao = new XMLDAO();
@@ -83,7 +83,7 @@ class ONIXCodelistItemDAO extends DAO {
 
 			$tmpName = tempnam($tmpDir, 'ONX');
 			$xslTransformer = new XSLTransformer();
-			$xslTransformer->setParameters(array('listName' => $listName));
+			$xslTransformer->setParameters(['listName' => $listName]);
 			$xslTransformer->setRegisterPHPFunctions(true);
 
 			$xslFile = 'lib/pkp/xml/onixFilter.xsl';
@@ -102,7 +102,7 @@ class ONIXCodelistItemDAO extends DAO {
 				fatalError('misconfigured directory permissions on: ' . $tmpDir);
 			}
 
-			// Build array with ($charKey => array(stuff))
+			// Build array with ($charKey => [stuff])
 
 			if (isset($data[$listName])) {
 				foreach ($data[$listName] as $code => $codelistData) {
@@ -169,9 +169,9 @@ class ONIXCodelistItemDAO extends DAO {
 	function &getCodelistItems($list, $locale = null) {
 		$this->setListName($list);
 		$cache =& $this->_getCache($locale);
-		$returner = array();
+		$returner = [];
 		foreach ($cache->getContents() as $code => $entry) {
-			$returner[] =& $this->_returnFromRow($code, $entry);
+			$returner[] =& $this->_fromRow($code, $entry);
 		}
 		return $returner;
 	}
@@ -184,15 +184,18 @@ class ONIXCodelistItemDAO extends DAO {
 	 * @param $locale an optional locale to use
 	 * @return array of CodelistItem names
 	 */
-	function &getCodes($list, $codesToExclude = array(), $codesFilter = null, $locale = null) {
+	function &getCodes($list, $codesToExclude = [], $codesFilter = null, $locale = null) {
 		$this->setListName($list);
 		$cache =& $this->_getCache($locale);
-		$returner = array();
+		$returner = [];
 		$cacheContents =& $cache->getContents();
+		if ($codesFilter = trim($codesFilter)) {
+			$codesFilter = '/' . implode('|', array_map('preg_quote', PKPString::regexp_split('/\s+/', $codesFilter))) . '/i';
+		}
 		if (is_array($cacheContents)) {
 			foreach ($cache->getContents() as $code => $entry) {
 				if ($code != '') {
-					if (!in_array($code, $codesToExclude) && (empty($codesFilter) || preg_match("/^" . preg_quote($codesFilter) . "/i", $entry[0])))
+					if (!in_array($code, $codesToExclude) && (!$codesFilter || preg_match($codesFilter, $entry[0])))
 						$returner[$code] =& $entry[0];
 				}
 			}
@@ -227,12 +230,12 @@ class ONIXCodelistItemDAO extends DAO {
 	 * @param $row array
 	 * @return CodelistItem
 	 */
-	function &_returnFromRow($code, &$entry) {
+	function &_fromRow($code, &$entry) {
 		$codelistItem = $this->newDataObject();
 		$codelistItem->setCode($code);
 		$codelistItem->setText($entry[0]);
 
-		HookRegistry::call('ONIXCodelistItemDAO::_returnFromRow', array(&$codelistItem, &$code, &$entry));
+		HookRegistry::call('ONIXCodelistItemDAO::_fromRow', [&$codelistItem, &$code, &$entry]);
 
 		return $codelistItem;
 	}

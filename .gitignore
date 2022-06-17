@@ -1,5 +1,5 @@
 config.inc.php
-.DS_Store/
+.DS_Store
 build
 temp
 /files
@@ -12,4 +12,8 @@ temp
 te_ST/
 node_modules
 js/build.js
+js/hot-updates
 styles/build.css
+cypress.env.json
+cypress/logs/
+cypress/screenshots/

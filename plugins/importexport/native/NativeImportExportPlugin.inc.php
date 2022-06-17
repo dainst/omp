@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/native/NativeImportExportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NativeImportExportPlugin
  * @ingroup plugins_importexport_native
@@ -75,7 +75,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 	 */
 	function display($args, $request) {
 		$templateMgr = TemplateManager::getManager($request);
-		$press = $request->getPress();
+		$context = $request->getContext();
 
 		parent::display($args, $request);
 
@@ -84,14 +84,28 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 		switch (array_shift($args)) {
 			case 'index':
 			case '':
-				import('lib.pkp.controllers.list.submissions.SelectSubmissionsListHandler');
-				$exportSubmissionsListHandler = new SelectSubmissionsListHandler(array(
-					'title' => 'plugins.importexport.native.exportSubmissionsSelect',
-					'count' => 100,
-					'inputName' => 'selectedSubmissions[]',
-					'lazyLoad' => true,
-				));
-				$templateMgr->assign('exportSubmissionsListData', json_encode($exportSubmissionsListHandler->getConfig()));
+				$apiUrl = $request->getDispatcher()->url($request, ROUTE_API, $context->getPath(), 'submissions');
+				$submissionsListPanel = new \APP\components\listPanels\SubmissionsListPanel(
+					'submissions',
+					__('common.publications'),
+					[
+						'apiUrl' => $apiUrl,
+						'count' => 100,
+						'getParams' => new stdClass(),
+						'lazyLoad' => true,
+					]
+				);
+				$submissionsConfig = $submissionsListPanel->getConfig();
+				$submissionsConfig['addUrl'] = '';
+				$submissionsConfig['filters'] = array_slice($submissionsConfig['filters'], 1);
+				$templateMgr->setState([
+					'components' => [
+						'submissions' => $submissionsConfig,
+					],
+				]);
+				$templateMgr->assign([
+					'pageComponent' => 'ImportExportPage',
+				]);
 				$templateMgr->display($this->getTemplateResource('index.tpl'));
 				break;
 			case 'uploadImportXML':
@@ -107,28 +121,32 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 				} else {
 					$json = new JSONMessage(false, __('common.uploadFailed'));
 				}
-
+				header('Content-Type: application/json');
 				return $json->getString();
 			case 'importBounce':
+				if (!$request->checkCSRF()) throw new Exception('CSRF mismatch!');
 				$json = new JSONMessage(true);
 				$json->setEvent('addTab', array(
 					'title' => __('plugins.importexport.native.results'),
-					'url' => $request->url(null, null, null, array('plugin', $this->getName(), 'import'), array('temporaryFileId' => $request->getUserVar('temporaryFileId'))),
+					'url' => $request->url(null, null, null, array('plugin', $this->getName(), 'import'), array('temporaryFileId' => $request->getUserVar('temporaryFileId'), 'csrfToken' => $request->getSession()->getCSRFToken())),
 				));
+				header('Content-Type: application/json');
 				return $json->getString();
 			case 'import':
+				if (!$request->checkCSRF()) throw new Exception('CSRF mismatch!');
 				AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION);
 				$temporaryFileId = $request->getUserVar('temporaryFileId');
-				$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+				$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /* @var $temporaryFileDao TemporaryFileDAO */
 				$user = $request->getUser();
 				$temporaryFile = $temporaryFileDao->getTemporaryFile($temporaryFileId, $user->getId());
 				if (!$temporaryFile) {
 					$json = new JSONMessage(true, __('plugins.inportexport.native.uploadFile'));
+					header('Content-Type: application/json');
 					return $json->getString();
 				}
 				$temporaryFilePath = $temporaryFile->getFilePath();
 
-				$deployment = new NativeImportExportDeployment($press, $user);
+				$deployment = new NativeImportExportDeployment($context, $user);
 
 				libxml_use_internal_errors(true);
 				$submissions = $this->importSubmissions(file_get_contents($temporaryFilePath), $deployment);
@@ -152,11 +170,12 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 				// If there are any submissions or validataion errors
 				// delete imported submissions.
 				if (!empty($submissionsErrors) || !empty($validationErrors)) {
-					// remove all imported sumissions
+					// remove all imported submissions
 					$deployment->removeImportedObjects(ASSOC_TYPE_SUBMISSION);
 				}
 				// Display the results
 				$json = new JSONMessage(true, $templateMgr->fetch($this->getTemplateResource('results.tpl')));
+				header('Content-Type: application/json');
 				return $json->getString();
 			case 'export':
 				$exportXml = $this->exportSubmissions(
@@ -166,7 +185,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 				);
 				import('lib.pkp.classes.file.FileManager');
 				$fileManager = new FileManager();
-				$exportFileName = $this->getExportFileName($this->getExportPath(), 'monographs', $press, '.xml');
+				$exportFileName = $this->getExportFileName($this->getExportPath(), 'monographs', $context, '.xml');
 				$fileManager->writeFile($exportFileName, $exportXml);
 				$fileManager->downloadByPath($exportFileName);
 				$fileManager->deleteByPath($exportFileName);
@@ -182,12 +201,12 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 	 * @param $submissionIds array Array of submission IDs
 	 * @param $context Context
 	 * @param $user User
+	 * @param $opts array
 	 * @return string XML contents representing the supplied submission IDs.
 	 */
-	function exportSubmissions($submissionIds, $context, $user) {
-		$submissionDao = Application::getSubmissionDAO();
-		$xml = '';
-		$filterDao = DAORegistry::getDAO('FilterDAO');
+	function exportSubmissions($submissionIds, $context, $user, $opts = array()) {
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$filterDao = DAORegistry::getDAO('FilterDAO'); /* @var $filterDao FilterDAO */
 		$nativeExportFilters = $filterDao->getObjectsByGroup('monograph=>native-xml');
 		assert(count($nativeExportFilters) == 1); // Assert only a single serialization filter
 		$exportFilter = array_shift($nativeExportFilters);
@@ -198,6 +217,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 			if ($submission) $submissions[] = $submission;
 		}
 		libxml_use_internal_errors(true);
+		$exportFilter->setOpts($opts);
 		$submissionXml = $exportFilter->execute($submissions, true);
 		$xml = $submissionXml->saveXml();
 		$errors = array_filter(libxml_get_errors(), function($a) {
@@ -216,7 +236,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 	 * @return array Set of imported submissions
 	 */
 	function importSubmissions($importXml, $deployment) {
-		$filterDao = DAORegistry::getDAO('FilterDAO');
+		$filterDao = DAORegistry::getDAO('FilterDAO'); /* @var $filterDao FilterDAO */
 		$nativeImportFilters = $filterDao->getObjectsByGroup('native-xml=>monograph');
 		assert(count($nativeImportFilters) == 1); // Assert only a single unserialization filter
 		$importFilter = array_shift($nativeImportFilters);
@@ -228,7 +248,135 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 	 * @copydoc ImportExportPlugin::executeCLI
 	 */
 	function executeCLI($scriptName, &$args) {
-		fatalError('Not implemented.');
+		$opts = $this->parseOpts($args, ['no-embed', 'use-file-urls']);
+		$command = array_shift($args);
+		$xmlFile = array_shift($args);
+		$pressPath = array_shift($args);
+
+		AppLocale::requireComponents(LOCALE_COMPONENT_APP_MANAGER, LOCALE_COMPONENT_PKP_MANAGER, LOCALE_COMPONENT_PKP_SUBMISSION);
+		$pressDao = DAORegistry::getDAO('PressDAO');
+		$userDao = DAORegistry::getDAO('UserDAO');
+		$press = $pressDao->getByPath($pressPath);
+
+		if (!$press) {
+			if ($pressPath != '') {
+				echo __('plugins.importexport.common.cliError') . "\n";
+				echo __('plugins.importexport.common.error.unknownPress', array('pressPath' => $pressPath)) . "\n\n";
+			}
+			$this->usage($scriptName);
+			return;
+		}
+
+		if ($xmlFile && $this->isRelativePath($xmlFile)) {
+			$xmlFile = PWD . '/' . $xmlFile;
+		}
+
+		switch ($command) {
+			case 'import':
+				$userName = array_shift($args);
+				$user = $userDao->getByUsername($userName);
+
+				if (!$user) {
+					if ($userName != '') {
+						echo __('plugins.importexport.common.cliError') . "\n";
+						echo __('plugins.importexport.native.error.unknownUser', array('userName' => $userName)) . "\n\n";
+					}
+					$this->usage($scriptName);
+					return;
+				}
+
+				if (!file_exists($xmlFile)) {
+					echo __('plugins.importexport.common.cliError') . "\n";
+					echo __('plugins.importexport.common.export.error.inputFileNotReadable', array('param' => $xmlFile)) . "\n\n";
+					$this->usage($scriptName);
+					return;
+				}
+
+				$filter = 'native-xml=>monograph';
+				// is this monographs import:
+				$xmlString = file_get_contents($xmlFile);
+				$document = new DOMDocument();
+				$document->loadXml($xmlString);
+				if (in_array($document->documentElement->tagName, array('monograph', 'monographs'))) {
+					$filter = 'native-xml=>monograph';
+				}
+				$deployment = new NativeImportExportDeployment($press, $user);
+				$deployment->setImportPath(dirname($xmlFile));
+				$content = $this->importSubmissions($xmlString, $deployment);
+				$validationErrors = array_filter(libxml_get_errors(), function($a) {
+					return $a->level == LIBXML_ERR_ERROR || $a->level == LIBXML_ERR_FATAL;
+				});
+
+				// Are there any import warnings? Display them.
+				$errorTypes = array(
+					ASSOC_TYPE_SUBMISSION => 'submission.submission',
+					ASSOC_TYPE_SECTION => 'section.section',
+				);
+				foreach ($errorTypes as $assocType => $localeKey) {
+					$foundWarnings = $deployment->getProcessedObjectsWarnings($assocType);
+					if (!empty($foundWarnings)) {
+						echo __('plugins.importexport.common.warningsEncountered') . "\n";
+						$i = 0;
+						foreach ($foundWarnings as $foundWarningMessages) {
+							if (count($foundWarningMessages) > 0) {
+								echo ++$i . '.' . __($localeKey) . "\n";
+								foreach ($foundWarningMessages as $foundWarningMessage) {
+									echo '- ' . $foundWarningMessage . "\n";
+								}
+							}
+						}
+					}
+				}
+
+				// Are there any import errors? Display them.
+				$foundErrors = false;
+				foreach ($errorTypes as $assocType => $localeKey) {
+					$currentErrors = $deployment->getProcessedObjectsErrors($assocType);
+					if (!empty($currentErrors)) {
+						echo __('plugins.importexport.common.errorsOccured') . "\n";
+						$i = 0;
+						foreach ($currentErrors as $currentErrorMessages) {
+							if (count($currentErrorMessages) > 0) {
+								echo ++$i . '.' . __($localeKey) . "\n";
+								foreach ($currentErrorMessages as $currentErrorMessage) {
+									echo '- ' . $currentErrorMessage . "\n";
+								}
+							}
+						}
+						$foundErrors = true;
+					}
+				}
+				// If there are any data or validataion errors
+				// delete imported objects.
+				if ($foundErrors || !empty($validationErrors)) {
+					// remove all imported issues and sumissions
+					foreach (array_keys($errorTypes) as $assocType) {
+						$deployment->removeImportedObjects($assocType);
+					}
+				}
+				return;
+			case 'export':
+				$outputDir = dirname($xmlFile);
+				if (!is_writable($outputDir) || (file_exists($xmlFile) && !is_writable($xmlFile))) {
+					echo __('plugins.importexport.common.cliError') . "\n";
+					echo __('plugins.importexport.common.export.error.outputFileNotWritable', array('param' => $xmlFile)) . "\n\n";
+					$this->usage($scriptName);
+					return;
+				}
+				if ($xmlFile != '') switch (array_shift($args)) {
+					case 'monograph':
+					case 'monographs':
+						file_put_contents($xmlFile, $this->exportSubmissions(
+							$args,
+							$press,
+							null,
+							$opts
+						));
+						return;
+				}
+				break;
+		}
+		$this->usage($scriptName);
 	}
 
 	/**
@@ -237,6 +385,37 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 	function usage($scriptName) {
 		fatalError('Not implemented.');
 	}
+
+	/**
+	 * Pull out getopt style long options.
+	 * @param &$args array
+	 * #param $optCodes array
+	 */
+	function parseOpts(&$args, $optCodes) {
+		$newArgs = [];
+		$opts = [];
+		$sticky = null;
+		foreach ($args as $arg) {
+			if ($sticky) {
+				$opts[$sticky] = $arg;
+				$sticky = null;
+				continue;
+			}
+			if (substr($arg, 0, 2) != '--') {
+				$newArgs[] = $arg;
+				continue;
+			}
+			$opt = substr($arg, 2);
+			if (in_array($opt, $optCodes)) {
+				$opts[$opt] = true;
+				continue;
+			}
+			if (in_array($opt . ":", $optCodes)) {
+				$sticky = $opt;
+				continue;
+			}
+		}
+		$args = $newArgs;
+		return $opts;
+	}
 }
-
-

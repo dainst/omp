@@ -3,9 +3,9 @@
 /**
  * @file plugins/metadata/dc11/filter/Dc11SchemaPublicationFormatAdapter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Dc11SchemaPublicationFormatAdapter
  * @ingroup plugins_metadata_dc11_filter
@@ -70,18 +70,15 @@ class Dc11SchemaPublicationFormatAdapter extends MetadataDataObjectAdapter {
 		// contains cached entities and avoids extra database access if this
 		// adapter is called from an OAI context.
 		$oaiDao = DAORegistry::getDAO('OAIDAO'); /* @var $oaiDao OAIDAO */
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		$monograph = $publishedMonographDao->getById($publicationFormat->getMonographId());
+		$publication = Services::get('publication')->get($publicationFormat->getData('publicationId'));
+		$monograph = Services::get('submission')->get($publication->getData('submissionId'));
 		$press = $oaiDao->getPress($monograph->getPressId());
 		$series = $oaiDao->getSeries($monograph->getSeriesId()); /* @var $series Series */
 		$dc11Description = $this->instantiateMetadataDescription();
 
 		// Title
-		$titles = array();
-		foreach ($monograph->getTitle(null) as $titleLocale => $title) {
-			$titles[$titleLocale] = $monograph->getFullTitle($titleLocale);
-		}
-		$this->_addLocalizedElements($dc11Description, 'dc:title', $titles);
+	        $publication = $monograph->getCurrentPublication();
+		$this->_addLocalizedElements($dc11Description, 'dc:title', $publication->getFullTitles());
 
 		// Creator
 		$authors = $monograph->getAuthors();
@@ -96,12 +93,12 @@ class Dc11SchemaPublicationFormatAdapter extends MetadataDataObjectAdapter {
 		}
 
 		// Subject
-		$submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO');
-		$submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO');
+		$submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /* @var $submissionKeywordDao SubmissionKeywordDAO */
+		$submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /* @var $submissionSubjectDao SubmissionSubjectDAO */
 		$supportedLocales = array_keys(AppLocale::getSupportedFormLocales());
 		$subjects = array_merge_recursive(
-			(array) $submissionKeywordDao->getKeywords($monograph->getId(), $supportedLocales),
-			(array) $submissionSubjectDao->getSubjects($monograph->getId(), $supportedLocales)
+			(array) $submissionKeywordDao->getKeywords($publication->getId(), $supportedLocales),
+			(array) $submissionSubjectDao->getSubjects($publication->getId(), $supportedLocales)
 		);
 		$this->_addLocalizedElements($dc11Description, 'dc:subject', $subjects);
 
@@ -111,7 +108,7 @@ class Dc11SchemaPublicationFormatAdapter extends MetadataDataObjectAdapter {
 		// Publisher
 		$publisherInstitution = $press->getSetting('publisherInstitution');
 		if (!empty($publisherInstitution)) {
-			$publishers = array($press->getPrimaryLocale() => $publisherInstitution);
+			$publishers = [$press->getPrimaryLocale() => $publisherInstitution];
 		} else {
 			$publishers = $press->getName(null); // Default
 		}
@@ -129,19 +126,19 @@ class Dc11SchemaPublicationFormatAdapter extends MetadataDataObjectAdapter {
 		// Date
 		// FIXME: should we use the publication dates of the publication format? If yes,
 		// in which role preference order?
-		if (is_a($monograph, 'PublishedMonograph')) {
+		if (is_a($monograph, 'Submission')) {
 			if ($monograph->getDatePublished()) $dc11Description->addStatement('dc:date', date('Y-m-d', strtotime($monograph->getDatePublished())));
 		}
 
 		// Type
 		$types = array_merge_recursive(
-			array(AppLocale::getLocale() => __('rt.metadata.pkp.dctype')),
+			[AppLocale::getLocale() => __('rt.metadata.pkp.dctype')],
 			(array) $monograph->getType(null)
 		);
 		$this->_addLocalizedElements($dc11Description, 'dc:type', $types);
 
 		// Format
-		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
+		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO'); /* @var $onixCodelistItemDao ONIXCodelistItemDAO */
 		$entryKeys = $onixCodelistItemDao->getCodes('List7'); // List7 is for object formats
 		if ($publicationFormat->getEntryKey()) {
 			$formatName = $entryKeys[$publicationFormat->getEntryKey()];
@@ -149,8 +146,9 @@ class Dc11SchemaPublicationFormatAdapter extends MetadataDataObjectAdapter {
 		}
 
 		// Identifier: URL
-		if (is_a($monograph, 'PublishedMonograph')) {
-			$dc11Description->addStatement('dc:identifier', Request::url($press->getPath(), 'catalog', 'book', array($monograph->getId())));
+		$request = Application::get()->getRequest();
+		if (is_a($monograph, 'Submission')) {
+			$dc11Description->addStatement('dc:identifier', $request->url($press->getPath(), 'catalog', 'book', [$monograph->getId()]));
 		}
 
 		// Public idntifiers (e.g. DOI, URN)
@@ -179,8 +177,26 @@ class Dc11SchemaPublicationFormatAdapter extends MetadataDataObjectAdapter {
 		$this->_addLocalizedElements($dc11Description, 'dc:source', $sources);
 
 		// Language
+		$submissionLanguage = $monograph->getData('locale');
+		if (!empty($submissionLanguage)) {
+			$dc11Description->addStatement('dc:language', AppLocale::getIso3FromLocale($submissionLanguage));
+		}
 
-		// Relation
+		// Relation   (Add publication file format to monograph / edited volume)
+		$pubFormatFiles = Services::get('submissionFile')->getMany([
+			'submissionIds' => [$monograph->getId()],
+			'assocTypes' => [ASSOC_TYPE_PUBLICATION_FORMAT]
+		]);
+
+
+		foreach ($pubFormatFiles as $file) {
+			{
+				if ($file->getData('assocId') == $publicationFormat->getData('id')) {
+					$relation = $request->url($press->getData('urlPath'), 'catalog', 'view', [$monograph->getId(), $publicationFormat->getId(), $file->getId()]);
+					$dc11Description->addStatement('dc:relation', $relation);
+				}
+			}
+		}
 
 		// Coverage
 		$coverage = (array) $monograph->getCoverage(null);
@@ -192,7 +208,7 @@ class Dc11SchemaPublicationFormatAdapter extends MetadataDataObjectAdapter {
 			$dc11Description->addStatement('dc:rights', $salesRight->getNameForONIXCode());
 		}
 
-		Hookregistry::call('Dc11SchemaPublicationFormatAdapter::extractMetadataFromDataObject', array(&$this, $monograph, $press, &$dc11Description));
+		Hookregistry::call('Dc11SchemaPublicationFormatAdapter::extractMetadataFromDataObject', [&$this, $monograph, $press, &$dc11Description]);
 
 		return $dc11Description;
 	}
@@ -203,7 +219,7 @@ class Dc11SchemaPublicationFormatAdapter extends MetadataDataObjectAdapter {
 	 */
 	function getDataObjectMetadataFieldNames($translated = true) {
 		// All DC fields are mapped.
-		return array();
+		return [];
 	}
 
 
@@ -218,7 +234,7 @@ class Dc11SchemaPublicationFormatAdapter extends MetadataDataObjectAdapter {
 	 */
 	function _addLocalizedElements(&$description, $propertyName, $localizedValues) {
 		foreach(stripAssocArray((array) $localizedValues) as $locale => $values) {
-			if (is_scalar($values)) $values = array($values);
+			if (is_scalar($values)) $values = [$values];
 			foreach($values as $value) {
 				$description->addStatement($propertyName, $value, $locale);
 				unset($value);

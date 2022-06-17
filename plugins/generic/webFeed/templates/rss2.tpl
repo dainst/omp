@@ -1,9 +1,9 @@
 {**
  * plugins/generic/webFeed/templates/rss2.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * RSS 2 feed template
  *
@@ -48,27 +48,28 @@
 		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
 		<ttl>60</ttl>
 
-		{foreach name=publishedMonographs from=$publishedMonographs item=publishedMonograph}
+		{foreach name=submissions from=$submissions item=submission}
 			<item>
 				{* required elements *}
-				<title>{$publishedMonograph->getLocalizedTitle()|strip|escape:"html"}</title>
-				<link>{url page="catalog" op="book" path=$publishedMonograph->getId()}</link>
-				<description>{$publishedMonograph->getLocalizedAbstract()|strip|escape:"html"}</description>
+				<title>{$submission->getLocalizedTitle()|strip|escape:"html"}</title>
+				<link>{url page="catalog" op="book" path=$submission->getId()}</link>
+				<description>{$submission->getLocalizedAbstract()|strip|escape:"html"}</description>
 
 				{* optional elements *}
-				<author>{$publishedMonograph->getAuthorString(false)|escape:"html"}</author>
+				<author>{$submission->getAuthorString()|escape:"html"}</author>
 				{* <category/> *}
 				{* <comments/> *}
 				{* <source/> *}
 
 				<dc:rights>
-					{translate|escape key="submission.copyrightStatement" copyrightYear=$publishedMonograph->getCopyrightYear() copyrightHolder=$publishedMonograph->getLocalizedCopyrightHolder()}
-					{$publishedMonograph->getLicenseURL()|escape}
+					{translate|escape key="submission.copyrightStatement" copyrightYear=$submission->getCopyrightYear() copyrightHolder=$submission->getLocalizedCopyrightHolder()}
+					{$submission->getLicenseURL()|escape}
 				</dc:rights>
 
-				<guid isPermaLink="true">{url page="catalog" op="book" path=$publishedMonograph->getId()}</guid>
-				<pubDate>{$publishedMonograph->getDatePublished()|date_format:"%a, %d %b %Y %T %z"}</pubDate>
+				<guid isPermaLink="true">{url page="catalog" op="book" path=$submission->getId()}</guid>
+				{capture assign="datePublished"}{$submission->getDatePublished()|strtotime}{/capture}
+				<pubDate>{$smarty.const.DATE_RSS|date:$datePublished}</pubDate>
 			</item>
-		{/foreach}{* publishedMonographs *}
+		{/foreach}{* submissions *}
 	</channel>
 </rss>

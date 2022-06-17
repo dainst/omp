@@ -3,9 +3,9 @@
 /**
  * @file classes/publicationFormat/PublicationDate.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PublicationDate
  * @ingroup publicationFormat
@@ -24,7 +24,7 @@ class PublicationDate extends DataObject {
 	 */
 	function __construct() {
 
-		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
+		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO'); /* @var $onixCodelistItemDao ONIXCodelistItemDAO */
 		$this->dateFormats =& $onixCodelistItemDao->getCodes('List55');
 
 		parent::__construct();
@@ -35,15 +35,15 @@ class PublicationDate extends DataObject {
 	 * @return int
 	 */
 	function getPublicationFormatId() {
-		return $this->getData('representationId');
+		return $this->getData('publicationFormatId');
 	}
 
 	/**
 	 * set publication format id
-	 * @param $representationId int
+	 * @param $publicationFormatId int
 	 */
-	function setPublicationFormatId($representationId) {
-		return $this->setData('representationId', $representationId);
+	function setPublicationFormatId($publicationFormatId) {
+		return $this->setData('publicationFormatId', $publicationFormatId);
 	}
 
 	/**
@@ -83,7 +83,7 @@ class PublicationDate extends DataObject {
 	 * @return string
 	 */
 	function getNameForONIXCode() {
-		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
+		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO'); /* @var $onixCodelistItemDao ONIXCodelistItemDAO */
 		$codes =& $onixCodelistItemDao->getCodes('List163'); // List163 is for Publication date, Embargo date, Announcement date, etc
 		return $codes[$this->getRole()];
 	}
@@ -138,7 +138,7 @@ class PublicationDate extends DataObject {
 	 */
 	function getReadableDates() {
 		$format = $this->dateFormats[$this->getDateFormat()];
-		$dateFormatShort = Config::getVar('general', 'date_format_short');
+		$dateFormatShort = \Application::get()->getRequest()->getContext()->getLocalizedDateFormatShort();
 
 		if ($this->isHijriCalendar()) {
 			$format = preg_replace('/\s*\(H\)/i', '', $format);

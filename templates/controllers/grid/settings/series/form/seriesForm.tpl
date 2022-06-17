@@ -1,9 +1,9 @@
 {**
  * templates/controllers/grid/settings/series/form/seriesForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Series form under press management.
  *}
@@ -53,13 +53,13 @@
 			{fbvFormSection for="title" title="common.prefix" inline="true" size=$fbvStyles.size.SMALL}
 				{fbvElement label="common.prefixAndTitle.tip" type="text" multilingual=true name="prefix" id="prefix" value=$prefix}
 			{/fbvFormSection}
-			{fbvFormSection for="title" title="common.title" inline="true" size=$fbvStyles.size.LARGE required=true}
+			{fbvFormSection for="title" for="title" title="common.title" inline="true" size=$fbvStyles.size.LARGE required=true}
 				{fbvElement type="text" multilingual=true name="title" id="title" value=$title required=true}
 			{/fbvFormSection}
 		</div>
 
-		{fbvFormSection for="subtitle" title="common.subtitle"}
-			{fbvElement label="common.subtitle.tip" type="text" multilingual=true name="subtitle" id="subtitle" value=$subtitle maxlength="255"}
+		{fbvFormSection for="subtitle" title="common.subtitle" for="subtitle"}
+			{fbvElement type="text" multilingual=true name="subtitle" id="subtitle" value=$subtitle maxlength="255"}
 		{/fbvFormSection}
 
 		{fbvFormSection title="common.description" for="description"}
@@ -67,6 +67,7 @@
 		{/fbvFormSection}
 
 		{fbvFormSection list="true"}
+			{fbvElement type="checkbox" id="isInactive" value=1 checked=$isInactive label="manager.sections.form.deactivateSection"}
 			{fbvElement type="checkbox" id="restricted" value=1 label="manager.series.restricted" checked=$restricted}
 		{/fbvFormSection}
 
@@ -79,25 +80,19 @@
 			{fbvElement type="select" id="sortOption" from=$sortOptions selected=$sortOption translate=false}
 		{/fbvFormSection}
 
-		{if $hasSubEditors}
-			{fbvFormSection}
-				{assign var="uuid" value=""|uniqid|escape}
-				<div id="subeditors-{$uuid}">
-					<script type="text/javascript">
-						pkp.registry.init('subeditors-{$uuid}', 'SelectListPanel', {$subEditorsListData});
-					</script>
-				</div>
+		{if count($availableSubeditors)}
+			{fbvFormSection list=true title="submissionGroup.assignedSubEditors"}
+				{foreach from=$availableSubeditors item="subEditor" key="id"}
+					{fbvElement type="checkbox" id="subEditors[]" value=$id checked=in_array($id, $assignedToSeries) label=$subEditor|escape translate=false}
+				{/foreach}
 			{/fbvFormSection}
 		{/if}
 
-		{if $hasCategories}
-			{fbvFormSection}
-				{assign var="uuid" value=""|uniqid|escape}
-				<div id="categories-{$uuid}">
-					<script type="text/javascript">
-						pkp.registry.init('categories-{$uuid}', 'SelectListPanel', {$categoriesListData});
-					</script>
-				</div>
+		{if count($allCategories)}
+			{fbvFormSection list=true title="grid.category.categories"}
+				{foreach from=$allCategories item="category" key="id"}
+					{fbvElement type="checkbox" id="categories[]" value=$id checked=in_array($id, $selectedCategories) label=$category|escape translate=false}
+				{/foreach}
 			{/fbvFormSection}
 		{/if}
 

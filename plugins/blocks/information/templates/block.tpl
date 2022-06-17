@@ -1,18 +1,18 @@
 {**
  * plugins/blocks/information/block.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Common site sidebar menu -- information links.
  *
  *}
 {if !empty($forReaders) || !empty($forAuthors) || !empty($forLibrarians)}
 <div class="pkp_block block_information">
-	<span class="title">
+	<h2 class="title">
 		{translate key="plugins.block.information.link"}
-	</span>
+	</h2>
 
 	<div class="content">
 		<ul>

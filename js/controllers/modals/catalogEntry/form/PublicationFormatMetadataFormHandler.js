@@ -1,9 +1,9 @@
 /**
  * @file js/controllers/modals/catalogEntry/form/PublicationFormatMetadataFormHandler.js
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PublicationFormatMetadataFormHandler
  * @ingroup js_controllers_modal_catalogEntry_form
@@ -58,12 +58,11 @@
 				$fileSize = $form.find('[id^="fileSize"]');
 
 		if ($(sourceElement).is(':checked')) {
-			$fileSize.attr('disabled', '');
+			$fileSize.removeAttr('disabled');
 		} else {
 			$fileSize.attr('disabled', 'disabled');
 		}
 	};
 
 
-/** @param {jQuery} $ jQuery closure. */
 }(jQuery));

@@ -1,14 +1,14 @@
 {**
  * templates/frontend/pages/catalogCategory.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Display the page to view a category of the catalog.
  *
  * @uses $category Category Current category being viewed
- * @uses $publishedSubmissions array List of published monographs in this category
+ * @uses $publishedSubmissions array List of published submissions in this category
  * @uses $featuredMonographIds array List of featured monograph IDs in this category
  * @uses $newReleasesMonographs array List of new monographs in this category
  * @uses $parentCategory Category Parent category if one exists
@@ -19,14 +19,14 @@
  * @uses $nextPage int The next page number
  * @uses $showingStart int The number of the first item on this page
  * @uses $showingEnd int The number of the last item on this page
- * @uses $total int Count of all published monographs in this category
+ * @uses $total int Count of all published submissions in this category
  *}
 {include file="frontend/components/header.tpl" pageTitleTranslated=$category->getLocalizedTitle()|escape}
 
 <div class="page page_catalog_category">
 
 	{* Breadcrumb *}
-	{include file="frontend/components/breadcrumbs_catalog.tpl" type="category" parent=$parentCategory currentTitle=$category->getLocalizedTitle()|escape}
+	{include file="frontend/components/breadcrumbs_catalog.tpl" type="category" parent=$parentCategory currentTitle=$category->getLocalizedTitle()}
 	<h1>{$category->getLocalizedTitle()|escape}</h1>
 
 	{* Count of monographs in this category *}
@@ -40,7 +40,7 @@
 	<div class="about_section{if $image} has_image{/if}{if $description} has_description{/if}">
 		{if $image}
 			<div class="cover" href="{url router=$smarty.const.ROUTE_PAGE page="catalog" op="fullSize" type="category" id=$category->getId()}">
-				<img src="{url router=$smarty.const.ROUTE_PAGE page="catalog" op="thumbnail" type="category" id=$category->getId()}" alt="{$category->getLocalizedTitle()|escape}" />
+				<img src="{url router=$smarty.const.ROUTE_PAGE page="catalog" op="thumbnail" type="category" id=$category->getId()}" alt="{$category->getLocalizedTitle()|escape|default:''}" />
 			</div>
 		{/if}
 		<div class="description">
@@ -48,19 +48,19 @@
 		</div>
 	</div>
 
-	{if !$subcategories->wasEmpty()}
+	{if $subcategories|@count}
 	<nav class="subcategories" role="navigation">
 		<h2>
 			{translate key="catalog.category.subcategories"}
 		</h2>
 		<ul>
-			{iterate from=subcategories item=subcategory}
+			{foreach from=$subcategories item=subcategory}
 				<li>
 					<a href="{url op="category" path=$subcategory->getPath()}">
 						{$subcategory->getLocalizedTitle()|escape}
 					</a>
 				</li>
-			{/iterate}
+			{/foreach}
 		</ul>
 	</nav>
 	{/if}
@@ -70,7 +70,7 @@
 		<h2>
 			{translate key="catalog.category.heading"}
 		</h2>
-		<p>{translate key="catalog.category.noItems"}</p>
+		<p>{translate key="catalog.noTitlesSection"}</p>
 
 	{else}
 

@@ -7,9 +7,9 @@
 /**
  * @file classes/oai/omp/PressOAI.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PressOAI
  * @ingroup oai_omp
@@ -43,7 +43,7 @@ class PressOAI extends OAI {
 	function __construct($config) {
 		parent::__construct($config);
 
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 
 		$this->site = $request->getSite();
 		$this->press = $request->getPress();
@@ -129,7 +129,7 @@ class PressOAI extends OAI {
 		$info->earliestDatestamp = $this->dao->getEarliestDatestamp(array($this->pressId));
 
 		$info->toolkitTitle = 'Open Monograph Press';
-		$versionDao = DAORegistry::getDAO('VersionDAO');
+		$versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
 		$currentVersion = $versionDao->getCurrentVersion();
 		$info->toolkitVersion = $currentVersion->getVersionString(false);
 		$info->toolkitURL = 'http://pkp.sfu.ca/omp/';
@@ -175,7 +175,7 @@ class PressOAI extends OAI {
 	 */
 	function records($metadataPrefix, $from, $until, $set, $offset, $limit, &$total) {
 		$records = null;
-		if (!HookRegistry::call('PressOAI::records', array(&$this, $from, $until, $set, $offset, $limit, $total, &$records))) {
+		if (!HookRegistry::call('PressOAI::records', array(&$this, $from, $until, $set, $offset, $limit, &$total, &$records))) {
 			$seriesId = null;
 			if (isset($set)) {
 				list($pressId, $seriesId) = $this->setSpecToSeriesId($set);
@@ -192,7 +192,7 @@ class PressOAI extends OAI {
 	 */
 	function identifiers($metadataPrefix, $from, $until, $set, $offset, $limit, &$total) {
 		$records = null;
-		if (!HookRegistry::call('PressOAI::identifiers', array(&$this, $from, $until, $set, $offset, $limit, $total, &$records))) {
+		if (!HookRegistry::call('PressOAI::identifiers', array(&$this, $from, $until, $set, $offset, $limit, &$total, &$records))) {
 			$seriesId = null;
 			if (isset($set)) {
 				list($pressId, $seriesId) = $this->setSpecToSeriesId($set);
@@ -209,7 +209,7 @@ class PressOAI extends OAI {
 	 */
 	function sets($offset, $limit, &$total) {
 		$sets = null;
-		if (!HookRegistry::call('PressOAI::sets', array(&$this, $offset, $limit, $total, &$sets))) {
+		if (!HookRegistry::call('PressOAI::sets', array(&$this, $offset, $limit, &$total, &$sets))) {
 			$sets = $this->dao->getSets($this->pressId, $offset, $limit, $total);
 		}
 		return $sets;

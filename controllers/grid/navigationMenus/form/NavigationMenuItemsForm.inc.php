@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/navigationMenus/form/NavigationMenuItemsForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NavigationMenuItemsForm
  * @ingroup controllers_grid_navigationMenus
@@ -14,27 +14,17 @@
  */
 
 import('lib.pkp.controllers.grid.navigationMenus.form.PKPNavigationMenuItemsForm');
-import('classes.core.ServicesContainer');
+import('classes.core.Services');
 
 class NavigationMenuItemsForm extends PKPNavigationMenuItemsForm {
-
-	function __construct($request, $navigationMenuItemId = null) {
-		ServicesContainer::instance()
-			->get('navigationMenu');
-
-		parent::__construct($request, $navigationMenuItemId);
-	}
 
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request, $template = null, $display = false) {
-		import('classes.core.ServicesContainer');
-		$customTemplates = ServicesContainer::instance()
-			->get('navigationMenu')
-			->getMenuItemCustomEditTemplates();
+	public function fetch($request, $template = null, $display = false) {
+		$customTemplates = \Services::get('navigationMenu')->getMenuItemCustomEditTemplates();
 
-		$request = \Application::getRequest();
+		$request = \Application::get()->getRequest();
 		$context = $request->getContext();
 		$contextId = $context ? $context->getId() : CONTEXT_ID_NONE;
 
@@ -67,8 +57,8 @@ class NavigationMenuItemsForm extends PKPNavigationMenuItemsForm {
 	/**
 	 * @copydoc PKPNavigationMenuItemsForm::initData
 	 */
-	function initData() {
-		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO');
+	public function initData() {
+		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO'); /* @var $navigationMenuItemDao NavigationMenuItemDAO */
 		$navigationMenuItem = $navigationMenuItemDao->getById($this->navigationMenuItemId);
 
 		if ($navigationMenuItem) {
@@ -86,7 +76,7 @@ class NavigationMenuItemsForm extends PKPNavigationMenuItemsForm {
 	/**
 	 * Assign form data to user-submitted data.
 	 */
-	function readInputData() {
+	public function readInputData() {
 		$this->readUserVars(array(
 			'relatedSeriesId',
 			'relatedCategoryId',
@@ -95,12 +85,12 @@ class NavigationMenuItemsForm extends PKPNavigationMenuItemsForm {
 	}
 
 	/**
-	 * Save NavigationMenuItem.
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
-		parent::execute();
+	public function execute(...$functionArgs) {
+		parent::execute(...$functionArgs);
 
-		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO');
+		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO'); /* @var $navigationMenuItemDao NavigationMenuItemDAO */
 
 		$navigationMenuItem = $navigationMenuItemDao->getById($this->navigationMenuItemId);
 		if (!$navigationMenuItem) {
@@ -118,7 +108,4 @@ class NavigationMenuItemsForm extends PKPNavigationMenuItemsForm {
 
 		return $navigationMenuItem->getId();
 	}
-
 }
-
-

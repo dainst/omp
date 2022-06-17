@@ -2,9 +2,9 @@
 /**
  * @file controllers/grid/content/spotlights/form/SpotlightForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SpotlightForm
  * @ingroup controllers_grid_content_spotlights_form
@@ -31,7 +31,7 @@ class SpotlightForm extends Form {
 	 * @param $pressId int
 	 * @param $spotlightId int leave as default for new spotlight
 	 */
-	function __construct($pressId, $spotlightId = null) {
+	public function __construct($pressId, $spotlightId = null) {
 		parent::__construct('controllers/grid/content/spotlights/form/spotlightForm.tpl');
 
 		$this->_spotlightId = $spotlightId;
@@ -54,10 +54,10 @@ class SpotlightForm extends Form {
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request, $template = null, $display = false) {
+	public function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 
-		$spotlightDao = DAORegistry::getDAO('SpotlightDAO');
+		$spotlightDao = DAORegistry::getDAO('SpotlightDAO'); /* @var $spotlightDao SpotlightDAO */
 		$spotlight = $spotlightDao->getById($this->getSpotlightId());
 		$templateMgr->assign(array(
 			'spotlight' => $spotlight,
@@ -80,16 +80,15 @@ class SpotlightForm extends Form {
 	/**
 	 * @see Form::readInputData()
 	 */
-	function readInputData() {
+	public function readInputData() {
 		$this->readUserVars(array('title', 'description', 'assocId'));
 	}
 
 	/**
 	 * @copydoc Form::execute()
 	 */
-	function execute() {
-
-		$spotlightDao = DAORegistry::getDAO('SpotlightDAO');
+	public function execute(...$functionArgs) {
+		$spotlightDao = DAORegistry::getDAO('SpotlightDAO'); /* @var $spotlightDao SpotlightDAO */
 
 		$spotlight = $spotlightDao->getById($this->getSpotlightId(), $this->getPressId());
 
@@ -115,6 +114,7 @@ class SpotlightForm extends Form {
 			$spotlightId = $spotlightDao->insertObject($spotlight);
 		}
 
+		parent::execute(...$functionArgs);
 		return $spotlightId;
 	}
 
@@ -127,7 +127,7 @@ class SpotlightForm extends Form {
 	 * Fetch the spotlight Id for this form.
 	 * @return int $spotlightId
 	 */
-	function getSpotlightId() {
+	public function getSpotlightId() {
 		return $this->_spotlightId;
 	}
 
@@ -135,7 +135,7 @@ class SpotlightForm extends Form {
 	 * Fetch the press Id for this form.
 	 * @return int $pressId
 	 */
-	function getPressId() {
+	public function getPressId() {
 		return $this->_pressId;
 	}
 
@@ -144,17 +144,16 @@ class SpotlightForm extends Form {
 	 * @param int $assocId
 	 * @param int $assocType
 	 */
-	function getAssocTitle($assocId, $assocType) {
+	public function getAssocTitle($assocId, $assocType) {
 
 		$returner = null;
 		switch ($assocType) {
 			case SPOTLIGHT_TYPE_BOOK:
-				$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-				$publishedMonograph = $publishedMonographDao->getById($assocId, $this->getPressId());
-				$returner = isset($publishedMonograph) ? $publishedMonograph->getLocalizedTitle() : '';
+				$submission = Services::get('submission')->get($assocId);
+				$returner = isset($submission) ? $submission->getLocalizedTitle() : '';
 				break;
 			case SPOTLIGHT_TYPE_SERIES:
-				$seriesDao = DAORegistry::getDAO('SeriesDAO');
+				$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 				$series = $seriesDao->getById($assocId, $this->getPressId());
 				$returner = isset($series) ? $series->getLocalizedTitle() : '';
 				break;
@@ -169,7 +168,7 @@ class SpotlightForm extends Form {
 	 * @param int $type
 	 * @return boolean
 	 */
-	function _isValidSpotlightType($type) {
+	public function _isValidSpotlightType($type) {
 		$validTypes = array(SPOTLIGHT_TYPE_BOOK, SPOTLIGHT_TYPE_SERIES);
 		return in_array((int) $type, $validTypes);
 	}

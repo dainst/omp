@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/catalogEntry/form/RepresentativeForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class RepresentativeForm
  * @ingroup controllers_grid_catalogEntry_form
@@ -25,7 +25,7 @@ class RepresentativeForm extends Form {
 	/**
 	 * Constructor.
 	 */
-	function __construct($monograph, $representative) {
+	public function __construct($monograph, $representative) {
 		parent::__construct('controllers/grid/catalogEntry/form/representativeForm.tpl');
 		$this->setMonograph($monograph);
 		$this->setRepresentative($representative);
@@ -35,9 +35,10 @@ class RepresentativeForm extends Form {
 		$this->addCheck(new FormValidatorCustom(
 			$this, 'isSupplier', 'required', 'grid.catalogEntry.roleRequired',
 			function($isSupplier) use ($form) {
-				$agentRole = Request::getUserVar('agentRole');
-				$supplierRole = Request::getUserVar('supplierRole');
-				$onixDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
+				$request = Application::get()->getRequest();
+				$agentRole = $request->getUserVar('agentRole');
+				$supplierRole = $request->getUserVar('supplierRole');
+				$onixDao = DAORegistry::getDAO('ONIXCodelistItemDAO'); /* @var $onixDao ONIXCodelistItemDAO */
 				return (!$isSupplier && $onixDao->codeExistsInList($agentRole, 'List69')) || ($isSupplier && $onixDao->codeExistsInList($supplierRole, 'List93'));
 			}
 		));
@@ -52,7 +53,7 @@ class RepresentativeForm extends Form {
 	 * Get the representative
 	 * @return Representative
 	 */
-	function &getRepresentative() {
+	public function &getRepresentative() {
 		return $this->_representative;
 	}
 
@@ -60,7 +61,7 @@ class RepresentativeForm extends Form {
 	 * Set the representative
 	 * @param @representative Representative
 	 */
-	function setRepresentative($representative) {
+	public function setRepresentative($representative) {
 		$this->_representative = $representative;
 	}
 
@@ -68,7 +69,7 @@ class RepresentativeForm extends Form {
 	 * Get the Monograph
 	 * @return Monograph
 	 */
-	function getMonograph() {
+	public function getMonograph() {
 		return $this->_monograph;
 	}
 
@@ -76,7 +77,7 @@ class RepresentativeForm extends Form {
 	 * Set the Monograph
 	 * @param Monograph
 	 */
-	function setMonograph($monograph) {
+	public function setMonograph($monograph) {
 		$this->_monograph = $monograph;
 	}
 
@@ -87,7 +88,7 @@ class RepresentativeForm extends Form {
 	/**
 	 * Initialize form data from the representative entry.
 	 */
-	function initData() {
+	public function initData() {
 		$representative = $this->getRepresentative();
 
 		if ($representative) {
@@ -108,32 +109,32 @@ class RepresentativeForm extends Form {
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request, $template = null, $display = false) {
-
+	public function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 
 		$monograph = $this->getMonograph();
 		$templateMgr->assign('submissionId', $monograph->getId());
 		$representative = $this->getRepresentative();
-		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
-		$templateMgr->assign('idTypeCodes', $onixCodelistItemDao->getCodes('List92')); // GLN, etc
-		$templateMgr->assign('agentRoleCodes', $onixCodelistItemDao->getCodes('List69')); // Sales Agent, etc
-		$templateMgr->assign('supplierRoleCodes', $onixCodelistItemDao->getCodes('List93')); // wholesaler, publisher to retailer, etc
-		$templateMgr->assign('isSupplier', true); // default to 'supplier' on the form.
+		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO'); /* @var $onixCodelistItemDao ONIXCodelistItemDAO */
+		$templateMgr->assign(array(
+			'idTypeCodes' => $onixCodelistItemDao->getCodes('List92'), // GLN, etc
+			'agentRoleCodes' => $onixCodelistItemDao->getCodes('List69'), // Sales Agent, etc
+			'supplierRoleCodes' => $onixCodelistItemDao->getCodes('List93'), // wholesaler, publisher to retailer, etc
+			'isSupplier' => true,
+		)); // default to 'supplier' on the form.
 
-		if ($representative) {
-			$templateMgr->assign('representativeId', $representative->getId());
-			$templateMgr->assign('role', $representative->getRole());
-			$templateMgr->assign('representativeIdType', $representative->getRepresentativeIdType());
-			$templateMgr->assign('representativeIdValue', $representative->getRepresentativeIdValue());
-			$templateMgr->assign('name', $representative->getName());
-			$templateMgr->assign('phone', $representative->getPhone());
-			$templateMgr->assign('email', $representative->getEmail());
-			$templateMgr->assign('url', $representative->getUrl());
-			$templateMgr->assign('isSupplier', $representative->getIsSupplier() ? true : false);
-		} else { // loading a blank form
-			$templateMgr->assign('representativeIdType', '06'); // pre-populate new forms with GLN as it is recommended
-		}
+		if ($representative) $templateMgr->assign(array(
+			'representativeId' => $representative->getId(),
+			'role' => $representative->getRole(),
+			'representativeIdType' => $representative->getRepresentativeIdType(),
+			'representativeIdValue' => $representative->getRepresentativeIdValue(),
+			'name' => $representative->getName(),
+			'phone' => $representative->getPhone(),
+			'email' => $representative->getEmail(),
+			'url' => $representative->getUrl(),
+			'isSupplier' => $representative->getIsSupplier() ? true : false,
+		));
+		else $templateMgr->assign('representativeIdType', '06'); // pre-populate new forms with GLN as it is recommended
 
 		return parent::fetch($request, $template, $display);
 	}
@@ -142,7 +143,7 @@ class RepresentativeForm extends Form {
 	 * Assign form data to user-submitted data.
 	 * @see Form::readInputData()
 	 */
-	function readInputData() {
+	public function readInputData() {
 		$this->readUserVars(array(
 			'representativeId',
 			'agentRole',
@@ -158,11 +159,11 @@ class RepresentativeForm extends Form {
 	}
 
 	/**
-	 * Save the representative
-	 * @see Form::execute()
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
-		$representativeDao = DAORegistry::getDAO('RepresentativeDAO');
+	public function execute(...$functionArgs) {
+		parent::execute(...$functionArgs);
+		$representativeDao = DAORegistry::getDAO('RepresentativeDAO'); /* @var $representativeDao RepresentativeDAO */
 		$monograph = $this->getMonograph();
 		$representative = $this->getRepresentative();
 

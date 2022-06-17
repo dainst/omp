@@ -3,9 +3,9 @@
 /**
  * @file pages/sitemap/SitemapHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SitemapHandler
  * @ingroup pages_sitemap
@@ -29,28 +29,30 @@ class SitemapHandler extends PKPSitemapHandler {
 
 		// Catalog
 		$root->appendChild($this->_createUrlTree($doc, $request->url($press->getPath(), 'catalog')));
-
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
-		$publishedMonographsResult = $publishedMonographDao->getByPressId($pressId);
-		while ($publishedMonograph = $publishedMonographsResult->next()) {
+		import('lib.pkp.classes.submission.PKPSubmission'); // STATUS_PUBLISHED
+		$submissionsIterator = Services::get('submission')->getMany(['status' => STATUS_PUBLISHED, 'contextId' => $pressId, 'count' => 1000]);
+		foreach ($submissionsIterator as $submission) {
 			// Book
-			$root->appendChild($this->_createUrlTree($doc, $request->url($press->getPath(), 'catalog', 'view', array($publishedMonograph->getBestId()))));
+			$root->appendChild($this->_createUrlTree($doc, $request->url($press->getPath(), 'catalog', 'book', array($submission->getBestId()))));
 			// Files
 			// Get publication formats
-			$publicationFormats = $publishedMonograph->getPublicationFormats(true);
+			$publicationFormats = DAORegistry::getDAO('PublicationFormatDAO')->getApprovedByPublicationId($submission->getCurrentPublication()->getId())->toArray();
 			foreach ($publicationFormats as $format) {
 				// Consider only available publication formats
 				if ($format->getIsAvailable()) {
 					// Consider only available publication format files
 					$availableFiles = array_filter(
-						$submissionFileDao->getLatestRevisionsByAssocId(ASSOC_TYPE_PUBLICATION_FORMAT, $format->getId(), $publishedMonograph->getId()),
+						iterator_to_array(Services::get('submissionFile')->getMany([
+							'assocTypes' => [ASSOC_TYPE_PUBLICATION_FORMAT],
+							'assocIds' => [$format->getId()],
+							'submissionIds' => [$submission->getId()],
+						])),
 						function($a) {
 							return $a->getDirectSalesPrice() !== null;
 						}
 					);
 					foreach ($availableFiles as $file) {
-						$root->appendChild($this->_createUrlTree($doc, $request->url($press->getPath(), 'catalog', 'view', array($publishedMonograph->getBestId(), $format->getBestId(), $file->getBestId()))));
+						$root->appendChild($this->_createUrlTree($doc, $request->url($press->getPath(), 'catalog', 'view', array($submission->getBestId(), $format->getBestId(), $file->getBestId()))));
 					}
 				}
 			}
@@ -59,13 +61,13 @@ class SitemapHandler extends PKPSitemapHandler {
 		// New releases
 		$root->appendChild($this->_createUrlTree($doc, $request->url($press->getPath(), 'catalog', 'newReleases')));
 		// Browse by series
-		$seriesDao = DAORegistry::getDAO('SeriesDAO');
+		$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 		$seriesResult = $seriesDao->getByPressId($pressId);
 		while ($series = $seriesResult->next()) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($press->getPath(), 'catalog', 'series', $series->getPath())));
 		}
 		// Browse by categories
-		$categoryDao = DAORegistry::getDAO('CategoryDAO');
+		$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 		$categoriesResult = $categoryDao->getByContextId($pressId);
 		while ($category = $categoriesResult->next()) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($press->getPath(), 'catalog', 'category', $category->getPath())));

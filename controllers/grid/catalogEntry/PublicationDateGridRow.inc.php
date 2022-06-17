@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/catalogEntry/PublicationDateGridRow.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PublicationDateGridRow
  * @ingroup controllers_grid_catalogEntry
@@ -19,12 +19,16 @@ class PublicationDateGridRow extends GridRow {
 	/** @var Monograph **/
 	var $_monograph;
 
+	/** @var Publication **/
+	var $_publication;
+
 	/**
 	 * Constructor
 	 * @param $monograph Monograph
 	 */
-	function __construct($monograph) {
+	function __construct($monograph, $publication) {
 		$this->_monograph = $monograph;
+		$this->_publication = $publication;
 		parent::__construct();
 	}
 
@@ -47,6 +51,7 @@ class PublicationDateGridRow extends GridRow {
 			$router = $request->getRouter();
 			$actionArgs = array(
 				'submissionId' => $monograph->getId(),
+				'publicationId' => $this->_publication->getId(),
 				'publicationDateId' => $publicationDate->getId()
 			);
 
@@ -87,7 +92,7 @@ class PublicationDateGridRow extends GridRow {
 	 * Get the monograph for this row (already authorized)
 	 * @return Monograph
 	 */
-	function &getMonograph() {
+	function getMonograph() {
 		return $this->_monograph;
 	}
 }

@@ -1,9 +1,9 @@
 {**
  * controllers/tab/settings/siteSetup/form/siteSetupForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Site settings form.
  *}
@@ -42,8 +42,8 @@
 		{/fbvFormSection}
 	{/fbvFormArea}
 	{fbvFormArea id="siteRedirection"}
-		{fbvFormSection title="admin.settings.pressRedirect"}
-			{fbvElement type="select" id="redirect" from=$redirectOptions selected=$redirect translate=false defaultValue="" label="admin.settings.pressRedirectInstructions" size=$fbvStyles.size.MEDIUM}
+		{fbvFormSection title="admin.settings.redirect"}
+			{fbvElement type="select" id="redirect" from=$redirectOptions selected=$redirect translate=false defaultValue="" label="admin.settings.redirectInstructions" size=$fbvStyles.size.MEDIUM}
 		{/fbvFormSection}
 	{/fbvFormArea}
 

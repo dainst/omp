@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/onix30/Onix30ExportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Onix30ExportPlugin
  * @ingroup plugins_importexport_onix30
@@ -16,13 +16,6 @@
 import('lib.pkp.classes.plugins.ImportExportPlugin');
 
 class Onix30ExportPlugin extends ImportExportPlugin {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 	/**
 	 * @copydoc Plugin::register()
 	 */
@@ -75,7 +68,7 @@ class Onix30ExportPlugin extends ImportExportPlugin {
 	 */
 	function display($args, $request) {
 		$templateMgr = TemplateManager::getManager($request);
-		$press = $request->getPress();
+		$context = $request->getContext();
 
 		parent::display($args, $request);
 
@@ -84,14 +77,28 @@ class Onix30ExportPlugin extends ImportExportPlugin {
 		switch (array_shift($args)) {
 			case 'index':
 			case '':
-				import('lib.pkp.controllers.list.submissions.SelectSubmissionsListHandler');
-				$exportSubmissionsListHandler = new SelectSubmissionsListHandler(array(
-					'title' => 'plugins.importexport.onix30.exportSubmissionsSelect',
-					'count' => 100,
-					'inputName' => 'selectedSubmissions[]',
-					'lazyLoad' => true,
-				));
-				$templateMgr->assign('exportSubmissionsListData', json_encode($exportSubmissionsListHandler->getConfig()));
+				$apiUrl = $request->getDispatcher()->url($request, ROUTE_API, $context->getPath(), 'submissions');
+				$submissionsListPanel = new \APP\components\listPanels\SubmissionsListPanel(
+					'submissions',
+					__('common.publications'),
+					[
+						'apiUrl' => $apiUrl,
+						'count' => 100,
+						'getParams' => new stdClass(),
+						'lazyLoad' => true,
+					]
+				);
+				$submissionsConfig = $submissionsListPanel->getConfig();
+				$submissionsConfig['addUrl'] = '';
+				$submissionsConfig['filters'] = array_slice($submissionsConfig['filters'], 1);
+				$templateMgr->setState([
+					'components' => [
+						'submissions' => $submissionsConfig,
+					],
+				]);
+				$templateMgr->assign([
+					'pageComponent' => 'ImportExportPage',
+				]);
 				$templateMgr->display($this->getTemplateResource('index.tpl'));
 				break;
 			case 'export':
@@ -102,7 +109,7 @@ class Onix30ExportPlugin extends ImportExportPlugin {
 				);
 				import('lib.pkp.classes.file.FileManager');
 				$fileManager = new FileManager();
-				$exportFileName = $this->getExportFileName($this->getExportPath(), 'monographs', $press, '.xml');
+				$exportFileName = $this->getExportFileName($this->getExportPath(), 'monographs', $context, '.xml');
 				$fileManager->writeFile($exportFileName, $exportXml);
 				$fileManager->downloadByPath($exportFileName);
 				$fileManager->deleteByPath($exportFileName);
@@ -121,10 +128,10 @@ class Onix30ExportPlugin extends ImportExportPlugin {
 	 * @return string XML contents representing the supplied submission IDs.
 	 */
 	function exportSubmissions($submissionIds, $context, $user) {
-		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$xml = '';
-		$filterDao = DAORegistry::getDAO('FilterDAO');
-		$nativeExportFilters = $filterDao->getObjectsByGroup('monograph=>onix30-xml');
+		$filterDao = DAORegistry::getDAO('FilterDAO'); /* @var $filterDao FilterDAO */
+		$nativeExportFilters = $filterDao->getObjectsByGroup('monographs=>onix30-xml');
 		assert(count($nativeExportFilters) == 1); // Assert only a single serialization filter
 		$exportFilter = array_shift($nativeExportFilters);
 		$exportFilter->setDeployment(new Onix30ExportDeployment($context, $user));
@@ -133,7 +140,7 @@ class Onix30ExportPlugin extends ImportExportPlugin {
 			$submission = $submissionDao->getById($submissionId, $context->getId());
 			if ($submission) $submissions[] = $submission;
 		}
-		$submissionXml = $exportFilter->execute($submission);
+		$submissionXml = $exportFilter->execute($submissions);
 		if ($submissionXml) $xml = $submissionXml->saveXml();
 		else fatalError('Could not convert submissions.');
 		return $xml;
@@ -153,5 +160,3 @@ class Onix30ExportPlugin extends ImportExportPlugin {
 		fatalError('Not implemented.');
 	}
 }
-
-

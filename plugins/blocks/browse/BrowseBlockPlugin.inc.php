@@ -3,9 +3,9 @@
 /**
  * @file plugins/blocks/browse/BrowseBlockPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class BrowseBlockPlugin
  * @ingroup plugins_blocks_browse
@@ -99,17 +99,17 @@ class BrowseBlockPlugin extends BlockPlugin {
 		$seriesDisplay = $this->getSetting($press->getId(), 'browseSeries');
 		if ($seriesDisplay) {
 			// Provide a list of series to browse
-			$seriesDao = DAORegistry::getDAO('SeriesDAO');
+			$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 			$series = $seriesDao->getByPressId($press->getId());
-			$templateMgr->assign('browseSeriesFactory', $series);
+			$templateMgr->assign('browseSeries', $series->toArray());
 		}
 
 		$categoriesDisplay = $this->getSetting($press->getId(), 'browseCategories');
 		if ($categoriesDisplay) {
 			// Provide a list of categories to browse
-			$categoryDao = DAORegistry::getDAO('CategoryDAO');
+			$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 			$categories = $categoryDao->getByContextId($press->getId());
-			$templateMgr->assign('browseCategoryFactory', $categories);
+			$templateMgr->assign('browseCategories', $categories->toArray());
 		}
 
 		// If we're currently viewing a series or catalog, detect it

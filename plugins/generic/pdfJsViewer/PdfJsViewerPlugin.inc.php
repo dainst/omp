@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PdfJsViewerPlugin
  * @ingroup plugins_generic_pdfJsViewer
@@ -60,17 +60,25 @@ class PdfJsViewerPlugin extends GenericPlugin {
 	 * @return boolean
 	 */
 	function viewCallback($hookName, $args) {
-		$publishedMonograph =& $args[1];
+		$submission =& $args[1];
 		$publicationFormat =& $args[2];
 		$submissionFile =& $args[3];
 
-		if ($submissionFile->getFileType() == 'application/pdf') {
-			$request = Application::getRequest();
+		if ($submissionFile->getData('mimetype') == 'application/pdf') {
+			foreach ($submission->getData('publications') as $publication) {
+				if ($publication->getId() === $publicationFormat->getData('publicationId')) {
+					$filePublication = $publication;
+					break;
+				}
+			}
+			$request = Application::get()->getRequest();
 			$router = $request->getRouter();
 			$dispatcher = $request->getDispatcher();
 			$templateMgr = TemplateManager::getManager($request);
 			$templateMgr->assign(array(
-				'pluginUrl' => $request->getBaseUrl() . DIRECTORY_SEPARATOR . $this->getPluginPath(),
+				'pluginUrl' => $request->getBaseUrl() . '/' . $this->getPluginPath(),
+				'isLatestPublication' => $submission->getData('currentPublicationId') === $publicationFormat->getData('publicationId'),
+				'filePublication' => $filePublication,
 			));
 
 			$templateMgr->display($this->getTemplateResource('display.tpl'));
@@ -87,12 +95,14 @@ class PdfJsViewerPlugin extends GenericPlugin {
 	 * @return boolean
 	 */
 	function downloadCallback($hookName, $params) {
-		$publishedMonograph =& $params[1];
+		$submission =& $params[1];
 		$publicationFormat =& $params[2];
 		$submissionFile =& $params[3];
 		$inline =& $params[4];
 
-		if ($submissionFile->getFileType() == 'application/pdf' && Request::getUserVar('inline')) {
+		$request = Application::get()->getRequest();
+		$mimetype = $submissionFile->getData('mimetype');
+		if ($mimetype == 'application/pdf' && $request->getUserVar('inline')) {
 			// Turn on the inline flag to ensure that the content
 			// disposition header doesn't foil the PDF embedding
 			// plugin.

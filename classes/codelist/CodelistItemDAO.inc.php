@@ -3,9 +3,9 @@
 /**
  * @file classes/codelist/CodelistItemDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CodelistItemDAO
  * @ingroup codelist
@@ -18,14 +18,6 @@
 import('classes.codelist.CodelistItem');
 
 class CodelistItemDAO extends DAO {
-
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 	/**
 	 * Get the codelist item cache.
 	 * @param $locale string Locale code (optional)
@@ -42,7 +34,7 @@ class CodelistItemDAO extends DAO {
 			$cacheManager = CacheManager::getManager();
 			$cache = $cacheManager->getFileCache(
 				$this->getName() . '_codelistItems', $locale,
-				array($this, '_cacheMiss')
+				[$this, '_cacheMiss']
 			);
 			$cacheTime = $cache->getCacheTime();
 			if ($cacheTime !== null && $cacheTime < filemtime($this->getFilename($locale))) {
@@ -69,19 +61,19 @@ class CodelistItemDAO extends DAO {
 				$locale = AppLocale::getLocale();
 			}
 			$filename = $this->getFilename($locale);
-			$notes[] = array('debug.notes.codelistItemListLoad', array('filename' => $filename));
+			$notes[] = ['debug.notes.codelistItemListLoad', ['filename' => $filename]];
 
 			// Reload locale registry file
 			$xmlDao = new XMLDAO();
 			$nodeName = $this->getName(); // i.e., subject
-			$data = $xmlDao->parseStruct($filename, array($nodeName));
+			$data = $xmlDao->parseStruct($filename, [$nodeName]);
 
-			// Build array with ($charKey => array(stuff))
+			// Build array with ($charKey => [stuff])
 			if (isset($data[$nodeName])) {
 				foreach ($data[$nodeName] as $codelistData) {
-					$allCodelistItems[$codelistData['attributes']['code']] = array(
+					$allCodelistItems[$codelistData['attributes']['code']] = [
 						$codelistData['attributes']['text'],
-					);
+					];
 				}
 			}
 			if (is_array($allCodelistItems)) {
@@ -142,7 +134,7 @@ class CodelistItemDAO extends DAO {
 	 */
 	function getCodelistItems($locale = null) {
 		$cache = $this->_getCache($locale);
-		$returner = array();
+		$returner = [];
 		foreach ($cache->getContents() as $code => $entry) {
 			$returner[] = $this->_fromRow($code, $entry);
 		}
@@ -156,7 +148,7 @@ class CodelistItemDAO extends DAO {
 	 */
 	function getNames($locale = null) {
 		$cache = $this->_getCache($locale);
-		$returner = array();
+		$returner = [];
 		$cacheContents = $cache->getContents();
 		if (is_array($cacheContents)) {
 			foreach ($cache->getContents() as $code => $entry) {
@@ -177,7 +169,7 @@ class CodelistItemDAO extends DAO {
 		$codelistItem->setCode($code);
 		$codelistItem->setText($entry[0]);
 
-		HookRegistry::call('CodelistItemDAO::_fromRow', array(&$codelistItem, &$code, &$entry));
+		HookRegistry::call('CodelistItemDAO::_fromRow', [&$codelistItem, &$code, &$entry]);
 
 		return $codelistItem;
 	}

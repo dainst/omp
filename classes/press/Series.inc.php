@@ -3,9 +3,9 @@
 /**
  * @file classes/press/Series.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Series
  * @ingroup press
@@ -267,8 +267,8 @@ class Series extends PKPSection {
 	 * @return string
 	 */
 	function getEditorsString() {
-		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO');
-		$editors = $subEditorsDao->getBySectionId($this->getId(), $this->getPressId());
+		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO'); /* @var $subEditorsDao SubEditorsDAO */
+		$editors = $subEditorsDao->getBySubmissionGroupId($this->getId(), ASSOC_TYPE_SECTION, $this->getPressId());
 
 		$separator = ', ';
 		$str = '';
@@ -284,6 +284,23 @@ class Series extends PKPSection {
 
 		return $str;
 	}
+
+	/**
+	 * Return boolean indicating if series should be inactivated.
+	 * @return int
+	 */
+	function getIsInactive() {
+		return $this->getData('isInactive');
+	}
+
+	/**
+	 * Set if series should be inactivated.
+	 * @param $isInactive int
+	 */
+	function setIsInactive($isInactive) {
+		$this->setData('isInactive', $isInactive);
+	}
+
 }
 
 

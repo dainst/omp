@@ -3,9 +3,9 @@
 /**
  * @file plugins/blocks/languageToggle/LanguageToggleBlockPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class LanguageToggleBlockPlugin
  * @ingroup plugins_blocks_languageToggle
@@ -18,15 +18,6 @@
 import('lib.pkp.classes.plugins.BlockPlugin');
 
 class LanguageToggleBlockPlugin extends BlockPlugin {
-	/**
-	 * Determine whether the plugin is enabled. Overrides parent so that
-	 * the plugin will be displayed during install.
-	 * @param $contextId int|null
-	 */
-	function getEnabled($contextId = null) {
-		if (!Config::getVar('general', 'installed')) return true;
-		return parent::getEnabled($contextId);
-	}
 
 	/**
 	 * Install default settings on system install.
@@ -42,27 +33,6 @@ class LanguageToggleBlockPlugin extends BlockPlugin {
 	 */
 	function getContextSpecificPluginSettingsFile() {
 		return $this->getPluginPath() . '/settings.xml';
-	}
-
-	/**
-	 * Get the block context. Overrides parent so that the plugin will be
-	 * displayed during install.
-	 * @param $contextId int|null Context ID
-	 * @return int
-	 */
-	function getBlockContext($contextId = null) {
-		if (!Config::getVar('general', 'installed')) return BLOCK_CONTEXT_SIDEBAR;
-		return parent::getBlockContext($contextId);
-	}
-
-	/**
-	 * Determine the plugin sequence. Overrides parent so that
-	 * the plugin will be displayed during install.
-	 * @param $contextId int|null Context ID
-	 */
-	function getSeq($contextId = null) {
-		if (!Config::getVar('general', 'installed')) return 2;
-		return parent::getSeq($contextId);
 	}
 
 	/**
@@ -111,5 +81,3 @@ class LanguageToggleBlockPlugin extends BlockPlugin {
 		return parent::getContents($templateMgr);
 	}
 }
-
-

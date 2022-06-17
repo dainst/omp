@@ -3,9 +3,9 @@
 /**
  * @file pages/workflow/WorkflowHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class WorkflowHandler
  * @ingroup pages_reviewer
@@ -53,6 +53,82 @@ class WorkflowHandler extends PKPWorkflowHandler {
 		$this->_redirectToIndex($args, $request);
 	}
 
+	/**
+	 * Setup variables for the template
+	 * @param $request Request
+	 */
+	function setupIndex($request) {
+		parent::setupIndex($request);
+
+		$templateMgr = TemplateManager::getManager($request);
+		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
+
+		$submissionContext = $request->getContext();
+		if ($submission->getContextId() !== $submissionContext->getId()) {
+			$submissionContext = Services::get('context')->get($submission->getContextId());
+		}
+
+		$supportedFormLocales = $submissionContext->getSupportedFormLocales();
+		$localeNames = AppLocale::getAllLocales();
+		$locales = array_map(function($localeKey) use ($localeNames) {
+			return ['key' => $localeKey, 'label' => $localeNames[$localeKey]];
+		}, $supportedFormLocales);
+
+		$latestPublication = $submission->getLatestPublication();
+
+		$submissionApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'submissions/' . $submission->getId());
+		$latestPublicationApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'submissions/' . $submission->getId() . '/publications/' . $latestPublication->getId());
+		$temporaryFileApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'temporaryFiles');
+
+		$chaptersGridUrl = $request->getDispatcher()->url(
+			$request,
+			ROUTE_COMPONENT,
+			null,
+			'grid.users.chapter.ChapterGridHandler',
+			'fetchGrid',
+			null,
+			[
+				'submissionId' => $submission->getId(),
+				'publicationId' => '__publicationId__',
+			]
+		);
+
+		import('classes.file.PublicFileManager');
+		$publicFileManager = new PublicFileManager();
+		$baseUrl = $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($submissionContext->getId());
+
+		$audienceForm = new APP\components\forms\submission\AudienceForm($submissionApiUrl, $submission);
+		$catalogEntryForm = new APP\components\forms\publication\CatalogEntryForm($latestPublicationApiUrl, $locales, $latestPublication, $submission, $baseUrl, $temporaryFileApiUrl);
+		$publicationDatesForm = new APP\components\forms\submission\PublicationDatesForm($submissionApiUrl, $submission);
+
+		$templateMgr->setConstants([
+			'FORM_AUDIENCE',
+			'FORM_CATALOG_ENTRY',
+			'WORK_TYPE_AUTHORED_WORK',
+			'WORK_TYPE_EDITED_VOLUME',
+		]);
+
+		$components = $templateMgr->getState('components');
+		$components[FORM_AUDIENCE] = $audienceForm->getConfig();
+		$components[FORM_CATALOG_ENTRY] = $catalogEntryForm->getConfig();
+		$components[FORM_PUBLICATION_DATES] = $publicationDatesForm->getConfig();
+
+		$publicationFormIds = $templateMgr->getState('publicationFormIds');
+		$publicationFormIds[] = FORM_CATALOG_ENTRY;
+
+		$templateMgr->setState([
+			'components' => $components,
+			'chaptersGridUrl' => $chaptersGridUrl,
+			'publicationFormIds' => $publicationFormIds,
+			'editedVolumeLabel' => __('submission.workflowType.editedVolume.label'),
+			'monographLabel' => __('common.publication'),
+		]);
+
+		$templateMgr->assign([
+			'pageComponent' => 'WorkflowPage',
+		]);
+	}
+
 
 	//
 	// Protected helper methods
@@ -79,39 +155,20 @@ class WorkflowHandler extends PKPWorkflowHandler {
 	}
 
 	/**
-	* @see PKPWorkflowHandler::isSubmissionReady()
-	*/
-	protected function isSubmissionReady($monograph) {
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		$publishedMonograph = $publishedMonographDao->getById($monograph->getId());
-		if ($publishedMonograph) {
-			// first check, there's a published monograph
-			$publicationFormats = $publishedMonograph->getPublicationFormats(true);
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
-			import('lib.pkp.classes.submission.SubmissionFile'); // constants
-
-			foreach ($publicationFormats as $format) {
-				// there is at least one publication format.
-				if ($format->getIsApproved()) {
-					// it's ready to be included in the catalog
-
-					$monographFiles = $submissionFileDao->getLatestRevisionsByAssocId(
-					ASSOC_TYPE_PUBLICATION_FORMAT, $format->getId(),
-					$publishedMonograph->getId()
-					);
-
-					foreach ($monographFiles as $file) {
-						if (!is_null($file->getDirectSalesPrice())) {
-							// at least one file has a price set.
-							return true;
-						}
-					}
-				}
-			}
-		}
-
-		return false;
+	 * @copydoc PKPWorkflowHandler::_getRepresentationsGridUrl()
+	 */
+	protected function _getRepresentationsGridUrl($request, $submission) {
+		return $request->getDispatcher()->url(
+			$request,
+			ROUTE_COMPONENT,
+			null,
+			'grid.catalogEntry.PublicationFormatGridHandler',
+			'fetchGrid',
+			null,
+			[
+				'submissionId' => $submission->getId(),
+				'publicationId' => '__publicationId__',
+			]
+		);
 	}
 }
-
-

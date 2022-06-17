@@ -3,9 +3,9 @@
 /**
  * @file classes/services/NavigationMenuService.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NavigationMenuService
  * @ingroup services
@@ -13,7 +13,7 @@
  * @brief Helper class that encapsulates NavigationMenu business logic
  */
 
-namespace OMP\Services;
+namespace APP\Services;
 
 /** types for all omp default navigationMenuItems */
 define('NMI_TYPE_CATALOG', 'NMI_TYPE_CATALOG');
@@ -53,7 +53,7 @@ class NavigationMenuService extends \PKP\Services\PKPNavigationMenuService {
 			),
 		);
 
-		$request = \Application::getRequest();
+		$request = \Application::get()->getRequest();
 		$context = $request->getContext();
 		$contextId = $context ? $context->getId() : CONTEXT_ID_NONE;
 
@@ -119,9 +119,9 @@ class NavigationMenuService extends \PKP\Services\PKPNavigationMenuService {
 	function getDisplayStatusCallback($hookName, $args) {
 		$navigationMenuItem =& $args[0];
 
-		$request = \Application::getRequest();
+		$request = \Application::get()->getRequest();
 		$dispatcher = $request->getDispatcher();
-		$templateMgr = \TemplateManager::getManager(\Application::getRequest());
+		$templateMgr = \TemplateManager::getManager(\Application::get()->getRequest());
 
 		$isUserLoggedIn = \Validation::isLoggedIn();
 		$isUserLoggedInAs = \Validation::isLoggedInAs();

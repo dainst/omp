@@ -2,9 +2,9 @@
 /**
  * @file controllers/grid/files/proof/form/ApprovedProofForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ApprovedProofForm
  * @ingroup controllers_grid_files_proof_form
@@ -29,17 +29,14 @@ class ApprovedProofForm extends Form {
 	 * Constructor
 	 * @param $monograph Monograph
 	 * @param $publicationFormat PublicationFormat
-	 * @param $fileId string fileId-revision
+	 * @param $submissionFileId int
 	 */
-	function __construct($monograph, $publicationFormat, $fileIdAndRevision) {
+	public function __construct($monograph, $publicationFormat, $submissionFileId) {
 		parent::__construct('controllers/grid/files/proof/form/approvedProofForm.tpl');
 
-		$this->monograph =& $monograph;
-		$this->publicationFormat =& $publicationFormat;
-
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
-		list($fileId, $revision) = explode('-', $fileIdAndRevision);
-		$this->approvedProof =& $submissionFileDao->getRevision($fileId, $revision, SUBMISSION_FILE_PROOF, $this->monograph->getId());
+		$this->monograph = $monograph;
+		$this->publicationFormat = $publicationFormat;
+		$this->approvedProof = Services::get('submissionFile')->get($submissionFileId);
 
 		// matches currencies like:  1,500.50 1500.50 1,112.15 5,99 .99
 		$this->addCheck(new FormValidatorRegExp($this, 'price', 'optional', 'grid.catalogEntry.validPriceRequired', '/^(([1-9]\d{0,2}(,\d{3})*|[1-9]\d*|0|)(.\d{2})?|([1-9]\d{0,2}(,\d{3})*|[1-9]\d*|0|)(.\d{2})?)$/'));
@@ -54,11 +51,12 @@ class ApprovedProofForm extends Form {
 	/**
 	 * @copydoc Form::fetch
 	 */
-	function fetch($request, $template = null, $display = false) {
+	public function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
-		$templateMgr->assign('fileId', $this->approvedProof->getFileIdAndRevision());
+		$templateMgr->assign('submissionFileId', $this->approvedProof->getId());
 		$templateMgr->assign('submissionId', $this->monograph->getId());
 		$templateMgr->assign('representationId', $this->publicationFormat->getId());
+		$templateMgr->assign('publicationId', $this->publicationFormat->getData('publicationId'));
 
 		$salesTypes = array(
 			'openAccess' => 'payment.directSales.openAccess',
@@ -74,14 +72,14 @@ class ApprovedProofForm extends Form {
 	/**
 	 * @see Form::readInputData()
 	 */
-	function readInputData() {
+	public function readInputData() {
 		$this->readUserVars(array('price', 'salesType'));
 	}
 
 	/**
 	 * @see Form::initData()
 	 */
-	function initData() {
+	public function initData() {
 		$this->_data = array(
 			'price' => $this->approvedProof->getDirectSalesPrice(),
 			'salesType' => $this->approvedProof->getSalesType(),
@@ -91,8 +89,9 @@ class ApprovedProofForm extends Form {
 	/**
 	 * @copydoc Form::execute()
 	 */
-	function execute() {
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+	public function execute(...$functionArgs) {
+		parent::execute(...$functionArgs);
+		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
 		$salesType = $this->getData('salesType');
 		if ($salesType === 'notAvailable') {
 			// Not available
@@ -107,7 +106,7 @@ class ApprovedProofForm extends Form {
 		$this->approvedProof->setSalesType($salesType);
 		$submissionFileDao->updateObject($this->approvedProof);
 
-		return $this->approvedProof->getFileIdAndRevision();
+		return $this->approvedProof->getId();
 	}
 }
 

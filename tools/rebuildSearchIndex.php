@@ -3,9 +3,9 @@
 /**
  * @file tools/rebuildSearchIndex.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class rebuildSearchIndex
  * @ingroup tools
@@ -15,14 +15,12 @@
 
 require(dirname(__FILE__) . '/bootstrap.inc.php');
 
-import('classes.search.MonographSearchIndex');
-
 class rebuildSearchIndex extends CommandLineTool {
 
 	/**
 	 * Print command usage information.
 	 */
-	function usage() {
+	public function usage() {
 		echo "Script to rebuild monograph search index\n"
 			. "Usage: {$this->scriptName}\n";
 	}
@@ -30,10 +28,10 @@ class rebuildSearchIndex extends CommandLineTool {
 	/**
 	 * Rebuild the search index for all monographs in all presses.
 	 */
-	function execute() {
-		MonographSearchIndex::rebuildIndex(true);
+	public function execute() {
+		$monographSearchIndex = Application::getSubmissionSearchIndex();
+		$monographSearchIndex->rebuildIndex(true);
 	}
-
 }
 
 $tool = new rebuildSearchIndex(isset($argv) ? $argv : array());

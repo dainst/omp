@@ -2,15 +2,13 @@
 
 > Open Monograph Press (OMP) has been developed by the Public Knowledge Project. For general information about OMP and other open research systems, visit the [PKP web site][pkp].
 
-[![Build Status](https://travis-ci.org/pkp/omp.svg?branch=master)](https://travis-ci.org/pkp/omp)
+[![Build Status](https://travis-ci.org/pkp/omp.svg?branch=stable-3_3_0)](https://travis-ci.org/pkp/omp)
 
 ## Documentation
 
 You will find detailed guides in [docs](docs) folder.
 
 ## Using Git development source
-
-Instead of cloning this repository for development, see: https://github.com/dainst/omp-docker. These are OMP's default instructions, the Docker setup should take care of these steps:
 
 Checkout submodules and copy default configuration :
 
@@ -19,8 +17,8 @@ Checkout submodules and copy default configuration :
 
 Install or update dependencies via Composer (https://getcomposer.org/):
 
-    composer install --working-dir=lib/pkp
-    composer install --working-dir=plugins/paymethod/paypal
+    composer --working-dir=lib/pkp install
+    composer --working-dir=plugins/paymethod/paypal install
 
 Install or update dependencies via [NPM](https://www.npmjs.com/):
 
@@ -32,7 +30,7 @@ If your PHP version supports built-in development server :
 
     php -S localhost:8000
 
-See [Wiki][wiki-dev] for more complete development guide.
+See [Development documentation](https://docs.pkp.sfu.ca/dev/) for more complete development guidance.
 
 ## Bugs / Issues
 

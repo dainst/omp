@@ -3,9 +3,9 @@
 /**
  * @file pages/index/IndexHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IndexHandler
  * @ingroup pages_index
@@ -13,61 +13,45 @@
  * @brief Handle site index requests.
  */
 
+import('lib.pkp.pages.index.PKPIndexHandler');
 
-import('classes.handler.Handler');
-
-class IndexHandler extends Handler {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
-
+class IndexHandler extends PKPIndexHandler {
 	//
 	// Public handler operations
 	//
 	/**
-	 * Display the site or press index page.
-	 * (If a site admin is logged in and no presses exist, redirect to the
-	 * press administration page -- this may be useful upon install.)
-	 *
+	 * If no press is selected, display list of presses.
+	 * Otherwise, display the index page for the selected press.
 	 * @param $args array
 	 * @param $request Request
 	 */
 	function index($args, $request) {
-		$targetPress = $this->getTargetContext($request);
+		$this->validate(null, $request);
 		$press = $request->getPress();
-		$user = $request->getUser();
 
-		if ($user && !$targetPress && Validation::isSiteAdmin()) {
-			// If the user is a site admin and no press exists,
-			// send them to press administration to create one.
-			return $request->redirect(null, 'admin', 'contexts');
+		if (!$press) {
+			$press = $this->getTargetContext($request, $hasNoContexts);
+			if ($press) {
+				// There's a target context but no press in the current request. Redirect.
+				$request->redirect($press->getPath());
+			}
+			if ($hasNoContexts && Validation::isSiteAdmin()) {
+				// No contexts created, and this is the admin.
+				$request->redirect(null, 'admin', 'contexts');
+			}
 		}
 
-		// Public access.
 		$this->setupTemplate($request);
-		$templateMgr = TemplateManager::getManager($request);
 
 		if ($press) {
 			// Display the current press home.
-			$this->_displayPressIndexPage($press, $templateMgr);
-		} elseif ($targetPress) {
-			// We're not on a press homepage, but there's one
-			// available; redirect there.
-			$request->redirect($targetPress->getPath());
+			$this->_displayPressIndexPage($press, $request);
 		} else {
-			// A target press couldn't be determined for some reason.
-			if ($user) {
-				// Redirect to user profile.
-				$request->redirect(null, 'user', 'profile');
-			} else {
-				// Not logged in. Redirect to login page.
-				$request->redirect(null, 'login');
-			}
+			// Display the site home.
+			$site = $request->getSite();
+			$this->_displaySiteIndexPage($site, $request);
 		}
+
 	}
 
 
@@ -75,15 +59,40 @@ class IndexHandler extends Handler {
 	// Private helper methods.
 	//
 	/**
+	 * Display the site index page.
+	 * @param $site Site
+	 * @param $request Request
+	 */
+	function _displaySiteIndexPage($site, $request) {
+		$templateMgr = TemplateManager::getManager($request);
+		$pressDao = DAORegistry::getDAO('PressDAO'); /* @var $pressDao PressDAO */
+
+		if ($site->getRedirect() && ($press = $pressDao->getById($site->getRedirect())) != null) {
+			$request->redirect($press->getPath());
+		}
+
+		$templateMgr->assign(array(
+			'pageTitleTranslated' => $site->getLocalizedTitle(),
+			'about' => $site->getLocalizedAbout(),
+			'pressesFilesPath' => $request->getBaseUrl() . '/' . Config::getVar('files', 'public_files_dir') . '/presses/',
+			'presses' => $pressDao->getAll(true)->toArray(),
+			'site' => $site,
+		));
+		$templateMgr->setCacheability(CACHEABILITY_PUBLIC);
+		$templateMgr->display('frontend/pages/indexSite.tpl');
+	}
+
+	/**
 	 * Display a given press index page.
 	 * @param $press Press
-	 * @param $templateMgr TemplateManager
+	 * @param $request Request
 	 */
-	function _displayPressIndexPage($press, &$templateMgr) {
+	function _displayPressIndexPage($press, $request) {
+		$templateMgr = TemplateManager::getManager($request);
 
 		// Display New Releases
 		if ($press->getSetting('displayNewReleases')) {
-			$newReleaseDao = DAORegistry::getDAO('NewReleaseDAO');
+			$newReleaseDao = DAORegistry::getDAO('NewReleaseDAO'); /* @var $newReleaseDao NewReleaseDAO */
 			$newReleases = $newReleaseDao->getMonographsByAssoc(ASSOC_TYPE_PRESS, $press->getId());
 			$templateMgr->assign('newReleases', $newReleases);
 		}
@@ -96,35 +105,16 @@ class IndexHandler extends Handler {
 		// Display creative commons logo/licence if enabled.
 		$templateMgr->assign('displayCreativeCommons', $press->getSetting('includeCreativeCommons'));
 
-		// Display announcements if enabled.
-		$enableAnnouncements = $press->getSetting('enableAnnouncements');
-		if ($enableAnnouncements) {
-			$enableAnnouncementsHomepage = $press->getSetting('enableAnnouncementsHomepage');
-			if ($enableAnnouncementsHomepage) {
-				$numAnnouncementsHomepage = $press->getSetting('numAnnouncementsHomepage');
-				$announcementDao = DAORegistry::getDAO('AnnouncementDAO');
-				$announcements =& $announcementDao->getAnnouncementsNotExpiredByAssocId(ASSOC_TYPE_PRESS, $press->getId());
-				$templateMgr->assign('announcements', $announcements->toArray());
-				if (isset($numAnnouncementsHomepage)) {
-					$templateMgr->assign('numAnnouncementsHomepage', $numAnnouncementsHomepage);
-				}
-			}
-		}
+		$this->_setupAnnouncements($press, $templateMgr);
 
 		// Display Featured Books
 		if ($press->getSetting('displayFeaturedBooks')) {
-			$featureDao = DAORegistry::getDAO('FeatureDAO');
+			$featureDao = DAORegistry::getDAO('FeatureDAO'); /* @var $featureDao FeatureDAO */
 			$featuredMonographIds = $featureDao->getSequencesByAssoc(ASSOC_TYPE_PRESS, $press->getId());
 			$featuredMonographs = array();
 			if (!empty($featuredMonographIds)) {
-				$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-				$publishedMonographs = $publishedMonographDao->getByPressId($press->getId());
-				while ($publishedMonograph = $publishedMonographs->next()) {
-					foreach($featuredMonographIds as $key => $val) {
-						if ($publishedMonograph->getId() == $key) {
-							$featuredMonographs[] = $publishedMonograph;
-						}
-					}
+				foreach($featuredMonographIds as $submissionId => $value) {
+					$featuredMonographs[] = Services::get('submission')->get($submissionId);
 				}
 			}
 			$templateMgr->assign('featuredMonographs', $featuredMonographs);
@@ -133,7 +123,7 @@ class IndexHandler extends Handler {
 		// Display In Spotlight
 		if ($press->getSetting('displayInSpotlight')) {
 			// Include random spotlight items for the press home page.
-			$spotlightDao = DAORegistry::getDAO('SpotlightDAO');
+			$spotlightDao = DAORegistry::getDAO('SpotlightDAO'); /* @var $spotlightDao SpotlightDAO */
 			$spotlights = $spotlightDao->getRandomByPressId($press->getId(), MAX_SPOTLIGHTS_VISIBLE);
 			$templateMgr->assign('spotlights', $spotlights);
 		}
@@ -141,5 +131,4 @@ class IndexHandler extends Handler {
 		$templateMgr->display('frontend/pages/index.tpl');
 	}
 }
-
 

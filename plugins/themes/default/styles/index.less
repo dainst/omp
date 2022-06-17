@@ -1,9 +1,9 @@
 /**
  * @file plugins/themes/default/styles/index.less
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Default theme stylesheet
  *
@@ -20,27 +20,26 @@
 @import "../../../../lib/pkp/styles/variables.less";
 @import "../../../../lib/pkp/styles/utils.less";
 @import "../../../../lib/pkp/styles/helpers.less";
-@import "../../../../lib/pkp/styles/controllers/extrasOnDemand.less";
 
 // Styles unique to this theme
 @import "variables.less";
-@import "helpers.less";
 @import "components.less";
 @import "body.less";
 @import "head.less";
 @import "main.less";
+@import "components/nav-toggle.less";
 @import "pages/catalogCategory.less";
 @import "pages/contact.less";
 @import "pages/index.less";
+@import "pages/indexSite.less";
 @import "pages/login.less";
 @import "pages/lostPassword.less";
 @import "pages/register.less";
-@import "pages/searchResults.less";
+@import "pages/search.less";
 @import "pages/submissions.less";
 @import "pages/viewFile.less";
 @import "objects/announcement_summary.less";
 @import "objects/announcement_full.less";
-@import "objects/galley_link.less";
 @import "objects/monograph_summary.less";
 @import "objects/monograph_full.less";
 @import "objects/spotlight.less";

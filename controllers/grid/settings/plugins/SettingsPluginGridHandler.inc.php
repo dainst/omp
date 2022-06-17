@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/settings/plugins/SettingsPluginGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SettingsPluginGridHandler
  * @ingroup controllers_grid_settings_plugins
@@ -35,12 +35,11 @@ class SettingsPluginGridHandler extends PluginGridHandler {
 	function loadCategoryData($request, &$categoryDataElement, $filter = null) {
 		$plugins = parent::loadCategoryData($request, $categoryDataElement, $filter);
 
-		$pressDao = DAORegistry::getDAO('PressDAO');
+		$pressDao = DAORegistry::getDAO('PressDAO'); /* @var $pressDao PressDAO */
 		$presses = $pressDao->getAll();
-		$singlePress = false;
-		if ($presses->getCount() == 1) {
-			$singlePress = true;
-		}
+		$firstPress = $presses->next();
+		$secondPress = $presses->next();
+		$singlePress = $firstPress && !$secondPress;
 
 		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
 
@@ -57,7 +56,6 @@ class SettingsPluginGridHandler extends PluginGridHandler {
 				if (!$plugin->isSitePlugin()) {
 					$contextLevelPlugins[$plugin->getName()] = $plugin;
 				}
-				unset($plugin);
 			}
 			return $contextLevelPlugins;
 		}

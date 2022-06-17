@@ -7,9 +7,9 @@
 ;
 ; config.TEMPLATE.inc.php
 ;
-; Copyright (c) 2014-2019 Simon Fraser University
-; Copyright (c) 2003-2019 John Willinsky
-; Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+; Copyright (c) 2014-2021 Simon Fraser University
+; Copyright (c) 2003-2021 John Willinsky
+; Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 ;
 ; OMP Configuration settings.
 ; Rename config.TEMPLATE.inc.php to config.inc.php to use.
@@ -29,7 +29,7 @@
 installed = Off
 
 ; The canonical URL to the OMP installation (excluding the trailing slash)
-base_url = base_url
+base_url = "http://pkp.sfu.ca/omp"
 
 ; Session cookie name
 session_cookie_name = OMPSID
@@ -44,7 +44,7 @@ session_lifetime = 30
 ; Enable support for running scheduled tasks
 ; Set this to On if you have set up the scheduled tasks script to
 ; execute periodically
-scheduled_tasks = On
+scheduled_tasks = Off
 
 ; Scheduled tasks will send email about processing
 ; only in case of errors. Set to off to receive
@@ -61,16 +61,15 @@ scheduled_tasks_report_error_only = On
 time_zone = "UTC"
 
 ; Short and long date formats
-date_format_trunc = "%m-%d"
 date_format_short = "%Y-%m-%d"
 date_format_long = "%B %e, %Y"
 datetime_format_short = "%Y-%m-%d %I:%M %p"
 datetime_format_long = "%B %e, %Y - %I:%M %p"
 time_format = "%I:%M %p"
 
-; Use URL parameters instead of CGI PATH_INFO. This is useful for
-; broken server setups that don't support the PATH_INFO environment
-; variable.
+; Use URL parameters instead of CGI PATH_INFO. This is useful for broken server
+; setups that don't support the PATH_INFO environment variable.
+; WARNING: This option is DEPRECATED and will be removed in the future.
 disable_path_info = Off
 
 ; Use fopen(...) for URL-based reads. Modern versions of dspace
@@ -93,7 +92,14 @@ allow_url_fopen = Off
 ; Generate RESTful URLs using mod_rewrite.  This requires the
 ; rewrite directive to be enabled in your .htaccess or httpd.conf.
 ; See FAQ for more details.
-restful_urls = On
+restful_urls = Off
+
+ Restrict the list of allowed hosts to prevent HOST header injection.
+; See docs/README.md for more details. The list should be JSON-formatted.
+; An empty string indicates that all hosts should be trusted (not recommended!)
+; Example:
+; allowed_hosts = '["myjournal.tld", "anotherjournal.tld", "mylibrary.tld"]'
+allowed_hosts = ''
 
 ; Allow the X_FORWARDED_FOR header to override the REMOTE_ADDR as the source IP
 ; Set this to "On" if you are behind a reverse proxy and you control the
@@ -101,18 +107,14 @@ restful_urls = On
 ; Warning: This defaults to "On" if unset for backwards compatibility.
 trust_x_forwarded_for = Off
 
-; Allow javascript files to be served through a content delivery network (set to
-; off to use local files)
-enable_cdn = On
-
 ; Set the following parameter to off if you want to work with the uncompiled
 ; (non-minified) JavaScript source for debugging or if you are working off a
 ; development branch without compiled JavaScript.
-enable_minified = Off
+enable_minified = On
 
 ; Provide a unique site ID and OAI base URL to PKP for statistics and security
 ; alert purposes only.
-enable_beacon = 1
+enable_beacon = On
 
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -122,13 +124,17 @@ enable_beacon = 1
 [database]
 
 driver = mysqli
-host = db_host
-username = db_user_name
-password = db_user_pw
-name = db_name
+host = localhost
+username = omp
+password = omp
+name = omp
 
-; Enable persistent connections (recommended)
-persistent = Off
+; Set the non-standard port and/or socket, if used
+; port = 3306
+; unix_socket = /var/run/mysqld/mysqld.sock
+
+; Database collation
+; collation = utf8_general_ci
 
 ; Enable database debug output (very verbose!)
 debug = Off
@@ -182,18 +188,8 @@ locale = en_US
 client_charset = utf-8
 
 ; Database connection character set
-; Must be set to "Off" if not supported by the database server
-; If enabled, must be the same character set as "client_charset"
-; (although the actual name may differ slightly depending on the server)
 connection_charset = utf8
 
-; Database storage character set
-; Must be set to "Off" if not supported by the database server
-database_charset = utf8
-
-; Enable character normalization to utf-8 (recommended)
-; If disabled, strings will be passed through in their native encoding
-charset_normalization = Off
 
 ;;;;;;;;;;;;;;;;;
 ; File Settings ;
@@ -204,7 +200,7 @@ charset_normalization = Off
 ; Complete path to directory to store uploaded files
 ; (This directory should not be directly web-accessible)
 ; Windows users should use forward slashes
-files_dir = /var/www/files/omp
+files_dir = files
 
 ; Path to the directory to store public uploaded files
 ; (This directory should be web-accessible and the specified path
@@ -212,8 +208,15 @@ files_dir = /var/www/files/omp
 ; Windows users should use forward slashes
 public_files_dir = public
 
+; The maximum allowed size in kilobytes of each user's public files
+; directory. This is where user's can upload images through the
+; tinymce editor to their bio. Editors can upload images for
+; some of the settings.
+; Set this to 0 to disallow such uploads.
+public_user_dir_size = 5000
+
 ; Permissions mask for created files and directories
-umask = 000
+umask = 0022
 
 ; The minimum percentage similarity between filenames that should be considered
 ; a possible revision
@@ -252,6 +255,9 @@ encryption = sha1
 
 ; The unique salt to use for generating password reset hashes
 salt = "YouMustSetASecretKeyHere!!"
+
+; The unique secret used for encoding and decoding API keys
+api_key_secret = ""
 
 ; The number of seconds before a password reset hash expires (defaults to
 ; 7200 seconds (2 hours)
@@ -295,14 +301,31 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 ; Use SMTP for sending mail instead of mail()
 ; smtp = On
 
-smtp_server = mail.dainst.org
-smtp_port = 587
+; SMTP server settings
+; smtp_server = mail.example.com
+; smtp_port = 25
 
 ; Enable SMTP authentication
-; Supported mechanisms: ssl, tls
-smtp_auth = tls
+; Supported smtp_auth: ssl, tls (see PHPMailer SMTPSecure)
+; smtp_auth = ssl
 ; smtp_username = username
 ; smtp_password = password
+;
+; Supported smtp_authtype: RAM-MD5, LOGIN, PLAIN, XOAUTH2 (see PHPMailer AuthType)
+; (Leave blank to try them in that order)
+; smtp_authtype =
+
+; The following are required for smtp_authtype = XOAUTH2 (e.g. GMail OAuth)
+; (See https://github.com/PHPMailer/PHPMailer/wiki/Using-Gmail-with-XOAUTH2)
+; smtp_oauth_provider = Google
+; smtp_oauth_email =
+; smtp_oauth_clientid =
+; smtp_oauth_clientsecret =
+; smtp_oauth_refreshtoken =
+
+; Enable suppressing verification of SMTP certificate in PHPMailer
+; Note: this is not recommended per PHPMailer documentation
+; smtp_suppress_cert_check = On
 
 ; Allow envelope sender to be specified
 ; (may not be possible with some server configurations)
@@ -315,6 +338,23 @@ smtp_auth = tls
 ; This is useful if setting up a site-wide noreply address
 ; The reply-to field will be set with the reply-to or from address.
 ; force_default_envelope_sender = Off
+
+; Force a DMARC compliant from header (RFC5322.From)
+; If any of your users have email addresses in domains not under your control
+; you may need to set this to be compliant with DMARC policies published by
+; those 3rd party domains.
+; Setting this will move the users address into the reply-to field and the
+; from field wil be rewritten with the default_envelope_sender.
+; To use this you must set force_default_enveloper_sender = On and
+; default_envelope_sender must be set to a valid address in a domain you own.
+; force_dmarc_compliant_from = Off
+
+; The display name to use with a DMARC compliant from header
+; By default the DMARC compliant from will have an empty name but this can
+; be changed by adding a text here.
+; You can use '%n' to insert the users name from the original from header
+; and '%s' to insert the localized sitename.
+; dmarc_compliant_from_displayname = '%n via %s'
 
 ; Amount of time required between attempts to send non-editorial emails
 ; in seconds. This can be used to help prevent email relaying via OMP.
@@ -378,7 +418,7 @@ result_cache_hours = 1
 oai = On
 
 ; OAI Repository identifier
-repository_id = "omp.publications.dainst.org"
+repository_id = omp.pkp.sfu.ca
 
 
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -412,6 +452,8 @@ recaptcha = off
 ; Whether or not to use Captcha on user registration
 captcha_on_register = on
 
+; Validate the hostname in the ReCaptcha response
+recaptcha_enforce_hostname = Off
 
 ;;;;;;;;;;;;;;;;;;;;;
 ; External Commands ;
@@ -423,9 +465,6 @@ captcha_on_register = on
 ; certain plug-ins or advanced program features.
 
 ; Using full paths to the binaries is recommended.
-
-; perl (used in paracite citation parser)
-perl = /usr/bin/perl
 
 ; tar (used in backup plugin, translation packaging)
 tar = /bin/tar
@@ -459,14 +498,9 @@ xslt_parameter_option = "-PARAM %n %v "
 
 [proxy]
 
-; Note that allow_url_fopen must be set to Off before these proxy settings
-; will take effect.
-
 ; The HTTP proxy configuration to use
-; http_host = localhost
-; http_port = 80
-; proxy_username = username
-; proxy_password = password
+; http_proxy = "http://username:password@192.168.1.1:8080"
+; https_proxy = "https://username:password@192.168.1.1:8080"
 
 
 ;;;;;;;;;;;;;;;;;;
@@ -489,7 +523,7 @@ deprecation_warnings = Off
 ; Log web service request information for debugging
 log_web_service_info = Off
 
-[dainst]
-;viewerUrl = https://publications.dainst.org/dai-book-viewer-built/viewer.html
-; viewerUrl = http://195.37.232.186/DAIbookViewer/dbv/build/viewer.html
-;restrictAnnotationTypes=locations
+; declare a cainfo path if a certificate other than PHP's default should be used for curl calls.
+; This setting overrides the 'curl.cainfo' parameter of the php.ini configuration file.
+[curl]
+; cainfo = ""

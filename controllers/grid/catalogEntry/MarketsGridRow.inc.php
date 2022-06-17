@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/catalogEntry/MarketsGridRow.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class MarketsGridRow
  * @ingroup controllers_grid_catalogEntry
@@ -19,11 +19,15 @@ class MarketsGridRow extends GridRow {
 	/** @var Monograph **/
 	var $_monograph;
 
+	/** @var Publication **/
+	var $_publication;
+
 	/**
 	 * Constructor
 	 */
-	function __construct($monograph) {
+	function __construct($monograph, $publication) {
 		$this->_monograph = $monograph;
+		$this->_publication = $publication;
 		parent::__construct();
 	}
 
@@ -46,6 +50,7 @@ class MarketsGridRow extends GridRow {
 			$router = $request->getRouter();
 			$actionArgs = array(
 				'submissionId' => $monograph->getId(),
+				'publicationId' => $this->_publication->getId(),
 				'marketId' => $market->getId()
 			);
 

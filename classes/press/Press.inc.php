@@ -7,9 +7,9 @@
 /**
  * @file classes/press/Press.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Press
  * @ingroup press
@@ -30,11 +30,11 @@ class Press extends Context {
 
 	/**
 	 * Get "localized" press page title (if applicable).
-	 * param $home boolean get homepage title
-	 * @return string
+	 * @return string|null
+	 * @deprecated 3.3.0, use getLocalizedData() instead
 	 */
-	function getPageHeaderTitle() {
-		$titleArray = $this->getSetting('name');
+	function getLocalizedPageHeaderTitle() {
+		$titleArray = $this->getData('name');
 		foreach (array(AppLocale::getLocale(), AppLocale::getPrimaryLocale()) as $locale) {
 			if (isset($titleArray[$locale])) return $titleArray[$locale];
 		}
@@ -42,15 +42,32 @@ class Press extends Context {
 	}
 
 	/**
-	 * Get "localized" press page logo (if applicable).
+	 * @deprecated Since OMP 3.2.1, use getLocalizedPageHeaderTitle instead.
 	 * @return string
 	 */
-	function getPageHeaderLogo() {
-		$logoArray = $this->getSetting('pageHeaderLogoImage');
+	function getPageHeaderTitle() {
+		return $this->getLocalizedPageHeaderTitle();
+	}
+
+	/**
+	 * Get "localized" press page logo (if applicable).
+	 * @return array|null
+	 * @deprecated 3.3.0, use getLocalizedData() instead
+	 */
+	function getLocalizedPageHeaderLogo() {
+		$logoArray = $this->getData('pageHeaderLogoImage');
 		foreach (array(AppLocale::getLocale(), AppLocale::getPrimaryLocale()) as $locale) {
 			if (isset($logoArray[$locale])) return $logoArray[$locale];
 		}
 		return null;
+	}
+
+	/**
+	 * @deprecated Since OMP 3.2.1, use getLocalizedPageHeaderLogo instead.
+	 * @return array|null
+	 */
+	function getPageHeaderLogo() {
+		return $this->getLocalizedPageHeaderLogo();
 	}
 
 	/**
@@ -59,7 +76,7 @@ class Press extends Context {
 	 * @return boolean
 	 */
 	function hasRequiredOnixHeaderFields() {
-		if ($this->getSetting('codeType') != '' && $this->getSetting('codeValue') != '') {
+		if ($this->getData('codeType') != '' && $this->getData('codeValue') != '') {
 			return true;
 		} else {
 			return false;
@@ -70,16 +87,8 @@ class Press extends Context {
 	 * Get the association type for this context.
 	 * @return int
 	 */
-	function getAssocType() {
+	public function getAssocType() {
 		return ASSOC_TYPE_PRESS;
-	}
-
-	/**
-	 * Get the settings DAO for this context object.
-	 * @return DAO
-	 */
-	static function getSettingsDAO() {
-		return DAORegistry::getDAO('PressSettingsDAO');
 	}
 
 	/**
@@ -90,5 +99,3 @@ class Press extends Context {
 		return DAORegistry::getDAO('PressDAO');
 	}
 }
-
-

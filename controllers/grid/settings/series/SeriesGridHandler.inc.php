@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/settings/series/SeriesGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SeriesGridHandler
  * @ingroup controllers_grid_settings_series
@@ -24,7 +24,7 @@ class SeriesGridHandler extends SetupGridHandler {
 		parent::__construct();
 		$this->addRoleAssignment(
 			array(ROLE_ID_MANAGER),
-			array('fetchGrid', 'fetchRow', 'addSeries', 'editSeries', 'updateSeries', 'deleteSeries', 'saveSequence')
+			array('fetchGrid', 'fetchRow', 'addSeries', 'editSeries', 'updateSeries', 'deleteSeries', 'saveSequence', 'deactivateSeries','activateSeries')
 		);
 	}
 
@@ -42,18 +42,20 @@ class SeriesGridHandler extends SetupGridHandler {
 		// FIXME are these all required?
 		AppLocale::requireComponents(
 			LOCALE_COMPONENT_APP_MANAGER,
+			LOCALE_COMPONENT_PKP_MANAGER,
 			LOCALE_COMPONENT_PKP_COMMON,
 			LOCALE_COMPONENT_PKP_USER,
-			LOCALE_COMPONENT_APP_COMMON
+			LOCALE_COMPONENT_APP_COMMON,
+			LOCALE_COMPONENT_PKP_SUBMISSION
 		);
 
 		// Set the grid title.
 		$this->setTitle('catalog.manage.series');
 
 		// Elements to be displayed in the grid
-		$seriesDao = DAORegistry::getDAO('SeriesDAO');
+		$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 		DAORegistry::getDAO('CategoryDAO'); // Load constants?
-		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO');
+		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO'); /* @var $subEditorsDao SubEditorsDAO */
 		$seriesIterator = $seriesDao->getByPressId($press->getId());
 
 		$gridData = array();
@@ -68,7 +70,7 @@ class SeriesGridHandler extends SetupGridHandler {
 			if (empty($categoriesString)) $categoriesString = __('common.none');
 
 			// Get the series editors data for the row
-			$assignedSeriesEditors = $subEditorsDao->getBySectionId($series->getId(), $press->getId());
+			$assignedSeriesEditors = $subEditorsDao->getBySubmissionGroupId($series->getId(), ASSOC_TYPE_SECTION, $press->getId());
 			if(empty($assignedSeriesEditors)) {
 				$editorsString = __('common.none');
 			} else {
@@ -84,6 +86,7 @@ class SeriesGridHandler extends SetupGridHandler {
 				'title' => $series->getLocalizedTitle(),
 				'categories' => $categoriesString,
 				'editors' => $editorsString,
+				'inactive' => $series->getIsInactive(),
 				'seq' => $series->getSequence()
 			);
 		}
@@ -106,6 +109,8 @@ class SeriesGridHandler extends SetupGridHandler {
 			)
 		);
 
+		import('controllers.grid.settings.series.SeriesGridCellProvider');
+		$seriesGridCellProvider = new SeriesGridCellProvider();
 		// Columns
 		$this->addColumn(
 			new GridColumn(
@@ -115,6 +120,18 @@ class SeriesGridHandler extends SetupGridHandler {
 		);
 		$this->addColumn(new GridColumn('categories', 'grid.category.categories'));
 		$this->addColumn(new GridColumn('editors', 'user.role.editors'));
+		// Series 'inactive'
+		$this->addColumn(
+			new GridColumn(
+				'inactive',
+				'common.inactive',
+				null,
+				'controllers/grid/common/cell/selectStatusCell.tpl',
+				$seriesGridCellProvider,
+				array('alignment' => COLUMN_ALIGNMENT_CENTER,
+						'width' => 20)
+			)
+		);
 	}
 
 	//
@@ -156,7 +173,7 @@ class SeriesGridHandler extends SetupGridHandler {
 	 * @copydoc GridHandler::setDataElementSequence()
 	 */
 	function setDataElementSequence($request, $rowId, $gridDataElement, $newSequence) {
-		$seriesDao = DAORegistry::getDAO('SeriesDAO');
+		$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 		$press = $request->getPress();
 		$series = $seriesDao->getById($rowId, $press->getId());
 		$series->setSequence($newSequence);
@@ -208,6 +225,8 @@ class SeriesGridHandler extends SetupGridHandler {
 
 		if ($seriesForm->validate()) {
 			$seriesForm->execute();
+			$notificationManager = new NotificationManager();
+			$notificationManager->createTrivialNotification($request->getUser()->getId());
 			return DAO::getDataChangedEvent($seriesForm->getSeriesId());
 		} else {
 			return new JSONMessage(false);
@@ -223,13 +242,25 @@ class SeriesGridHandler extends SetupGridHandler {
 	function deleteSeries($args, $request) {
 		$press = $request->getPress();
 
-		$seriesDao = DAORegistry::getDAO('SeriesDAO');
+		$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 		$series = $seriesDao->getById(
 			$request->getUserVar('seriesId'),
 			$press->getId()
 		);
 
 		if (isset($series)) {
+			$result = $seriesDao->getByContextId($press->getId());
+			$activeSeriesCount = (!$series->getIsInactive()) ? -1 : 0;
+			while (!$result->eof()) {
+				if (!$result->next()->getIsInactive()) {
+					$activeSeriesCount++;
+				}
+			}
+			if ($activeSeriesCount < 1) {
+				return new JSONMessage(false, __('manager.series.confirmDeactivateSeries.error'));
+				return false;
+			}
+
 			$seriesDao->deleteObject($series);
 			return DAO::getDataChangedEvent($series->getId());
 		} else {
@@ -237,6 +268,85 @@ class SeriesGridHandler extends SetupGridHandler {
 			return new JSONMessage(false, __('manager.setup.errorDeletingItem'));
 		}
 	}
+
+	/**
+	 * Deactivate a series.
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage JSON object
+	 */
+	function deactivateSeries($args, $request) {
+		// Identify the current series
+		$seriesId = (int) $request->getUserVar('seriesKey');
+
+		// Identify the context id.
+		$context = $request->getContext();
+
+		// Get series object
+		$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
+		// Validate if it can be inactive
+		$seriesIterator = $seriesDao->getByContextId($context->getId(),null,false);
+		$activeSeriesCount = 0;
+		while ($series = $seriesIterator->next()) {
+			if (!$series->getIsInactive()) {
+				$activeSeriesCount++;
+			}
+		}
+		if ($activeSeriesCount > 1) {
+			$series = $seriesDao->getById($seriesId, $context->getId());
+
+			if ($request->checkCSRF() && isset($series) && !$series->getIsInactive()) {
+				$series->setIsInactive(1);
+				$seriesDao->updateObject($series);
+
+				// Create the notification.
+				$notificationMgr = new NotificationManager();
+				$user = $request->getUser();
+				$notificationMgr->createTrivialNotification($user->getId());
+
+				return DAO::getDataChangedEvent($seriesId);
+			}
+		} else {
+			// Create the notification.
+			$notificationMgr = new NotificationManager();
+			$user = $request->getUser();
+			$notificationMgr->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('manager.series.confirmDeactivateSeries.error')));
+			return DAO::getDataChangedEvent($seriesId);
+		}
+
+		return new JSONMessage(false);
+	}
+
+	/**
+	 * Activate a series.
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage JSON object
+	 */
+	function activateSeries($args, $request) {
+
+		// Identify the current series
+		$seriesId = (int) $request->getUserVar('seriesKey');
+
+		// Identify the context id.
+		$context = $request->getContext();
+
+		// Get series object
+		$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
+		$series = $seriesDao->getById($seriesId, $context->getId());
+
+		if ($request->checkCSRF() && isset($series) && $series->getIsInactive()) {
+			$series->setIsInactive(0);
+			$seriesDao->updateObject($series);
+
+			// Create the notification.
+			$notificationMgr = new NotificationManager();
+			$user = $request->getUser();
+			$notificationMgr->createTrivialNotification($user->getId());
+
+			return DAO::getDataChangedEvent($seriesId);
+		}
+
+		return new JSONMessage(false);
+	}
 }
-
-

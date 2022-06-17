@@ -1,16 +1,18 @@
 {**
  * plugins/importexport/users/templates/index.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * List of operations this plugin can perform
  *}
-{strip}
-{assign var="pageTitle" value="plugins.importexport.users.displayName"}
-{include file="common/header.tpl"}
-{/strip}
+{extends file="layouts/backend.tpl"}
+
+{block name="page"}
+	<h1 class="app__pageHeading">
+		{translate key="plugins.importexport.users.displayName"}
+	</h1>
 
 <script type="text/javascript">
 	// Attach the JS file tab handler.
@@ -74,4 +76,4 @@
 	</div>
 </div>
 
-{include file="common/footer.tpl"}
+{/block}

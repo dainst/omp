@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/htmlMonographFile/HtmlMonographFilePlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class HtmlMonographFilePlugin
  * @ingroup plugins_generic_htmlMonographFile
@@ -60,27 +60,28 @@ class HtmlMonographFilePlugin extends GenericPlugin {
 	 * @return boolean
 	 */
 	function viewCallback($hookName, $params) {
-		$publishedMonograph =& $params[1];
+		$submission =& $params[1];
 		$publicationFormat =& $params[2];
 		$submissionFile =& $params[3];
 		$inline =& $params[4];
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 
-		if ($submissionFile && $submissionFile->getFileType() == 'text/html') {
+		$mimetype = $submissionFile->getData('mimetype');
+		if ($submissionFile && $mimetype == 'text/html') {
+			foreach ($submission->getData('publications') as $publication) {
+				if ($publication->getId() === $publicationFormat->getData('publicationId')) {
+					$filePublication = $publication;
+					break;
+				}
+			}
 			$templateMgr = TemplateManager::getManager($request);
-			$templateMgr->addStyleSheet(
-				'htmlArticleGalleyStyles',
-				$request->getBaseUrl() . '/plugins/generic/htmlMonographFile/display.css',
-				array(
-					'priority' => STYLE_SEQUENCE_CORE,
-					'contexts' => 'frontend',
-				)
-			);
 			$templateMgr->assign(array(
 				'pluginUrl' => $request->getBaseUrl() . '/' . $this->getPluginPath(),
-				'monograph' => $publishedMonograph,
+				'monograph' => $submission,
 				'publicationFormat' => $publicationFormat,
 				'downloadFile' => $submissionFile,
+				'isLatestPublication' => $submission->getData('currentPublicationId') === $publicationFormat->getData('publicationId'),
+				'filePublication' => $filePublication,
 			));
 			$templateMgr->display($this->getTemplateResource('display.tpl'));
 			return true;
@@ -95,15 +96,16 @@ class HtmlMonographFilePlugin extends GenericPlugin {
 	 * @param array $args
 	 */
 	function downloadCallback($hookName, $params) {
-		$publishedMonograph =& $params[1];
+		$submission =& $params[1];
 		$publicationFormat =& $params[2];
 		$submissionFile =& $params[3];
 		$inline =& $params[4];
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 
-		if ($submissionFile && $submissionFile->getFileType() == 'text/html') {
-			if (!HookRegistry::call('HtmlMonographFilePlugin::monographDownload', array(&$this, &$publishedMonograph, &$publicationFormat, &$submissionFile, &$inline))) {
-				echo $this->_getHTMLContents($request, $publishedMonograph, $publicationFormat, $submissionFile);
+		$mimetype = $submissionFile->getData('mimetype');
+		if ($submissionFile && $mimetype == 'text/html') {
+			if (!HookRegistry::call('HtmlMonographFilePlugin::monographDownload', array(&$this, &$submission, &$publicationFormat, &$submissionFile, &$inline))) {
+				echo $this->_getHTMLContents($request, $submission, $publicationFormat, $submissionFile);
 				$returner = true;
 				HookRegistry::call('HtmlMonographFilePlugin::monographDownloadFinished', array(&$returner));
 				return true;
@@ -122,19 +124,28 @@ class HtmlMonographFilePlugin extends GenericPlugin {
 	 * @return string
 	 */
 	function _getHTMLContents($request, $monograph, $publicationFormat, $submissionFile) {
-		$contents = file_get_contents($submissionFile->getFilePath());
+		$contents = Services::get('file')->fs->read($submissionFile->getData('path'));
 
 		// Replace media file references
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
 		import('lib.pkp.classes.submission.SubmissionFile'); // Constants
+		$proofFiles = Services::get('submissionFile')->getMany([
+			'submissionIds' => [$monograph->getId()],
+			'fileStages' => [SUBMISSION_FILE_PROOF],
+		]);
+		$dependentFiles = Services::get('submissionFile')->getMany([
+			'submissionIds' => [$monograph->getId()],
+			'fileStages' => [SUBMISSION_FILE_DEPENDENT],
+			'assocTypes' => [ASSOC_TYPE_SUBMISSION_FILE],
+			'assocIds' => [$submissionFile->getId()],
+		]);
 		$embeddableFiles = array_merge(
-			$submissionFileDao->getLatestRevisions($submissionFile->getSubmissionId(), SUBMISSION_FILE_PROOF),
-			$submissionFileDao->getLatestRevisionsByAssocId(ASSOC_TYPE_SUBMISSION_FILE, $submissionFile->getFileId(), $submissionFile->getSubmissionId(), SUBMISSION_FILE_DEPENDENT)
+			iterator_to_array($proofFiles),
+			iterator_to_array($dependentFiles)
 		);
 
 		foreach ($embeddableFiles as $embeddableFile) {
 			$fileUrl = $request->url(null, 'catalog', 'download', array($monograph->getBestId(), $publicationFormat->getBestId(), $embeddableFile->getBestId()), array('inline' => true));
-			$pattern = preg_quote($embeddableFile->getOriginalFileName());
+			$pattern = preg_quote($embeddableFile->getLocalizedData('name'));
 
 			$contents = preg_replace(
 					'/([Ss][Rr][Cc]|[Hh][Rr][Ee][Ff]|[Dd][Aa][Tt][Aa])\s*=\s*"([^"]*' . $pattern . ')"/',
@@ -186,7 +197,7 @@ class HtmlMonographFilePlugin extends GenericPlugin {
 	}
 
 	function _handleOmpUrl($matchArray) {
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$url = $matchArray[2];
 		$anchor = null;
 		if (($i = strpos($url, '#')) !== false) {
@@ -220,7 +231,7 @@ class HtmlMonographFilePlugin extends GenericPlugin {
 				$press = $request->getPress();
 				import ('classes.file.PublicFileManager');
 				$publicFileManager = new PublicFileManager();
-				$url = $request->getBaseUrl() . '/' . $publicFileManager->getPressFilesPath($press->getId()) . '/' . implode('/', $urlParts) . ($anchor?'#' . $anchor:'');
+				$url = $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($press->getId()) . '/' . implode('/', $urlParts) . ($anchor?'#' . $anchor:'');
 				break;
 		}
 		return $matchArray[1] . $url . $matchArray[3];

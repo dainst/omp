@@ -3,9 +3,9 @@
 /**
  * @file classes/template/TemplateManager.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class TemplateManager
  * @ingroup template
@@ -42,90 +42,104 @@ class TemplateManager extends PKPTemplateManager {
 			$this->assign('sitePublicFilesDir', $siteFilesDir);
 			$this->assign('publicFilesDir', $siteFilesDir); // May be overridden by press
 
-			$siteStyleFilename = $publicFileManager->getSiteFilesPath() . '/' . $site->getSiteStyleFilename();
-			if (file_exists($siteStyleFilename)) {
-				$this->addStyleSheet(
-					'siteStylesheet',
-					$request->getBaseUrl() . '/' . $siteStyleFilename,
-					array(
-						'priority' => STYLE_SEQUENCE_LAST
-					)
-				);
-			}
-
 			// Pass app-specific details to template
-			$this->assign(array(
+			$this->assign([
 				'brandImage' => 'templates/images/omp_brand.png',
-				'packageKey' => 'common.openMonographPress',
-			));
+				'packageKey' => 'common.software',
+			]);
 
 			// Get a count of unread tasks.
 			if ($user = $request->getUser()) {
-				$notificationDao = DAORegistry::getDAO('NotificationDAO');
+				$notificationDao = DAORegistry::getDAO('NotificationDAO'); /* @var $notificationDao NotificationDAO */
 				// Exclude certain tasks, defined in the notifications grid handler
 				import('lib.pkp.controllers.grid.notifications.TaskNotificationsGridHandler');
 				$this->assign('unreadNotificationCount', $notificationDao->getNotificationCount(false, $user->getId(), null, NOTIFICATION_LEVEL_TASK));
 			}
 
 			if (isset($context)) {
-				$this->assign('currentPress', $context);
-
-				$this->assign('siteTitle', $context->getLocalizedName());
-				$this->assign('publicFilesDir', $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($context->getAssocType(), $context->getId()));
-
-				$this->assign('primaryLocale', $context->getPrimaryLocale());
-				$this->assign('supportedLocales', $context->getSupportedLocaleNames());
-
-				// Assign page header
-				$this->assign('displayPageHeaderTitle', $context->getPageHeaderTitle());
-				$this->assign('displayPageHeaderLogo', $context->getPageHeaderLogo());
-				$this->assign('numPageLinks', $context->getSetting('numPageLinks'));
-				$this->assign('itemsPerPage', $context->getSetting('itemsPerPage'));
-				$this->assign('enableAnnouncements', $context->getSetting('enableAnnouncements'));
-				$this->assign('disableUserReg', $context->getSetting('disableUserReg'));
+				$this->assign([
+					'currentPress' => $context,
+					'siteTitle' => $context->getLocalizedName(),
+					'publicFilesDir' => $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($context->getId()),
+					'primaryLocale' => $context->getPrimaryLocale(),
+					'supportedLocales' => $context->getSupportedLocaleNames(),
+					'numPageLinks' => $context->getData('numPageLinks'),
+					'itemsPerPage' => $context->getData('itemsPerPage'),
+					'enableAnnouncements' => $context->getData('enableAnnouncements'),
+					'disableUserReg' => $context->getData('disableUserReg'),
+				]);
 
 				// Assign stylesheets and footer
-				$contextStyleSheet = $context->getSetting('styleSheet');
+				$contextStyleSheet = $context->getData('styleSheet');
 				if ($contextStyleSheet) {
 					$this->addStyleSheet(
 						'contextStylesheet',
-						$request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath(ASSOC_TYPE_PRESS, $context->getId()) . '/' . $contextStyleSheet['uploadName'],
-						array(
-							'priority' => STYLE_SEQUENCE_LAST
-						)
+						$request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($context->getId()) . '/' . $contextStyleSheet['uploadName'],
+						['priority' => STYLE_SEQUENCE_LAST]
 					);
 				}
 
-				// Get a link to the settings page for the current context.
-				// This allows us to reduce template duplication by using this
-				// variable in templates/common/header.tpl, instead of
-				// reproducing a lot of OMP/OJS-specific logic there.
-				$dispatcher = $request->getDispatcher();
-				$this->assign( 'contextSettingsUrl', $dispatcher->url($request, ROUTE_PAGE, null, 'management', 'settings', 'context') );
-
-				$this->assign('pageFooter', $context->getLocalizedSetting('pageFooter'));
+				$this->assign('pageFooter', $context->getLocalizedData('pageFooter'));
 			} else {
-				// Add the site-wide logo, if set for this locale or the primary locale
-				$this->assign('displayPageHeaderTitle', $site->getLocalizedPageHeaderTitle());
-				$this->assign('displayPageHeaderLogo', $site->getLocalizedSetting('pageHeaderTitleImage'));
-				$this->assign('siteTitle', $site->getLocalizedTitle());
-				$this->assign('primaryLocale', $site->getPrimaryLocale());
-				$this->assign('supportedLocales', $site->getSupportedLocaleNames());
-
 				// Check if registration is open for any contexts
 				$contextDao = Application::getContextDAO();
 				$contexts = $contextDao->getAll(true)->toArray();
-				$contextsForRegistration = array();
+				$contextsForRegistration = [];
 				foreach($contexts as $context) {
-					if (!$context->getSetting('disableUserReg')) {
+					if (!$context->getData('disableUserReg')) {
 						$contextsForRegistration[] = $context;
 					}
 				}
-				$this->assign('contexts', $contextsForRegistration);
-				$this->assign('disableUserReg', empty($contextsForRegistration));
+
+				$this->assign([
+					'contexts' => $contextsForRegistration,
+					'disableUserReg' => empty($contextsForRegistration),
+					'siteTitle' => $site->getLocalizedTitle(),
+					'primaryLocale' => $site->getPrimaryLocale(),
+					'supportedLocales' => $site->getSupportedLocaleNames(),
+					'pageFooter' => $site->getLocalizedData('pageFooter'),
+				]);
 			}
 		}
 	}
+
+	/**
+	 * @copydoc PKPTemplateManager::setupBackendPage()
+	 */
+	function setupBackendPage() {
+		parent::setupBackendPage();
+
+		$request = Application::get()->getRequest();
+		if (defined('SESSION_DISABLE_INIT')
+				|| !$request->getContext()
+				|| !$request->getUser()) {
+			return;
+		}
+
+		$router = $request->getRouter();
+		$handler = $router->getHandler();
+		$userRoles = (array) $handler->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
+
+		$menu = (array) $this->getState('menu');
+
+		// Add catalog after submissions items
+		if (in_array(ROLE_ID_MANAGER, $userRoles)) {
+			$catalogLink = [
+				'name' => __('navigation.catalog'),
+				'url' => $router->url($request, null, 'manageCatalog'),
+				'isCurrent' => $request->getRequestedPage() === 'manageCatalog',
+			];
+
+			$index = array_search('submissions', array_keys($menu));
+			if ($index === false || count($menu) <= ($index + 1)) {
+				$menu['catalog'] = $catalogLink;
+			} else {
+				$menu = array_slice($menu, 0, $index + 1, true) +
+						['catalog' => $catalogLink] +
+						array_slice($menu, $index + 1, null, true);
+			}
+		}
+
+		$this->setState(['menu' => $menu]);
+	}
 }
-
-

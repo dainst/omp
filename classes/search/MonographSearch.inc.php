@@ -3,9 +3,9 @@
 /**
  * @file classes/search/MonographSearch.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class MonographSearch
  * @ingroup search
@@ -15,7 +15,6 @@
  *
  */
 
-import('classes.search.MonographSearchIndex');
 import('lib.pkp.classes.search.SubmissionSearch');
 
 class MonographSearch extends SubmissionSearch {
@@ -34,26 +33,25 @@ class MonographSearch extends SubmissionSearch {
 		// If we got a primary sort order then apply it and use score as secondary
 		// order only.
 		// NB: We apply order after merging and before paging/formatting. Applying
-		// order before merging (i.e. in MonographSearchDAO) would require us to
-		// retrieve dependent objects for results being purged later. Doing
-		// everything in a closed SQL is not possible (e.g. for authors). Applying
-		// sort order after paging and formatting is not possible as we have to
-		// order the whole list before slicing it. So this seems to be the most
-		// appropriate place, although we may have to retrieve some objects again
-		// when formatting results.
+		// order before merging would require us to retrieve dependent objects for
+		// results being purged later. Doing everything in a closed SQL is not
+		// possible (e.g. for authors). Applying sort order after paging and
+		// formatting is not possible as we have to order the whole list before
+		// slicing it. So this seems to be the most appropriate place, although we
+		// may have to retrieve some objects again when formatting results.
 		$orderedResults = array();
 		$authorDao = DAORegistry::getDAO('AuthorDAO'); /* @var $authorDao AuthorDAO */
-		$monographDao = DAORegistry::getDAO('MonographDAO'); /* @var $monographDao MonographDAO */
-		$pressDao = DAORegistry::getDAO('PressDAO'); /* @var $pressDao PressDAO */
-		$pressTitles = array();
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$contextDao = Application::getContextDAO();
+		$contextTitles = array();
 		if ($orderBy == 'popularityAll' || $orderBy == 'popularityMonth') {
-			$application = Application::getApplication();
+			$application = Application::get();
 			$metricType = $application->getDefaultMetricType();
 			if (is_null($metricType)) {
 				// If no default metric has been found then sort by score...
 				$orderBy = 'score';
 			} else {
-				// Retrieve a metrics report for all monographs.
+				// Retrieve a metrics report for all submissions.
 				$column = STATISTICS_DIMENSION_SUBMISSION_ID;
 				$filter = array(
 					STATISTICS_DIMENSION_ASSOC_TYPE => array(ASSOC_TYPE_GALLEY, ASSOC_TYPE_SUBMISSION),
@@ -78,26 +76,24 @@ class MonographSearch extends SubmissionSearch {
 
 			switch ($orderBy) {
 				case 'authors':
-					$authors = $authorDao->getBySubmissionId($submissionId);
-					$authorNames = array();
-					foreach ($authors as $author) { /* @var $author Author */
-						$authorNames[] = $author->getFullName(false, true);
-					}
-					$orderKey = implode('; ', $authorNames);
-					unset($authors, $authorNames);
+					$submission = $submissionDao->getById($submissionId);
+					$orderKey = $submission->getAuthorString();
 					break;
 
 				case 'title':
-					$submission = $monographDao->getById($submissionId);
-					$orderKey = $submission->getLocalizedTitle(null, false);
+					$submission = $submissionDao->getById($submissionId);
+					$orderKey = '';
+					if (!empty($submission->getCurrentPublication())) {
+						$orderKey = $submission->getCurrentPublication()->getLocalizedData('title');
+					}
 					break;
 
 				case 'pressTitle':
-					if (!isset($pressTitles[$data['press_id']])) {
-						$press = $pressDao->getById($data['press_id']);
-						$pressTitles[$data['press_id']] = $press->getLocalizedName();
+					if (!isset($contextTitles[$data['press_id']])) {
+						$press = $contextDao->getById($data['press_id']);
+						$contextTitles[$data['press_id']] = $press->getLocalizedName();
 					}
-					$orderKey = $pressTitles[$data['press_id']];
+					$orderKey = $contextTitles[$data['press_id']];
 					break;
 
 				case 'publicationDate':
@@ -181,24 +177,24 @@ class MonographSearch extends SubmissionSearch {
 		$toDate = $request->getUserDateVar('dateTo', 32, 12, null, 23, 59, 59);
 		$searchFilters['toDate'] = (is_null($toDate) ? null : date('Y-m-d H:i:s', $toDate));
 
-		// Instantiate the press.
-		$press = $request->getPress();
-		$siteSearch = !((boolean)$press);
+		// Instantiate the context.
+		$context = $request->getContext();
+		$siteSearch = !((boolean)$context);
 		if ($siteSearch) {
-			$pressDao = DAORegistry::getDAO('PressDAO'); /* @var $pressDao PressDAO */
+			$contextDao = Application::getContextDAO();
 			if (!empty($searchFilters['searchPress'])) {
-				$press = $pressDao->getById($searchFilters['searchPress']);
+				$context = $contextDao->getById($searchFilters['searchPress']);
 			} elseif (array_key_exists('pressTitle', $request->getUserVars())) {
-				$presses = $pressDao->getTitles(false);
-				while ($press = $presses->next()) {
+				$contexts = $contextDao->getAll(true);
+				while ($context = $contexts->next()) {
 					if (in_array(
 						$request->getUserVar('pressTitle'),
-						(array) $press->getTitle(null)
+						(array) $context->getTitle(null)
 					)) break;
 				}
 			}
 		}
-		$searchFilters['searchPress'] = $press;
+		$searchFilters['searchPress'] = $context;
 		$searchFilters['siteSearch'] = $siteSearch;
 
 		return $searchFilters;
@@ -229,26 +225,25 @@ class MonographSearch extends SubmissionSearch {
 	 * @copydoc SubmissionSearch::formatResults()
 	 */
 	function formatResults($results, $user = null) {
-		$pressDao = DAORegistry::getDAO('PressDAO');
-		$monographDao = DAORegistry::getDAO('MonographDAO');
-		$seriesDao = DAORegistry::getDAO('SeriesDAO');
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
+		$contextDao = Application::getContextDAO();
+		$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
 
-		$publishedMonographCache = array();
+		$publishedSubmissionCache = array();
 		$monographCache = array();
-		$pressCache = array();
+		$contextCache = array();
 		$seriesCache = array();
 
 		$returner = array();
 		foreach ($results as $monographId) {
 			// Get the monograph, storing in cache if necessary.
 			if (!isset($monographCache[$monographId])) {
-				$monographCache[$monographId] = $monographDao->getById($monographId);
-				$publishedMonographCache[$monographId] = $publishedMonographDao->getById($monographId);
+				$submission = Services::get('submission')->get($monographId);
+				$monographCache[$monographId] = $submission;
+				$publishedSubmissionCache[$monographId] = $submission;
 			}
-			unset($monograph, $publishedMonograph);
+			unset($monograph, $publishedSubmission);
 			$monograph = $monographCache[$monographId];
-			$publishedMonograph = $publishedMonographCache[$monographId];
+			$publishedSubmission = $publishedSubmissionCache[$monographId];
 
 			if ($monograph) {
 				$seriesId = $monograph->getSeriesId();
@@ -256,51 +251,22 @@ class MonographSearch extends SubmissionSearch {
 					$seriesCache[$seriesId] = $seriesDao->getById($seriesId);
 				}
 
-				// Get the press, storing in cache if necessary.
-				$pressId = $monograph->getPressId();
-				if (!isset($pressCache[$pressId])) {
-					$pressCache[$pressId] = $pressDao->getById($pressId);
+				// Get the context, storing in cache if necessary.
+				$contextId = $monograph->getData('contextId');
+				if (!isset($contextCache[$contextId])) {
+					$contextCache[$contextId] = $contextDao->getById($contextId);
 				}
 
 				// Store the retrieved objects in the result array.
 				$returner[] = array(
-					'press' => $pressCache[$pressId],
+					'press' => $contextCache[$contextId],
 					'monograph' => $monograph,
-					'publishedMonograph' => $publishedMonograph,
+					'publishedSubmission' => $publishedSubmission,
 					'seriesArrangment' => $seriesCache[$seriesId]
 				);
 			}
 		}
 		return $returner;
-	}
-
-	/**
-	 * Identify similarity terms for a given submission.
-	 * @param $submissionId integer
-	 * @return null|array An array of string keywords or null
-	 * if some kind of error occurred.
-	 */
-	function getSimilarityTerms($submissionId) {
-		// Check whether a search plugin provides terms for a similarity search.
-		$searchTerms = array();
-		$result = HookRegistry::call('MonographSearch::getSimilarityTerms', array($submissionId, &$searchTerms));
-
-		// If no plugin implements the hook then use the subject keywords
-		// of the submission for a similarity search.
-		if ($result === false) {
-			// Retrieve the submission.
-			$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO'); /* @var $publishedMonographDao PublishedMonographDAO */
-			$monograph = $publishedMonographDao->getById($submissionId);
-			if (is_a($monograph, 'PublishedMonograph')) {
-				// Retrieve keywords (if any).
-				$searchTerms = $monograph->getLocalizedSubject();
-				// Tokenize keywords.
-				$searchTerms = trim(preg_replace('/\s+/', ' ', strtr($searchTerms, ',;', ' ')));
-				if (!empty($searchTerms)) $searchTerms = explode(' ', $searchTerms);
-			}
-		}
-
-		return $searchTerms;
 	}
 
 	function getIndexFieldMap() {
@@ -312,6 +278,7 @@ class MonographSearch extends SubmissionSearch {
 			SUBMISSION_SEARCH_SUPPLEMENTARY_FILE => 'suppFiles',
 			SUBMISSION_SEARCH_DISCIPLINE => 'discipline',
 			SUBMISSION_SEARCH_SUBJECT => 'subject',
+			SUBMISSION_SEARCH_KEYWORD => 'keyword',
 			SUBMISSION_SEARCH_TYPE => 'type',
 			SUBMISSION_SEARCH_COVERAGE => 'coverage'
 		);
@@ -329,7 +296,7 @@ class MonographSearch extends SubmissionSearch {
 		);
 
 		// Only show the "popularity" options if we have a default metric.
-		$application = Application::getApplication();
+		$application = Application::get();
 		$metricType = $application->getDefaultMetricType();
 		if (!is_null($metricType)) {
 			$resultSetOrderingOptions['popularityAll'] = __('search.results.orderBy.popularityAll');

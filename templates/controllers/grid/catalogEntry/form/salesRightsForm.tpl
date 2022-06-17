@@ -1,9 +1,9 @@
 {**
  * templates/controllers/grid/catalogEntry/form/salesRightsForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Sales Rights form.
  *}
@@ -18,6 +18,7 @@
 <form class="pkp_form" id="addSalesRightsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT component="grid.catalogEntry.SalesRightsGridHandler" op="updateRights"}">
 	{csrf}
 	<input type="hidden" name="submissionId" value="{$submissionId|escape}" />
+	<input type="hidden" name="publicationId" value="{$publicationId|escape}" />
 	<input type="hidden" name="representationId" value="{$representationId|escape}" />
 	<input type="hidden" name="salesRightsId" value="{$salesRightsId|escape}" />
 	{fbvFormArea id="addRights"}

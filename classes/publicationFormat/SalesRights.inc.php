@@ -3,9 +3,9 @@
 /**
  * @file classes/publicationFormat/SalesRights.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SalesRights
  * @ingroup publicationFormat
@@ -59,7 +59,7 @@ class SalesRights extends DataObject {
 	 * @return string
 	 */
 	function getNameForONIXCode() {
-		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
+		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO'); /* @var $onixCodelistItemDao ONIXCodelistItemDAO */
 		$codes =& $onixCodelistItemDao->getCodes('List46'); // List46 is for things like 'unrestricted sale with exclusive rights', etc.
 		return $codes[$this->getType()];
 	}

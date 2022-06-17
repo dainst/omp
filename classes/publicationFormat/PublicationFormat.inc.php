@@ -3,9 +3,9 @@
 /**
  * @file classes/publicationFormat/PublicationFormat.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PublicationFormat
  * @ingroup publicationFormat
@@ -30,9 +30,9 @@ class PublicationFormat extends Representation {
 	 * @return string
 	 */
 	function getBestId() {
-		$publicationFormatId = $this->getStoredPubId('publisher-id');
-		if (!empty($publicationFormatId)) return $publicationFormatId;
-		return $this->getId();
+		return $this->getData('urlPath')
+			? $this->getData('urlPath')
+			: $this->getId();
 	}
 
 	/**
@@ -72,25 +72,9 @@ class PublicationFormat extends Representation {
 	 * @return string
 	 */
 	function getNameForONIXCode() {
-		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
+		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO'); /* @var $onixCodelistItemDao ONIXCodelistItemDAO */
 		$codes = $onixCodelistItemDao->getCodes('List7'); // List7 is for object formats
 		return $codes[$this->getEntryKey()];
-	}
-
-	/**
-	 * Set monograph id.
-	 * @param $monographId int
-	 */
-	function setMonographId($monographId) {
-		return parent::setSubmissionId($monographId);
-	}
-
-	/**
-	 * Get monograph id
-	 * @return int
-	 */
-	function getMonographId() {
-		return parent::getSubmissionId();
 	}
 
 	/**
@@ -268,16 +252,18 @@ class PublicationFormat extends Representation {
 	 */
 	function getCalculatedFileSize() {
 		$fileSize = 0;
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+		$publication = Services::get('publication')->get($this->getData('publicationId'));
 		import('lib.pkp.classes.submission.SubmissionFile'); // File constants
-		$stageMonographFiles = $submissionFileDao->getLatestRevisionsByAssocId(
-			ASSOC_TYPE_PUBLICATION_FORMAT, $this->getId(),
-			$this->getMonographId(), SUBMISSION_FILE_PROOF
-		);
+		$stageMonographFiles = Services::get('submissionFile')->getMany([
+			'submissionIds' => [$publication->getData('submissionId')],
+			'fileStages' => [SUBMISSION_FILE_PROOF],
+			'assocTypes' => [ASSOC_TYPE_PUBLICATION_FORMAT],
+			'assocIds' => [$this->getId()],
+		]);
 
 		foreach ($stageMonographFiles as $monographFile) {
 			if ($monographFile->getViewable()) {
-				$fileSize += (int) $monographFile->getFileSize();
+				$fileSize += (int) Services::get('file')->fs->getSize($monographFile->getData('path'));
 			}
 		}
 
@@ -297,7 +283,7 @@ class PublicationFormat extends Representation {
 	 * @return DAOResultFactory SalesRights
 	 */
 	function getSalesRights() {
-		$salesRightsDao = DAORegistry::getDAO('SalesRightsDAO');
+		$salesRightsDao = DAORegistry::getDAO('SalesRightsDAO'); /* @var $salesRightsDao SalesRightsDAO */
 		return $salesRightsDao->getByPublicationFormatId($this->getId());
 	}
 
@@ -306,7 +292,7 @@ class PublicationFormat extends Representation {
 	 * @return DAOResultFactory IdentificationCode
 	 */
 	function getIdentificationCodes() {
-		$identificationCodeDao = DAORegistry::getDAO('IdentificationCodeDAO');
+		$identificationCodeDao = DAORegistry::getDAO('IdentificationCodeDAO'); /* @var $identificationCodeDao IdentificationCodeDAO */
 		return $identificationCodeDao->getByPublicationFormatId($this->getId());
 	}
 
@@ -315,7 +301,7 @@ class PublicationFormat extends Representation {
 	 * @return Array PublicationDate
 	 */
 	function getPublicationDates() {
-		$publicationDateDao = DAORegistry::getDAO('PublicationDateDAO');
+		$publicationDateDao = DAORegistry::getDAO('PublicationDateDAO'); /* @var $publicationDateDao PublicationDateDAO */
 		return $publicationDateDao->getByPublicationFormatId($this->getId());
 	}
 
@@ -324,7 +310,7 @@ class PublicationFormat extends Representation {
 	 * @return DAOResultFactory Market
 	 */
 	function getMarkets() {
-		$marketDao = DAORegistry::getDAO('MarketDAO');
+		$marketDao = DAORegistry::getDAO('MarketDAO'); /* @var $marketDao MarketDAO */
 		return $marketDao->getByPublicationFormatId($this->getId());
 	}
 

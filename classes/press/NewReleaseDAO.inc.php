@@ -3,9 +3,9 @@
 /**
  * @file classes/press/NewReleaseDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NewReleaseDAO
  * @ingroup press
@@ -26,22 +26,18 @@ class NewReleaseDAO extends DAO {
 	 * Get monograph IDs by association.
 	 * @param $assocType int ASSOC_TYPE_...
 	 * @param $assocId int
-	 * @return array monographId
+	 * @return array [monographId => true]
 	 */
 	function getMonographIdsByAssoc($assocType, $assocId) {
-		$returner = array();
 		$result = $this->retrieve(
 			'SELECT submission_id FROM new_releases WHERE assoc_type = ? AND assoc_id = ?',
-			array((int) $assocType, (int) $assocId)
+			[(int) $assocType, (int) $assocId]
 		);
 
-		while (!$result->EOF) {
-			list($monographId) = $result->fields;
-			$returner[$monographId] = true;
-			$result->MoveNext();
+		$returner = [];
+		foreach ($result as $row) {
+			$returner[$row->submission_id] = true;
 		}
-
-		$result->Close();
 		return $returner;
 	}
 
@@ -52,25 +48,25 @@ class NewReleaseDAO extends DAO {
 	 * @return array Monograph
 	 */
 	function getMonographsByAssoc($assocType, $assocId) {
+		// import STATUS_PUBLISHED constant
+		import('classes.submission.Submission');
 		$result = $this->retrieve(
-			'SELECT	n.submission_id
+			'SELECT	n.submission_id AS submission_id
 			FROM	new_releases n,
-				published_submissions ps
-			WHERE	n.submission_id = ps.submission_id
+				submissions s,
+				publications p
+			WHERE	n.submission_id = s.submission_id
+				AND p.publication_id = s.current_publication_id
 				AND n.assoc_type = ? AND n.assoc_id = ?
-				AND ps.date_published IS NOT NULL
-			ORDER BY ps.date_published DESC',
-			array((int) $assocType, (int) $assocId)
+				AND s.status = ?
+			ORDER BY p.date_published DESC',
+			[(int) $assocType, (int) $assocId, STATUS_PUBLISHED]
 		);
 
-		$returner = array();
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		while (!$result->EOF) {
-			list($monographId) = $result->fields;
-			$returner[] = $publishedMonographDao->getById($monographId);
-			$result->MoveNext();
+		$returner = [];
+		foreach ($result as $row) {
+			$returner[] = Services::get('submission')->get($row->submission_id);
 		}
-		$result->Close();
 		return $returner;
 	}
 
@@ -86,11 +82,11 @@ class NewReleaseDAO extends DAO {
 				(submission_id, assoc_type, assoc_id)
 				VALUES
 				(?, ?, ?)',
-			array(
+			[
 				(int) $monographId,
 				(int) $assocType,
 				(int) $assocId
-			)
+			]
 		);
 	}
 
@@ -102,7 +98,7 @@ class NewReleaseDAO extends DAO {
 	function deleteByMonographId($monographId) {
 		$this->update(
 			'DELETE FROM new_releases WHERE submission_id = ?',
-			(int) $monographId
+			[(int) $monographId]
 		);
 	}
 
@@ -114,7 +110,7 @@ class NewReleaseDAO extends DAO {
 	function deleteByAssoc($assocType, $assocId) {
 		$this->update(
 			'DELETE FROM new_releases WHERE assoc_type = ? AND assoc_id = ?',
-			array((int) $assocType, (int) $assocId)
+			[(int) $assocType, (int) $assocId]
 		);
 	}
 
@@ -130,11 +126,11 @@ class NewReleaseDAO extends DAO {
 			WHERE	submission_id = ? AND
 				assoc_type = ? AND
 				assoc_id = ?',
-			array(
+			[
 				(int) $monographId,
 				(int) $assocType,
 				(int) $assocId
-			)
+			]
 		);
 	}
 
@@ -151,13 +147,9 @@ class NewReleaseDAO extends DAO {
 	function isNewRelease($monographId, $assocType, $assocId) {
 		$result = $this->retrieve(
 			'SELECT submission_id FROM new_releases WHERE submission_id = ? AND assoc_type = ? AND assoc_id = ?',
-			array((int) $monographId, (int) $assocType, (int) $assocId)
+			[(int) $monographId, (int) $assocType, (int) $assocId]
 		);
-		if ($result->RecordCount() > 0) {
-			return true;
-		}
-
-		return false;
+		return (boolean) $result->current();
 	}
 
 	/**
@@ -169,18 +161,16 @@ class NewReleaseDAO extends DAO {
 	function getNewReleaseAll($monographId) {
 		$result = $this->retrieve(
 			'SELECT assoc_type, assoc_id FROM new_releases WHERE submission_id = ?',
-			array((int) $monographId)
+			[(int) $monographId]
 		);
 
-		$newRelease = array();
-		while (!$result->EOF) {
-			$newRelease[] = array(
-				'assoc_type' => (int) $result->fields['assoc_type'],
-				'assoc_id' => (int) $result->fields['assoc_id'],
-			);
-			$result->MoveNext();
+		$newRelease = [];
+		foreach ($result as $row) {
+			$newRelease[] = [
+				'assoc_type' => (int) $row->assoc_type,
+				'assoc_id' => (int) $row->assoc_id,
+			];
 		}
-
 		return $newRelease;
 	}
 }

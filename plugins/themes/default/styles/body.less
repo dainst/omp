@@ -1,16 +1,17 @@
 /**
  * @file plugins/themes/default/styles/body.less
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Classes for site-wide elements and layout scaffolding
  */
 
+html,
 body {
 	font-family: @font;
-	font-size: @font-base;
+	font-size: @rem;
 	line-height: @line-base;
 	color: @text;
 	background: @bg;
@@ -27,9 +28,10 @@ a {
 
 
 // Page container widths
-.pkp_site_name,
+.pkp_site_name_wrapper,
 .pkp_navigation_primary_wrapper,
 .pkp_navigation_user,
+.pkp_search_mobile,
 .pkp_structure_content,
 .pkp_structure_footer {
 	.pkp_helpers_clear;

@@ -3,9 +3,9 @@
 /**
  * @file classes/search/MonographSearchDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class MonographSearchDAO
  * @ingroup search
@@ -25,15 +25,11 @@ class MonographSearchDAO extends SubmissionSearchDAO {
 	 * @return array of results (associative arrays)
 	 */
 	function getPhraseResults($press, $phrase, $publishedFrom = null, $publishedTo = null, $type = null, $limit = 500, $cacheHours = 24) {
-		import('lib.pkp.classes.db.DBRowIterator');
-		if (empty($phrase)) {
-			$results = false;
-			return new DBRowIterator($results);
-		}
+		if (empty($phrase)) return array();
 
 		$sqlFrom = '';
 		$sqlWhere = '';
-		$params = array();
+		$params = [];
 
 		for ($i = 0, $count = count($phrase); $i < $count; $i++) {
 			if (!empty($sqlFrom)) {
@@ -58,37 +54,38 @@ class MonographSearchDAO extends SubmissionSearchDAO {
 			$params[] = $press->getId();
 		}
 
-		$result = $this->retrieveCached(
+		import('classes.submission.Submission'); // import STATUS_PUBLISHED constant
+		$params[] = STATUS_PUBLISHED;
+
+		$result = $this->retrieve(
 			$sql = 'SELECT
 				o.submission_id,
 				s.context_id as press_id,
-				ps.date_published as s_pub,
+				p.date_published as s_pub,
 				COUNT(*) AS count
 			FROM
 				submissions s,
-				published_submissions ps,
+				publications p,
 				submission_search_objects o NATURAL JOIN ' . $sqlFrom . '
-			WHERE
-				s.submission_id = ps.submission_id AND o.submission_id = s.submission_id AND ' . $sqlWhere . '
-			GROUP BY o.submission_id, s.context_id, ps.date_published
+			WHERE o.submission_id = s.submission_id
+			AND s.current_publication_id = p.publication_id
+			AND ' . $sqlWhere . '
+			AND s.status = ?
+			GROUP BY o.submission_id, s.context_id, p.date_published
 			ORDER BY count DESC
 			LIMIT ' . $limit,
 			$params,
 			3600 * $cacheHours // Cache for 24 hours
 		);
 
-		$returner = array();
-		while (!$result->EOF) {
-			$row = $result->getRowAssoc(false);
-			$returner[$row['submission_id']] = array(
-				'count' => $row['count'],
-				'press_id' => $row['press_id'],
-				'publicationDate' => $this->datetimeFromDB($row['s_pub'])
-			);
-			$result->MoveNext();
+		$returner = [];
+		foreach ($result as $row) {
+			$returner[$row->submission_id] = [
+				'count' => $row->count,
+				'press_id' => $row->press_id,
+				'publicationDate' => $this->datetimeFromDB($row->s_pub)
+			];
 		}
-		$result->Close();
-
 		return $returner;
 	}
 }

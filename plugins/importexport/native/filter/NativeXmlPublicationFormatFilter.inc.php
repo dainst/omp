@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/native/filter/NativeXmlPublicationFormatFilter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NativeXmlPublicationFormatFilter
  * @ingroup plugins_importexport_native
@@ -70,6 +70,8 @@ class NativeXmlPublicationFormatFilter extends NativeXmlRepresentationFilter {
 		if ($node->getAttribute('approved') == 'true') $representation->setIsApproved(true);
 		if ($node->getAttribute('available') == 'true') $representation->setIsAvailable(true);
 		if ($node->getAttribute('physical_format') == 'true') $representation->setPhysicalFormat(true);
+		if ($node->getAttribute('entry_key')) $representation->setEntryKey($node->getAttribute('entry_key'));
+
 
 		$representationDao = Application::getRepresentationDAO();
 		$representationDao->insertObject($representation);
@@ -96,12 +98,11 @@ class NativeXmlPublicationFormatFilter extends NativeXmlRepresentationFilter {
 	 */
 	function _processFileRef($node, $deployment, &$representation) {
 		$fileId = $node->getAttribute('id');
-		$revisionId = $node->getAttribute('revision');
-		$DBId = $deployment->getFileDBId($fileId, $revisionId);
+		$DBId = $deployment->getFileDBId($fileId);
 		if ($DBId) {
 			// Update the submission file.
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
-			$submissionFile = $submissionFileDao->getRevision($DBId, $revisionId);
+			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
+			$submissionFile = Services::get('submissionFile')->get($DBId);
 			$submissionFile->setAssocType(ASSOC_TYPE_REPRESENTATION);
 			$submissionFile->setAssocId($representation->getId());
 			$submissionFileDao->updateObject($submissionFile);
@@ -111,11 +112,15 @@ class NativeXmlPublicationFormatFilter extends NativeXmlRepresentationFilter {
 	/**
 	 * Process the Product node found inside the publication_format node.  There may be many of these.
 	 * @param $node DOMElement
+	 * @param $deployment PKPImportExportDeployment
 	 * @param $representation PublicationFormat
 	 */
 	function _processProductNode($node, $deployment, &$representation) {
 
-		$onixDeployment = new Onix30ExportDeployment(Request::getContext(), Request::getUser());
+		$request = Application::get()->getRequest();
+		$onixDeployment = new Onix30ExportDeployment($request->getContext(), $request->getUser());
+
+		$submission = $deployment->getSubmission();
 
 		$representation->setProductCompositionCode($this->_extractTextFromNode($node, $onixDeployment, 'ProductComposition'));
 		$representation->setEntryKey($this->_extractTextFromNode($node, $onixDeployment, 'ProductForm'));
@@ -126,14 +131,12 @@ class NativeXmlPublicationFormatFilter extends NativeXmlRepresentationFilter {
 		$this->_extractMeasureContent($node, $onixDeployment, $representation);
 		$this->_extractExtentContent($node, $onixDeployment, $representation);
 
-		// if this is a published monograph, extract the Audience elements and store them.
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		$publishedMonograph = $publishedMonographDao->getById($representation->getSubmissionId());
-		if ($publishedMonograph) {
-			$publishedMonograph->setAudience($this->_extractTextFromNode($node, $onixDeployment, 'AudienceCodeType'));
-			$publishedMonograph->setAudienceRangeQualifier($this->_extractTextFromNode($node, $onixDeployment, 'AudienceRangeQualifier'));
-			$this->_extractAudienceRangeContent($node, $onixDeployment, $representation);
-			$publishedMonographDao->updateObject($publishedMonograph);
+		if ($submission) {
+			$submission->setData('audience', $this->_extractTextFromNode($node, $onixDeployment, 'AudienceCodeType'));
+			$submission->setData('audienceRangeQualifier', $this->_extractTextFromNode($node, $onixDeployment, 'AudienceRangeQualifier'));
+			$this->_extractAudienceRangeContent($node, $onixDeployment, $submission);
+
+			DAORegistry::getDAO('SubmissionDAO')->updateObject($submission);
 		}
 
 		// Things below here require a publication format id since they are dependent on the PublicationFormat.
@@ -142,7 +145,7 @@ class NativeXmlPublicationFormatFilter extends NativeXmlRepresentationFilter {
 		$nodeList = $node->getElementsByTagNameNS($onixDeployment->getNamespace(), 'ProductIdentifier');
 
 		if ($nodeList->length > 0) {
-			$identificationCodeDao = DAORegistry::getDAO('IdentificationCodeDAO');
+			$identificationCodeDao = DAORegistry::getDAO('IdentificationCodeDAO'); /* @var $identificationCodeDao IdentificationCodeDAO */
 			for ($i = 0 ; $i < $nodeList->length ; $i++) {
 				$n = $nodeList->item($i);
 				$identificationCode = $identificationCodeDao->newDataObject();
@@ -166,7 +169,7 @@ class NativeXmlPublicationFormatFilter extends NativeXmlRepresentationFilter {
 		$nodeList = $node->getElementsByTagNameNS($onixDeployment->getNamespace(), 'PublishingDate');
 
 		if ($nodeList->length > 0) {
-			$publicationDateDao = DAORegistry::getDAO('PublicationDateDAO');
+			$publicationDateDao = DAORegistry::getDAO('PublicationDateDAO'); /* @var $publicationDateDao PublicationDateDAO */
 			for ($i = 0 ; $i < $nodeList->length ; $i++) {
 				$n = $nodeList->item($i);
 				$date = $publicationDateDao->newDataObject();
@@ -187,7 +190,7 @@ class NativeXmlPublicationFormatFilter extends NativeXmlRepresentationFilter {
 		// Extract SalesRights elements.
 		$nodeList = $node->getElementsByTagNameNS($onixDeployment->getNamespace(), 'SalesRights');
 		if ($nodeList->length > 0) {
-			$salesRightsDao = DAORegistry::getDAO('SalesRightsDAO');
+			$salesRightsDao = DAORegistry::getDAO('SalesRightsDAO'); /* @var $salesRightsDao SalesRightsDAO */
 			for ($i = 0 ; $i < $nodeList->length ; $i ++) {
 				$salesRights = $salesRightsDao->newDataObject();
 				$salesRights->setPublicationFormatId($representation->getId());
@@ -218,8 +221,8 @@ class NativeXmlPublicationFormatFilter extends NativeXmlRepresentationFilter {
 		// Extract ProductSupply elements.  Contains Markets, Pricing, Suppliers, and Sales Agents.
 		$nodeList = $node->getElementsByTagNameNS($onixDeployment->getNamespace(), 'ProductSupply');
 		if ($nodeList->length > 0) {
-			$marketDao = DAORegistry::getDAO('MarketDAO');
-			$representativeDao = DAORegistry::getDAO('RepresentativeDAO');
+			$marketDao = DAORegistry::getDAO('MarketDAO'); /* @var $marketDao MarketDAO */
+			$representativeDao = DAORegistry::getDAO('RepresentativeDAO'); /* @var $representativeDao RepresentativeDAO */
 
 			for ($i = 0 ; $i < $nodeList->length ; $i ++) {
 				$productSupplyNode = $nodeList->item($i);
@@ -401,9 +404,9 @@ class NativeXmlPublicationFormatFilter extends NativeXmlRepresentationFilter {
 	 * a submission defines a specific range, or a to/from pair.
 	 * @param $node DOMElement
 	 * @param $onixDeployment Onix30ExportDeployment
-	 * @param PublicationFormat $representation
+	 * @param Submission $submission
 	 */
-	function _extractAudienceRangeContent($node, $onixDeployment, &$representation) {
+	function _extractAudienceRangeContent($node, $onixDeployment, &$submission) {
 		$nodeList = $node->getElementsByTagNameNS($onixDeployment->getNamespace(), 'AudienceRange');
 		for ($i = 0 ; $i < $nodeList->length ; $i++) {
 			$n = $nodeList->item($i);
@@ -413,13 +416,13 @@ class NativeXmlPublicationFormatFilter extends NativeXmlRepresentationFilter {
 				case 'AudienceRangeValue':
 					switch ($audienceRangePrecision) {
 						case '01':
-							$representation->setAudienceRangeExact($o->textContent);
+							$submission->setData('audienceRangeExact', $o->textContent);
 							break;
 						case '03':
-							$representation->setAudienceRangeTo($o->textContent);
+							$submission->setData('audienceRangeTo', $o->textContent);
 							break;
 						case '04':
-							$representation->setAudienceRangeFrom($o->textContent);
+							$submission->setData('audienceRangeFrom', $o->textContent);
 							break;
 					}
 					break;

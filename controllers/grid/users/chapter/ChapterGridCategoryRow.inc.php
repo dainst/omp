@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/users/chapter/ChapterGridCategoryRow.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ChapterGridCategoryRow
  * @ingroup controllers_grid_users_chapter
@@ -23,6 +23,9 @@ class ChapterGridCategoryRow extends GridCategoryRow {
 	/** @var Monograph **/
 	var $_monograph;
 
+	/** @var Publication **/
+	var $_publication;
+
 	/** @var Chapter **/
 	var $_chapter;
 
@@ -32,8 +35,9 @@ class ChapterGridCategoryRow extends GridCategoryRow {
 	/**
 	 * Constructor
 	 */
-	function __construct($monograph, $readOnly = false) {
+	function __construct($monograph, $publication, $readOnly = false) {
 		$this->_monograph = $monograph;
+		$this->_publication = $publication;
 		$this->_readOnly = $readOnly;
 		parent::__construct();
 	}
@@ -62,6 +66,7 @@ class ChapterGridCategoryRow extends GridCategoryRow {
 				$router = $request->getRouter();
 				$actionArgs = array(
 					'submissionId' => $monograph->getId(),
+					'publicationId' => $this->getPublication()->getId(),
 					'chapterId' => $chapterId
 				);
 
@@ -89,6 +94,14 @@ class ChapterGridCategoryRow extends GridCategoryRow {
 	 */
 	function getMonograph() {
 		return $this->_monograph;
+	}
+
+	/**
+	 * Get the publication for this row (already authorized)
+	 * @return Publication
+	 */
+	function getPublication() {
+		return $this->_publication;
 	}
 
 	/**

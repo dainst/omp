@@ -3,9 +3,9 @@
 /**
  * @file controllers/tab/pubIds/form/PublicIdentifiersForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PublicIdentifiersForm
  * @ingroup controllers_tab_pubIds_form
@@ -23,18 +23,33 @@ class PublicIdentifiersForm extends PKPPublicIdentifiersForm {
 	 * @param $stageId integer
 	 * @param $formParams array
 	 */
-	function __construct($pubObject, $stageId = null, $formParams = null) {
+	public function __construct($pubObject, $stageId = null, $formParams = null) {
 		parent::__construct($pubObject, $stageId, $formParams);
+	}
+
+	/**
+	 * @copydoc Form::fetch()
+	 */
+	function fetch($request, $template = null, $display = false) {
+		$templateMgr = TemplateManager::getManager($request);
+		$enablePublisherId = $request->getContext()->getData('enablePublisherId');
+		$templateMgr->assign([
+			'enablePublisherId' => (is_a($this->getPubObject(), 'Chapter') && in_array('chapter', $enablePublisherId)) ||
+					(is_a($this->getPubObject(), 'Representation') && in_array('representation', $enablePublisherId)) ||
+					(is_a($this->getPubObject(), 'SubmissionFile') && in_array('file', $enablePublisherId)),
+		]);
+
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
 	 * @copydoc Form::execute()
 	 */
-	function execute() {
-		parent::execute();
+	public function execute(...$functionArgs) {
+		parent::execute(...$functionArgs);
 		$pubObject = $this->getPubObject();
 		if (is_a($pubObject, 'Chapter')) {
-			$chapterDao = DAORegistry::getDAO('ChapterDAO');
+			$chapterDao = DAORegistry::getDAO('ChapterDAO'); /* @var $chapterDao ChapterDAO */
 			$chapterDao->updateObject($pubObject);
 		}
 	}
@@ -42,7 +57,7 @@ class PublicIdentifiersForm extends PKPPublicIdentifiersForm {
 	/**
 	 * @copydoc PKPPublicIdentifiersForm::getAssocType()
 	 */
-	function getAssocType($pubObject) {
+	public function getAssocType($pubObject) {
 		if (is_a($pubObject, 'Chapter')) {
 			return ASSOC_TYPE_CHAPTER;
 		}

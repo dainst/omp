@@ -3,9 +3,9 @@
 /**
  * @file classes/submission/reviewer/ReviewerSubmissionDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewerSubmissionDAO
  * @ingroup submission
@@ -14,14 +14,13 @@
  * @brief Operations for retrieving and modifying ReviewerSubmission objects.
  */
 
-import('classes.monograph.MonographDAO');
+import('classes.submission.SubmissionDAO');
 import('classes.submission.reviewer.ReviewerSubmission');
 
-class ReviewerSubmissionDAO extends MonographDAO {
+class ReviewerSubmissionDAO extends SubmissionDAO {
 	var $authorDao;
 	var $userDao;
 	var $reviewAssignmentDao;
-	var $submissionFileDao;
 	var $submissionCommentDao;
 
 	/**
@@ -32,7 +31,6 @@ class ReviewerSubmissionDAO extends MonographDAO {
 		$this->authorDao = DAORegistry::getDAO('AuthorDAO');
 		$this->userDao = DAORegistry::getDAO('UserDAO');
 		$this->reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
-		$this->submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
 		$this->submissionCommentDao = DAORegistry::getDAO('SubmissionCommentDAO');
 	}
 
@@ -40,36 +38,30 @@ class ReviewerSubmissionDAO extends MonographDAO {
 	 * Retrieve a reviewer submission by monograph ID.
 	 * @param $monographId int
 	 * @param $reviewerId int
-	 * @return ReviewerSubmission
+	 * @return ReviewerSubmission|null
 	 */
 	function getReviewerSubmission($reviewId) {
 		$primaryLocale = AppLocale::getPrimaryLocale();
 		$locale = AppLocale::getLocale();
 		$result = $this->retrieve(
-			'SELECT	m.*, pm.date_published,
+			'SELECT	m.*, p.date_published,
 				r.*,
 				COALESCE(stl.setting_value, stpl.setting_value) AS series_title
 			FROM	submissions m
-				LEFT JOIN published_submissions pm ON (m.submission_id = pm.submission_id)
+				LEFT JOIN publications p ON (m.current_publication_id = p.publication_id)
 				LEFT JOIN review_assignments r ON (m.submission_id = r.submission_id)
-				LEFT JOIN series s ON (s.series_id = m.series_id)
+				LEFT JOIN series s ON (s.series_id = p.series_id)
 				LEFT JOIN series_settings stpl ON (s.series_id = stpl.series_id AND stpl.setting_name = ? AND stpl.locale = ?)
 				LEFT JOIN series_settings stl ON (s.series_id = stl.series_id AND stl.setting_name = ? AND stl.locale = ?)
 			WHERE	r.review_id = ?',
-			array(
+			[
 				'title', $primaryLocale, // Series title
 				'title', $locale, // Series title
 				(int) $reviewId
-			)
+			]
 		);
-
-		$returner = null;
-		if ($result->RecordCount() != 0) {
-			$returner = $this->_fromRow($result->GetRowAssoc(false));
-		}
-
-		$result->Close();
-		return $returner;
+		$row = $result->current();
+		return $row ? $this->_fromRow((array) $row) : null;
 	}
 
 	/**
@@ -91,7 +83,7 @@ class ReviewerSubmissionDAO extends MonographDAO {
 		$reviewer = $this->userDao->getById($row['reviewer_id']);
 
 		// Editor Decisions
-		$editDecisionDao = DAORegistry::getDAO('EditDecisionDAO');
+		$editDecisionDao = DAORegistry::getDAO('EditDecisionDAO'); /* @var $editDecisionDao EditDecisionDAO */
 		$decisions = $editDecisionDao->getEditorDecisions($row['submission_id']);
 		$reviewerSubmission->setDecisions($decisions);
 
@@ -109,6 +101,7 @@ class ReviewerSubmissionDAO extends MonographDAO {
 		$reviewerSubmission->setDateDue($this->datetimeFromDB($row['date_due']));
 		$reviewerSubmission->setDateResponseDue($this->datetimeFromDB($row['date_response_due']));
 		$reviewerSubmission->setDeclined($row['declined']);
+		$reviewerSubmission->setCancelled($row['cancelled']);
 		$reviewerSubmission->setQuality($row['quality']);
 		$reviewerSubmission->setRound($row['round']);
 		$reviewerSubmission->setStep($row['step']);
@@ -135,6 +128,7 @@ class ReviewerSubmissionDAO extends MonographDAO {
 					competing_interests = ?,
 					recommendation = ?,
 					declined = ?,
+					cancelled = ?,
 					date_assigned = %s,
 					date_notified = %s,
 					date_confirmed = %s,
@@ -151,7 +145,7 @@ class ReviewerSubmissionDAO extends MonographDAO {
 				$this->datetimeToDB($reviewerSubmission->getDateAcknowledged()),
 				$this->datetimeToDB($reviewerSubmission->getDateDue()),
 				$this->datetimeToDB($reviewerSubmission->getDateResponseDue())),
-			array(
+			[
 				(int) $reviewerSubmission->getId(),
 				(int) $reviewerSubmission->getReviewerId(),
 				(int) $reviewerSubmission->getStageId(),
@@ -161,29 +155,11 @@ class ReviewerSubmissionDAO extends MonographDAO {
 				$reviewerSubmission->getCompetingInterests(),
 				(int) $reviewerSubmission->getRecommendation(),
 				(int) $reviewerSubmission->getDeclined(),
+				(int) $reviewerSubmission->getCancelled(),
 				(int) $reviewerSubmission->getQuality(),
 				(int) $reviewerSubmission->getReviewId()
-			)
+			]
 		);
-	}
-
-	/**
-	 * Map a column heading value to a database value for sorting
-	 * @param string
-	 * @return string
-	 */
-	function getSortMapping($heading) {
-		switch ($heading) {
-			case 'id': return 'm.submission_id';
-			case 'assignDate': return 'r.date_assigned';
-			case 'dueDate': return 'r.date_due';
-			case 'section': return 'section_abbrev';
-			case 'title': return 'submission_title';
-			case 'round': return 'r.round';
-			case 'review': return 'r.recommendation';
-			case 'decision': return 'editor_decision';
-			default: return null;
-		}
 	}
 }
 

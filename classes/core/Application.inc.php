@@ -3,9 +3,9 @@
 /**
  * @file classes/core/Application.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Application
  * @ingroup core
@@ -20,31 +20,21 @@ import('lib.pkp.classes.core.PKPApplication');
 define('REQUIRES_XSL', true);
 
 define('ASSOC_TYPE_MONOGRAPH',			ASSOC_TYPE_SUBMISSION);
-define('ASSOC_TYPE_PUBLISHED_MONOGRAPH',	ASSOC_TYPE_PUBLISHED_SUBMISSION);
 define('ASSOC_TYPE_PUBLICATION_FORMAT',		ASSOC_TYPE_REPRESENTATION);
 
 define('ASSOC_TYPE_PRESS',			0x0000200);
-define('ASSOC_TYPE_CATEGORY',			0x000020D);
 define('ASSOC_TYPE_SERIES',			ASSOC_TYPE_SECTION);
 
 define('ASSOC_TYPE_CHAPTER', 0x0000214);
 
 define('CONTEXT_PRESS', 1);
 
-class Application extends PKPApplication {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
+define('LANGUAGE_PACK_DESCRIPTOR_URL', 'http://pkp.sfu.ca/omp/xml/%s/locales.xml');
+define('LANGUAGE_PACK_TAR_URL', 'http://pkp.sfu.ca/omp/xml/%s/%s.tar.gz');
 
-		// Register custom autoloader function for OMP namespace
-		spl_autoload_register(function($class) {
-			$prefix = 'OMP\\';
-			$rootPath = BASE_SYS_DIR . "/classes";
-			customAutoload($rootPath, $prefix, $class);
-		});
-	}
+define('METRIC_TYPE_COUNTER', 'omp::counter');
+
+class Application extends PKPApplication {
 
 	/**
 	 * Get the "context depth" of this application, i.e. the number of
@@ -53,7 +43,7 @@ class Application extends PKPApplication {
 	 * Scheduled Conference [2], or Press [1]).
 	 * @return int
 	 */
-	function getContextDepth() {
+	public function getContextDepth() {
 		return 1;
 	}
 
@@ -61,7 +51,7 @@ class Application extends PKPApplication {
 	 * Get a list of contexts for this application.
 	 * @return array
 	 */
-	function getContextList() {
+	public function getContextList() {
 		return array('press');
 	}
 
@@ -69,7 +59,7 @@ class Application extends PKPApplication {
 	 * Get the symbolic name of this application
 	 * @return string
 	 */
-	static function getName() {
+	public static function getName() {
 		return 'omp';
 	}
 
@@ -77,8 +67,8 @@ class Application extends PKPApplication {
 	 * Get the locale key for the name of this application.
 	 * @return string
 	 */
-	function getNameKey() {
-		return('common.openMonographPress');
+	public function getNameKey() {
+		return('common.software');
 	}
 
 	/**
@@ -86,7 +76,7 @@ class Application extends PKPApplication {
 	 * application.
 	 * @return string
 	 */
-	function getVersionDescriptorUrl() {
+	public function getVersionDescriptorUrl() {
 		return('http://pkp.sfu.ca/omp/xml/omp-version.xml');
 	}
 
@@ -94,7 +84,7 @@ class Application extends PKPApplication {
 	 * Get the map of DAOName => full.class.Path for this application.
 	 * @return array
 	 */
-	function getDAOMap() {
+	public function getDAOMap() {
 		return array_merge(parent::getDAOMap(), array(
 			'AuthorDAO' => 'classes.monograph.AuthorDAO',
 			'ChapterAuthorDAO' => 'classes.monograph.ChapterAuthorDAO',
@@ -104,7 +94,7 @@ class Application extends PKPApplication {
 			'LayoutAssignmentDAO' => 'submission.layoutAssignment.LayoutAssignmentDAO',
 			'MarketDAO' => 'classes.publicationFormat.MarketDAO',
 			'MetricsDAO' => 'lib.pkp.classes.statistics.PKPMetricsDAO',
-			'MonographDAO' => 'classes.monograph.MonographDAO',
+			'SubmissionDAO' => 'classes.submission.SubmissionDAO',
 			'MonographFileEmailLogDAO' => 'classes.log.MonographFileEmailLogDAO',
 			'MonographSearchDAO' => 'classes.search.MonographSearchDAO',
 			'NewReleaseDAO' => 'classes.press.NewReleaseDAO',
@@ -116,7 +106,6 @@ class Application extends PKPApplication {
 			'ProductionAssignmentDAO' => 'classes.submission.productionAssignment.ProductionAssignmentDAO',
 			'PublicationDateDAO' => 'classes.publicationFormat.PublicationDateDAO',
 			'PublicationFormatDAO' => 'classes.publicationFormat.PublicationFormatDAO',
-			'PublishedMonographDAO' => 'classes.monograph.PublishedMonographDAO',
 			'QualifierDAO' => 'classes.codelist.QualifierDAO',
 			'RepresentativeDAO' => 'classes.monograph.RepresentativeDAO',
 			'ReviewerSubmissionDAO' => 'classes.submission.reviewer.ReviewerSubmissionDAO',
@@ -131,7 +120,7 @@ class Application extends PKPApplication {
 	 * Get the list of plugin categories for this application.
 	 * @return array
 	 */
-	function getPluginCategories() {
+	public function getPluginCategories() {
 		return array(
 			// NB: Meta-data plug-ins are first in the list as this
 			// will make them being loaded (and installed) first.
@@ -153,77 +142,44 @@ class Application extends PKPApplication {
 	/**
 	 * Get the top-level context DAO.
 	 */
-	static function getContextDAO() {
+	public static function getContextDAO() {
 		return DAORegistry::getDAO('PressDAO');
-	}
-
-	/**
-	 * Get the context settings DAO.
-	 * @return SettingsDAO
-	 */
-	static function getContextSettingsDAO() {
-		return DAORegistry::getDAO('PressSettingsDAO');
-	}
-
-	/**
-	 * Get the submission DAO.
-	 */
-	static function getSubmissionDAO() {
-		return DAORegistry::getDAO('MonographDAO');
-	}
-
-	/**
-	 * Get the published submission DAO.
-	 */
-	static function getPublishedSubmissionDAO() {
-		return DAORegistry::getDAO('PublishedMonographDAO');
 	}
 
 	/**
 	 * Get the section DAO.
 	 * @return SeriesDAO
 	 */
-	static function getSectionDAO() {
+	public static function getSectionDAO() {
 		return DAORegistry::getDAO('SeriesDAO');
 	}
 
 	/**
 	 * Get the representation DAO.
 	 */
-	static function getRepresentationDAO() {
+	public static function getRepresentationDAO() {
 		return DAORegistry::getDAO('PublicationFormatDAO');
 	}
 
 	/**
-	 * returns the name of the context column in plugin_settings
+	 * Get a SubmissionSearchIndex instance.
 	 */
-	static function getPluginSettingsContextColumnName() {
-		if (defined('SESSION_DISABLE_INIT')) {
-			$pluginSettingsDao = DAORegistry::getDAO('PluginSettingsDAO');
-			$driver = $pluginSettingsDao->getDriver();
-			switch ($driver) {
-				case 'mysql':
-				case 'mysqli':
-					$checkResult = $pluginSettingsDao->retrieve('SHOW COLUMNS FROM plugin_settings LIKE ?', array('context_id'));
-					if ($checkResult->NumRows() == 0) {
-						return 'press_id';
-					}
-					break;
-				case 'postgres':
-					$checkResult = $pluginSettingsDao->retrieve('SELECT column_name FROM information_schema.columns WHERE table_name= ? AND column_name= ?', array('plugin_settings', 'context_id'));
-					if ($checkResult->NumRows() == 0) {
-						return 'press_id';
-					}
-					break;
-			}
-		}
-		return 'context_id';
+	public static function getSubmissionSearchIndex() {
+		import('classes.search.MonographSearchIndex');
+		return new MonographSearchIndex();
+	}
+
+	/**
+	 * Get a SubmissionSearchDAO instance.
+	 */
+	public static function getSubmissionSearchDAO() {
+		return DAORegistry::getDAO('MonographSearchDAO');
 	}
 
 	/**
 	 * Get the stages used by the application.
 	 */
-	static function getApplicationStages() {
+	public static function getApplicationStages() {
 		// We leave out WORKFLOW_STAGE_ID_PUBLISHED since it technically is not a 'stage'.
 		return array(
 			WORKFLOW_STAGE_ID_SUBMISSION,
@@ -237,14 +193,14 @@ class Application extends PKPApplication {
 	/**
 	 * Get the file directory array map used by the application.
 	 */
-	static function getFileDirectories() {
+	public static function getFileDirectories() {
 		return array('context' => '/presses/', 'submission' => '/monographs/');
 	}
 
 	/**
 	 * Returns the context type for this application.
 	 */
-	static function getContextAssocType() {
+	public static function getContextAssocType() {
 		return ASSOC_TYPE_PRESS;
 	}
 
@@ -253,10 +209,8 @@ class Application extends PKPApplication {
 	 * @param $context Context
 	 * @return OMPPaymentManager
 	 */
-	static function getPaymentManager($context) {
+	public static function getPaymentManager($context) {
 		import('classes.payment.omp.OMPPaymentManager');
 		return new OMPPaymentManager($context);
 	}
 }
-
-

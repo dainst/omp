@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/csv/CSVImportExportPlugin.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CSVImportExportPlugin
  * @ingroup plugins_importexport_csv
@@ -97,23 +97,23 @@ class CSVImportExportPlugin extends ImportExportPlugin {
 
 		if (is_array($data) && count($data) > 0) {
 
-			$userDao = DAORegistry::getDAO('UserDAO');
+			$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 			$user = $userDao->getByUsername($username);
 			if (!$user) {
 				echo __('plugins.importexport.csv.unknownUser', array('username' => $username)) . "\n";
 				exit();
 			}
 
-			$submissionDao = Application::getSubmissionDAO();
-			$authorDao = DAORegistry::getDAO('AuthorDAO');
+			$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+			$authorDao = DAORegistry::getDAO('AuthorDAO'); /* @var $authorDao AuthorDAO */
 			$pressDao = Application::getContextDAO();
-			$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
-			$seriesDao = DAORegistry::getDAO('SeriesDAO');
-			$publicationFormatDao = DAORegistry::getDAO('PublicationFormatDAO');
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+			$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
+			$seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
+			$publicationFormatDao = DAORegistry::getDAO('PublicationFormatDAO'); /* @var $publicationFormatDao PublicationFormatDAO */
+			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
 			import('lib.pkp.classes.submission.SubmissionFile'); // constants.
-			$genreDao = DAORegistry::getDAO('GenreDAO');
-			$publicationDateDao = DAORegistry::getDAO('PublicationDateDAO');
+			$genreDao = DAORegistry::getDAO('GenreDAO'); /* @var $genreDao GenreDAO */
+			$publicationDateDao = DAORegistry::getDAO('PublicationDateDAO'); /* @var $publicationDateDao PublicationDateDAO */
 
 			foreach ($data as $csvLine) {
 				// Format is:
@@ -143,7 +143,7 @@ class CSVImportExportPlugin extends ImportExportPlugin {
 						$submission = $submissionDao->newDataObject();
 						$submission->setContextId($press->getId());
 						$submission->setUserId($user->getId());
-						$submission->stampStatusModified();
+						$submission->stampLastActivity();
 						$submission->setStatus(STATUS_PUBLISHED);
 						$submission->setWorkType($isEditedVolume == 1?WORK_TYPE_EDITED_VOLUME:WORK_TYPE_AUTHORED_WORK);
 						$submission->setCopyrightNotice($press->getLocalizedSetting('copyrightNotice'), $locale);
@@ -227,7 +227,7 @@ class CSVImportExportPlugin extends ImportExportPlugin {
 						$temporaryFileManager = new TemporaryFileManager();
 						$temporaryFilename = tempnam($temporaryFileManager->getBasePath(), 'remote');
 						$temporaryFileManager->copyFile($pdfUrl, $temporaryFilename);
-						$submissionFile = $submissionFileDao->newDataObjectByGenreId($genre->getId());
+						$submissionFile = $submissionFileDao->newDataObject();
 						$submissionFile->setSubmissionId($submissionId);
 						$submissionFile->setSubmissionLocale($submission->getLocale());
 						$submissionFile->setGenreId($genre->getId());

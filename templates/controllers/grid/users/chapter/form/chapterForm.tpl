@@ -1,9 +1,9 @@
 {**
  * templates/controllers/grid/users/chapter/form/chapterForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Chapters grid form
  *
@@ -21,6 +21,7 @@
 <form class="pkp_form" id="editChapterForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT component="grid.users.chapter.ChapterGridHandler" op="updateChapter"}">
 	{csrf}
 	<input type="hidden" name="submissionId" value="{$submissionId|escape}" />
+	<input type="hidden" name="publicationId" value="{$publicationId|escape}" />
 	<input type="hidden" name="chapterId" value="{$chapterId|escape}" />
 
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="chapterFormNotification"}
@@ -33,32 +34,34 @@
 		{fbvElement type="text" name="subtitle" id="subtitle" value=$subtitle maxlength="255" multilingual=true}
 	{/fbvFormSection}
 
-	{fbvFormSection title="submission.chapter.abstract" for="abstract"}
-		{fbvElement type="textarea" name="abstract" id="abstract" value=$abstract  rich="extended" multilingual=true}
+	{fbvFormSection title="common.abstract" for="abstract"}
+	    {fbvElement type="textarea" name="abstract" id="abstract" value=$abstract  rich="extended" multilingual=true}
 	{/fbvFormSection}
 
 	{fbvFormSection title="submission.chapter.pages" for="customExtras"}
-		{fbvElement type="text" id="pages" value=$pages inline=true size=$fbvStyles.size.LARGE}
+	    {fbvElement type="text" id="pages" value=$pages inline=true size=$fbvStyles.size.LARGE}
 	{/fbvFormSection}
 
 	{if $enableChapterPublicationDates}
-		{fbvFormSection title="submission.chapter.datePublished" for="customExtras"}
+		{fbvFormSection title="publication.datePublished" for="customExtras"}
 		{fbvElement type="text" id="datePublished" value=$datePublished inline=true size=$fbvStyles.size.LARGE  class="datepicker"}
 		{/fbvFormSection}
 	{/if}
 
-	{fbvFormSection}
-		<!--  Chapter Contributors -->
-		{capture assign=chapterAuthorUrl}{url router=$smarty.const.ROUTE_COMPONENT component="listbuilder.users.ChapterAuthorListbuilderHandler" op="fetch" submissionId=$submissionId chapterId=$chapterId escape=false}{/capture}
-		{load_url_in_div id="chapterAuthorContainer" url=$chapterAuthorUrl}
+	{fbvFormSection list=true title="submission.submit.addAuthor"}
+		{foreach from=$chapterAuthorOptions item="chapterAuthor" key="id"}
+			{fbvElement type="checkbox" id="authors[]" value=$id checked=in_array($id, $selectedChapterAuthors) label=$chapterAuthor|escape translate=false}
+		{/foreach}
 	{/fbvFormSection}
 
-	{fbvFormSection}
-		<!-- Chapter Files -->
-		{capture assign=chapterFilesUrl}{url router=$smarty.const.ROUTE_COMPONENT component="listbuilder.files.ChapterFilesListbuilderHandler" op="fetch" submissionId=$submissionId chapterId=$chapterId escape=false}{/capture}
-		{load_url_in_div id="chapterFilesContainer" url=$chapterFilesUrl}
-	{/fbvFormSection}
+	{if $chapterId}
+		{fbvFormSection list=true title="submission.files"}
+			{foreach from=$chapterFileOptions item="chapterFile" key="id"}
+				{fbvElement type="checkbox" id="files[]" value=$id checked=in_array($id, $selectedChapterFiles) label=$chapterFile|escape translate=false}
+			{/foreach}
+		{/fbvFormSection}
+	{/if}
 
+	<p><span class="formRequired">{translate key="common.requiredField"}</span></p>
 	{fbvFormButtons submitText="common.save"}
 </form>
-<p><span class="formRequired">{translate key="common.requiredField"}</span></p>

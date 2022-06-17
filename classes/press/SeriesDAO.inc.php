@@ -3,9 +3,9 @@
 /**
  * @file classes/press/SeriesDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SeriesDAO
  * @ingroup press
@@ -22,10 +22,10 @@ class SeriesDAO extends PKPSectionDAO {
 	 * Retrieve an series by ID.
 	 * @param $seriesId int
 	 * @param $pressId int optional
-	 * @return Series
+	 * @return Series|null
 	 */
 	function getById($seriesId, $pressId = null) {
-		$params = array((int) $seriesId);
+		$params = [(int) $seriesId];
 		if ($pressId) $params[] = (int) $pressId;
 
 		$result = $this->retrieve(
@@ -35,35 +35,23 @@ class SeriesDAO extends PKPSectionDAO {
 			' . ($pressId?' AND press_id = ?':''),
 			$params
 		);
-
-		$returner = null;
-		if ($result->RecordCount() != 0) {
-			$returner = $this->_fromRow($result->GetRowAssoc(false));
-		}
-
-		$result->Close();
-		return $returner;
+		$row = $result->current();
+		return $row ? $this->_fromRow((array) $row) : null;
 	}
 
 	/**
 	 * Retrieve a series by path.
 	 * @param $path string
 	 * @param $pressId int
-	 * @return Series
+	 * @return Series|null
 	 */
 	function getByPath($path, $pressId) {
 		$result = $this->retrieve(
 			'SELECT * FROM series WHERE path = ? AND press_id = ?',
-			array((string) $path, (int) $pressId)
+			[(string) $path, (int) $pressId]
 		);
-
-		$returner = null;
-		if ($result->RecordCount() != 0) {
-			$returner = $this->_fromRow($result->GetRowAssoc(false));
-		}
-
-		$result->Close();
-		return $returner;
+		$row = $result->current();
+		return $row ? $this->_fromRow((array) $row) : null;
 	}
 
 	/**
@@ -87,6 +75,7 @@ class SeriesDAO extends PKPSectionDAO {
 		$series->setFeatured($row['featured']);
 		$series->setImage(unserialize($row['image']));
 		$series->setPath($row['path']);
+		$series->setIsInactive($row['is_inactive']);
 
 		$this->getDataObjectSettings('series_settings', 'series_id', $row['series_id'], $series);
 
@@ -102,7 +91,7 @@ class SeriesDAO extends PKPSectionDAO {
 	function getLocaleFieldNames() {
 		return array_merge(
 			parent::getLocaleFieldNames(),
-			array('description', 'prefix', 'subtitle')
+			['description', 'prefix', 'subtitle']
 		);
 	}
 
@@ -113,9 +102,7 @@ class SeriesDAO extends PKPSectionDAO {
 	function getAdditionalFieldNames() {
 		return array_merge(
 			parent::getAdditionalFieldNames(),
-			array(
-				'onlineIssn', 'printIssn', 'sortOption',
-			)
+			['onlineIssn', 'printIssn', 'sortOption']
 		);
 	}
 
@@ -127,7 +114,7 @@ class SeriesDAO extends PKPSectionDAO {
 		$this->updateDataObjectSettings(
 			'series_settings',
 			$series,
-			array('series_id' => (int) $series->getId())
+			['series_id' => (int) $series->getId()]
 		);
 	}
 
@@ -138,17 +125,18 @@ class SeriesDAO extends PKPSectionDAO {
 	function insertObject($series) {
 		$this->update(
 			'INSERT INTO series
-				(press_id, seq, featured, path, image, editor_restricted)
+				(press_id, seq, featured, path, image, editor_restricted, is_inactive)
 			VALUES
-				(?, ?, ?, ?, ?, ?)',
-			array(
+				(?, ?, ?, ?, ?, ?, ?)',
+			[
 				(int) $series->getPressId(),
 				(float) $series->getSequence(),
 				(int) $series->getFeatured(),
 				(string) $series->getPath(),
 				serialize($series->getImage() ? $series->getImage() : array()),
 				(int) $series->getEditorRestricted(),
-			)
+				(int) $series->getIsInactive() ? 1 : 0,
+			]
 		);
 
 		$series->setId($this->getInsertId());
@@ -168,17 +156,19 @@ class SeriesDAO extends PKPSectionDAO {
 				featured = ?,
 				path = ?,
 				image = ?,
-				editor_restricted = ?
+				editor_restricted = ?,
+				is_inactive = ?
 			WHERE	series_id = ?',
-			array(
+			[
 				(int) $series->getPressId(),
 				(float) $series->getSequence(),
 				(int) $series->getFeatured(),
 				(string) $series->getPath(),
 				serialize($series->getImage() ? $series->getImage() : array()),
 				(int) $series->getEditorRestricted(),
+				(int) $series->getIsInactive(),
 				(int) $series->getId(),
-			)
+			]
 		);
 		$this->updateLocaleFields($series);
 	}
@@ -192,16 +182,20 @@ class SeriesDAO extends PKPSectionDAO {
 		// Validate the $contextId, if supplied.
 		if (!$this->seriesExists($seriesId, $contextId)) return false;
 
-		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO');
-		$subEditorsDao->deleteBySectionId($seriesId, $contextId);
+		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO'); /* @var $subEditorsDao SubEditorsDAO */
+		$subEditorsDao->deleteBySubmissionGroupId($seriesId, ASSOC_TYPE_SECTION, $contextId);
 
 		// Remove monographs from this series
-		$monographDao = DAORegistry::getDAO('MonographDAO');
-		$monographDao->removeMonographsFromSeries($seriesId);
+		$submissionsIterator = Services::get('submission')->getMany(['seriesIds' => $seriesId, 'count' => 1000]);
+		foreach ($submissionsIterator as $submission) {
+			foreach ((array) $submission->getData('publications') as $publication) {
+				Services::get('publication')->edit($publication, ['seriesId' => 0]);
+			}
+		}
 
 		// Delete the series and settings.
-		$this->update('DELETE FROM series WHERE series_id = ?', (int) $seriesId);
-		$this->update('DELETE FROM series_settings WHERE series_id = ?', (int) $seriesId);
+		$this->update('DELETE FROM series WHERE series_id = ?', [(int) $seriesId]);
+		$this->update('DELETE FROM series_settings WHERE series_id = ?', [(int) $seriesId]);
 	}
 
 	/**
@@ -212,39 +206,6 @@ class SeriesDAO extends PKPSectionDAO {
 	 */
 	function deleteByPressId($pressId) {
 		$this->deleteByContextId($pressId);
-	}
-
-	/**
-	 * Retrieve an array associating all series editor IDs with
-	 * arrays containing the series they edit.
-	 * @return array editorId => array(series they edit)
-	 */
-	function getEditorSeries($pressId) {
-		$result = $this->retrieve(
-			'SELECT	a.*,
-				ae.user_id AS editor_id
-			FROM	series_editors ae,
-				series a
-			WHERE	ae.series_id = a.series_id AND
-				a.press_id = ae.press_id AND
-				a.press_id = ?',
-			(int) $pressId
-		);
-
-		$returner = array();
-		while (!$result->EOF) {
-			$row = $result->GetRowAssoc(false);
-			$series = $this->_fromRow($row);
-			if (!isset($returner[$row['editor_id']])) {
-				$returner[$row['editor_id']] = array($series);
-			} else {
-				$returner[$row['editor_id']][] = $series;
-			}
-			$result->MoveNext();
-		}
-
-		$result->Close();
-		return $returner;
 	}
 
 	/**
@@ -259,23 +220,23 @@ class SeriesDAO extends PKPSectionDAO {
 	 * @copydoc PKPSectionDAO::getByContextId()
 	 */
 	function getByContextId($pressId, $rangeInfo = null, $submittableOnly = false) {
-		$params = array(
-			'title', AppLocale::getPrimaryLocale(),
-			'title', AppLocale::getLocale(),
-			(int) $pressId
+		return new DAOResultFactory(
+			$this->retrieveRange(
+				'SELECT s.*, COALESCE(stpl.setting_value, stl.setting_value) AS series_title FROM series s
+				LEFT JOIN series_settings stpl ON (s.series_id = stpl.series_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN series_settings stl ON (s.series_id = stl.series_id AND stl.setting_name = ? AND stl.locale = ?)
+				WHERE press_id = ?
+				ORDER BY seq',
+				[
+					'title', AppLocale::getPrimaryLocale(),
+					'title', AppLocale::getLocale(),
+					(int) $pressId
+				],
+				$rangeInfo
+			),
+			$this,
+			'_fromRow'
 		);
-
-		$result = $this->retrieveRange(
-			'SELECT s.*, COALESCE(stpl.setting_value, stl.setting_value) AS series_title FROM series s
-			LEFT JOIN series_settings stpl ON (s.series_id = stpl.series_id AND stpl.setting_name = ? AND stpl.locale = ?)
-			LEFT JOIN series_settings stl ON (s.series_id = stl.series_id AND stl.setting_name = ? AND stl.locale = ?)
-			WHERE press_id = ?
-			ORDER BY seq',
-			$params,
-			$rangeInfo
-		);
-
-		return new DAOResultFactory($result, $this, '_fromRow');
 	}
 
 	/**
@@ -283,7 +244,7 @@ class SeriesDAO extends PKPSectionDAO {
 	 * @return array
 	 */
 	function getTitlesByPressId($pressId, $submittableOnly = false) {
-		$seriesTitles = array();
+		$seriesTitles = [];
 
 		$seriesIterator = $this->getByPressId($pressId, null);
 		while ($series = $seriesIterator->next()) {
@@ -307,13 +268,11 @@ class SeriesDAO extends PKPSectionDAO {
 	 */
 	function seriesExists($seriesId, $pressId) {
 		$result = $this->retrieve(
-			'SELECT COUNT(*) FROM series WHERE series_id = ? AND press_id = ?',
-			array((int) $seriesId, (int) $pressId)
+			'SELECT COUNT(*) AS row_count FROM series WHERE series_id = ? AND press_id = ?',
+			[(int) $seriesId, (int) $pressId]
 		);
-		$returner = isset($result->fields[0]) && $result->fields[0] == 1 ? true : false;
-
-		$result->Close();
-		return $returner;
+		$row = $result->current();
+		return $row && $row->row_count;
 	}
 
 	/**
@@ -335,25 +294,7 @@ class SeriesDAO extends PKPSectionDAO {
 				(series_id, category_id)
 			VALUES
 				(?, ?)',
-			array(
-				(int) $seriesId,
-				(int) $categoryId
-			)
-		);
-	}
-
-	/**
-	 * Unassociate a category with a series.
-	 * @param $seriesId int
-	 * @param $categoryId int
-	 */
-	function removeCategory($seriesId, $categoryId) {
-		$this->update(
-			'DELETE FROM series_categories WHERE series_id = ? AND category_id = ?',
-			array(
-				(int) $seriesId,
-				(int) $categoryId
-			)
+			[(int) $seriesId, (int) $categoryId]
 		);
 	}
 
@@ -363,10 +304,7 @@ class SeriesDAO extends PKPSectionDAO {
 	 * @param $seriesId int
 	 */
 	public function removeCategories($seriesId) {
-		$this->update(
-			'DELETE FROM series_categories WHERE series_id = ?',
-			array((int) $seriesId)
-		);
+		$this->update('DELETE FROM series_categories WHERE series_id = ?', [(int) $seriesId]);
 	}
 
 	/**
@@ -375,24 +313,23 @@ class SeriesDAO extends PKPSectionDAO {
 	 * @return DAOResultFactory
 	 */
 	function getCategories($seriesId, $pressId = null) {
-		$params = array((int) $seriesId);
+		$params = [(int) $seriesId];
 		if ($pressId) $params[] = (int) $pressId;
-
-		$categoryDao = DAORegistry::getDAO('CategoryDAO');
-		$result = $this->retrieve(
-			'SELECT	c.*
-			FROM	categories c,
-				series_categories sc,
-				series s
-			WHERE	c.category_id = sc.category_id AND
-				s.series_id = ? AND
-				' . ($pressId?' c.context_id = s.press_id AND s.press_id = ? AND':'') . '
-				s.series_id = sc.series_id',
-			$params
+		return new DAOResultFactory(
+			$this->retrieve(
+				'SELECT	c.*
+				FROM	categories c,
+					series_categories sc,
+					series s
+				WHERE	c.category_id = sc.category_id AND
+					s.series_id = ? AND
+					' . ($pressId?' c.context_id = s.press_id AND s.press_id = ? AND':'') . '
+					s.series_id = sc.series_id',
+				$params
+			),
+			DAORegistry::getDAO('CategoryDAO'),
+			'_fromRow'
 		);
-
-		// Delegate category creation to the category DAO.
-		return new DAOResultFactory($result, $categoryDao, '_fromRow');
 	}
 
 	/**
@@ -401,23 +338,22 @@ class SeriesDAO extends PKPSectionDAO {
 	 * @return DAOResultFactory
 	 */
 	function getUnassignedCategories($seriesId, $pressId = null) {
-		$params = array((int) $seriesId);
+		$params = [(int) $seriesId];
 		if ($pressId) $params[] = (int) $pressId;
-
-		$categoryDao = DAORegistry::getDAO('CategoryDAO');
-		$result = $this->retrieve(
-			'SELECT	c.*
-			FROM	series s
-				JOIN categories c ON (c.context_id = s.press_id)
-				LEFT JOIN series_categories sc ON (s.series_id = sc.series_id AND sc.category_id = c.category_id)
-			WHERE	s.series_id = ? AND
-				' . ($pressId?' s.press_id = ? AND':'') . '
-				sc.series_id IS NULL',
-			$params
+		return new DAOResultFactory(
+			$this->retrieve(
+				'SELECT	c.*
+				FROM	series s
+					JOIN categories c ON (c.context_id = s.press_id)
+					LEFT JOIN series_categories sc ON (s.series_id = sc.series_id AND sc.category_id = c.category_id)
+				WHERE	s.series_id = ? AND
+					' . ($pressId?' s.press_id = ? AND':'') . '
+					sc.series_id IS NULL',
+				$params
+			),
+			DAORegistry::getDAO('CategoryDAO'),
+			'_fromRow'
 		);
-
-		// Delegate category creation to the category DAO.
-		return new DAOResultFactory($result, $categoryDao, '_fromRow');
 	}
 
 	/**
@@ -428,13 +364,11 @@ class SeriesDAO extends PKPSectionDAO {
 	 */
 	function categoryAssociationExists($seriesId, $categoryId) {
 		$result = $this->retrieve(
-			'SELECT COUNT(*) FROM series_categories WHERE series_id = ? AND category_id = ?',
+			'SELECT COUNT(*) AS row_count FROM series_categories WHERE series_id = ? AND category_id = ?',
 			array((int) $seriesId, (int) $categoryId)
 		);
-		$returner = isset($result->fields[0]) && $result->fields[0] == 1 ? true : false;
-
-		$result->Close();
-		return $returner;
+		$row = $result->current();
+		return $row && $row->row_count;
 	}
 }
 

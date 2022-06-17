@@ -1,9 +1,9 @@
 {**
  * plugins/generic/webFeed/templates/rss.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * RSS feed template
  *
@@ -57,38 +57,38 @@
 
 		<items>
 			<rdf:Seq>
-				{foreach from=$publishedMonographs item=publishedMonograph}
-					<rdf:li rdf:resource="{url page="catalog" op="book" path=$publishedMonograph->getId()}"/>
-				{/foreach}{* publishedMonographs *}
+				{foreach from=$submissions item=submission}
+					<rdf:li rdf:resource="{url page="catalog" op="book" path=$submission->getId()}"/>
+				{/foreach}{* submissions *}
 			</rdf:Seq>
 		</items>
 	</channel>
 
-{foreach name=publishedMonographs from=$publishedMonographs item=publishedMonograph}
-	<item rdf:about="{url page="catalog" op="book" path=$publishedMonograph->getId()}">
+{foreach name=submissions from=$submissions item=submission}
+	<item rdf:about="{url page="catalog" op="book" path=$submission->getId()}">
 
 		{* required elements *}
-		<title>{$publishedMonograph->getLocalizedTitle()|strip|escape:"html"}</title>
-		<link>{url page="catalog" op="book" path=$publishedMonograph->getId()}</link>
+		<title>{$submission->getLocalizedTitle()|strip|escape:"html"}</title>
+		<link>{url page="catalog" op="book" path=$submission->getId()}</link>
 
 		{* optional elements *}
-		{if $publishedMonograph->getLocalizedAbstract()}
-			<description>{$publishedMonograph->getLocalizedAbstract()|strip|escape:"html"}</description>
+		{if $submission->getLocalizedAbstract()}
+			<description>{$submission->getLocalizedAbstract()|strip|escape:"html"}</description>
 		{/if}
 
-		{foreach from=$publishedMonograph->getAuthors() item=author name=authorList}
+		{foreach from=$submission->getAuthors() item=author name=authorList}
 			<dc:creator>{$author->getFullName(false)|strip|escape:"html"}</dc:creator>
 		{/foreach}
 
 		<dc:rights>
-			{translate|escape key="submission.copyrightStatement" copyrightYear=$publishedMonograph->getCopyrightYear() copyrightHolder=$publishedMonograph->getLocalizedCopyrightHolder()}
-			{$publishedMonograph->getLicenseURL()|escape}
+			{translate|escape key="submission.copyrightStatement" copyrightYear=$submission->getCopyrightYear() copyrightHolder=$submission->getLocalizedCopyrightHolder()}
+			{$submission->getLicenseURL()|escape}
 		</dc:rights>
 
-		<dc:date>{$publishedMonograph->getDatePublished()|date_format:"%Y-%m-%d"}</dc:date>
-		<prism:publicationDate>{$publishedMonograph->getDatePublished()|date_format:"%Y-%m-%d"}</prism:publicationDate>
+		<dc:date>{$submission->getDatePublished()|date_format:"%Y-%m-%d"}</dc:date>
+		<prism:publicationDate>{$submission->getDatePublished()|date_format:"%Y-%m-%d"}</prism:publicationDate>
 	</item>
-{/foreach}{* publishedMonographs *}
+{/foreach}{* submissions *}
 
 </rdf:RDF>
 

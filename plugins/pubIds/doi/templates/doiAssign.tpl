@@ -1,9 +1,9 @@
 {**
  * @file plugins/pubIds/doi/templates/doiAssign.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Assign DOI to an object option.
  *}
@@ -17,7 +17,7 @@
 			<p class="pkp_help">{translate key="plugins.pubIds.doi.editor.assignDoi.assigned" pubId=$pubObject->getStoredPubId($pubIdPlugin->getPubIdType())}</p>
 		{/fbvFormSection}
 	{else}
-		{assign var=pubId value=$DOIPubIdPlugin->getPubId($pubObject)}
+		{assign var=pubId value=$pubIdPlugin->getPubId($pubObject)}
 		{if !$canBeAssigned}
 			{fbvFormSection}
 				{if !$pubId}

@@ -1,14 +1,14 @@
 {**
  * templates/authorDashboard/stages/internalReview.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Display the internal review stage on the author dashboard.
  *}
 
-{if $submission->getStageId() >= $smarty.const.WORKFLOW_STAGE_ID_INTERNAL_REVIEW && !$reviewRounds->wasEmpty()}
+{if $submission->getStageId() >= $smarty.const.WORKFLOW_STAGE_ID_INTERNAL_REVIEW && count($reviewRounds)}
 	{include file="authorDashboard/reviewRoundTab.tpl" reviewRounds=$reviewRounds reviewRoundTabsId="internalReviewRoundTabs" lastReviewRoundNumber=$lastReviewRoundNumber}
 
 	<!-- Display queries grid -->

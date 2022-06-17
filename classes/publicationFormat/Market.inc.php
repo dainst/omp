@@ -3,9 +3,9 @@
 /**
  * @file classes/publicationFormat/Market.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Market
  * @ingroup publicationFormat
@@ -297,7 +297,7 @@ class Market extends DataObject {
 	 * @return string
 	 */
 	function getAssignedRepresentativeNames() {
-		$representativeDao = DAORegistry::getDAO('RepresentativeDAO');
+		$representativeDao = DAORegistry::getDAO('RepresentativeDAO'); /* @var $representativeDao RepresentativeDAO */
 		$agent = $representativeDao->getById($this->getAgentId());
 		$supplier = $representativeDao->getById($this->getSupplierId());
 

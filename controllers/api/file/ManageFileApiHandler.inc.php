@@ -3,9 +3,9 @@
 /**
  * @file controllers/api/file/ManageFileApiHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ManageFileApiHandler
  * @ingroup controllers_api_file
@@ -31,6 +31,27 @@ class ManageFileApiHandler extends PKPManageFileApiHandler {
 	}
 
 	/**
+	 * @copydoc PKPManageFileApiHandler::editMetadata
+	 */
+	function editMetadata($args, $request) {
+		$submissionFile = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION_FILE);
+		if ($submissionFile->getFileStage() == SUBMISSION_FILE_PROOF) {
+			$publisherIdEnabled = in_array('file', (array) $request->getContext()->getData('enablePublisherId'));
+			$pubIdPlugins = PluginRegistry::getPlugins('pubIds');
+			$pubIdEnabled = false;
+			foreach ($pubIdPlugins as $pubIdPlugin) {
+				if ($pubIdPlugin->isObjectTypeEnabled('SubmissionFile', $request->getContext()->getId())) {
+					$pubIdEnabled = true;
+					break;
+				}
+			}
+			$templateMgr = TemplateManager::getManager($request);
+			$templateMgr->assign('showIdentifierTab', $publisherIdEnabled || $pubIdEnabled);
+		}
+		return parent::editMetadata($args, $request);
+	}
+
+	/**
 	 * Edit proof submission file pub ids.
 	 * @param $args array
 	 * @param $request PKPRequest
@@ -39,8 +60,8 @@ class ManageFileApiHandler extends PKPManageFileApiHandler {
 	function identifiers($args, $request) {
 		$submissionFile = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION_FILE);
 		$stageId = $request->getUserVar('stageId');
-		import('lib.pkp.controllers.tab.pubIds.form.PKPPublicIdentifiersForm');
-		$form = new PKPPublicIdentifiersForm($submissionFile, $stageId);
+		import('controllers.tab.pubIds.form.PublicIdentifiersForm');
+		$form = new PublicIdentifiersForm($submissionFile, $stageId);
 		$form->initData();
 		return new JSONMessage(true, $form->fetch($request));
 	}
@@ -84,45 +105,6 @@ class ManageFileApiHandler extends PKPManageFileApiHandler {
 	//
 	// Subclassed methods
 	//
-
-	/**
-	 * @copydoc PKPManageFileApiHandler::removeFileIndex()
-	 */
-	function removeFileIndex($submission, $submissionFile) {
-		// update the submission's search index if this was a proof file
-		if ($submissionFile->getFileStage() == SUBMISSION_FILE_PROOF) {
-			import('lib.pkp.classes.search.SubmissionSearch');
-			import('classes.search.MonographSearchIndex');
-			MonographSearchIndex::deleteTextIndex($submission->getId(), SUBMISSION_SEARCH_GALLEY_FILE, $submissionFile->getFileId());
-		}
-	}
-
-
-	/**
-	 * logs the deletion event using app-specific logging classes.
-	 * @param $request PKPRequest
-	 * @param $submission Submission
-	 * @param $submissionFile SubmissionFile
-	 * @param $user PKPUser
-	 */
-	function logDeletionEvent($request, $submission, $submissionFile, $user) {
-		// log the deletion event.
-		import('lib.pkp.classes.log.SubmissionFileLog');
-		import('lib.pkp.classes.log.SubmissionFileEventLogEntry'); // constants
-
-		if ($submissionFile->getRevision() > 1) {
-			SubmissionFileLog::logEvent($request, $submissionFile, SUBMISSION_LOG_FILE_REVISION_DELETE, 'submission.event.revisionDeleted', array('fileStage' => $submissionFile->getFileStage(), 'sourceFileId' => $submissionFile->getSourceFileId(), 'fileId' => $submissionFile->getFileId(), 'fileRevision' => $submissionFile->getRevision(), 'originalFileName' => $submissionFile->getOriginalFileName(), 'submissionId' => $submissionFile->getSubmissionId(), 'username' => $user->getUsername()));
-		} else {
-			SubmissionFileLog::logEvent($request, $submissionFile, SUBMISSION_LOG_FILE_DELETE, 'submission.event.fileDeleted', array('fileStage' => $submissionFile->getFileStage(), 'sourceFileId' => $submissionFile->getSourceFileId(), 'fileId' => $submissionFile->getFileId(), 'fileRevision' => $submissionFile->getRevision(), 'originalFileName' => $submissionFile->getOriginalFileName(), 'submissionId' => $submissionFile->getSubmissionId(), 'username' => $user->getUsername()));
-		}
-
-		if ($submissionFile->getRevision() == 1 && $submissionFile->getSourceFileId() == null) {
-			import('lib.pkp.classes.log.SubmissionLog');
-			import('classes.log.SubmissionEventLogEntry'); // constants
-			SubmissionLog::logEvent($request, $submission, SUBMISSION_LOG_LAST_REVISION_DELETED, 'submission.event.lastRevisionDeleted', array('title' => $submissionFile->getOriginalFileName(), 'submissionId' => $submissionFile->getSubmissionId(), 'username' => $user->getUsername()));
-		}
-
-	}
 
 	/**
 	 * Get the list of notifications to be updated on metadata form submission.

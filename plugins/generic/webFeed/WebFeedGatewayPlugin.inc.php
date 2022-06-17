@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/webFeed/WebFeedGatewayPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class WebFeedGatewayPlugin
  * @ingroup plugins_generic_webFeed
@@ -99,23 +99,24 @@ class WebFeedGatewayPlugin extends GatewayPlugin {
 		if (!isset($typeMap[$type])) return false;
 
 		$templateMgr = TemplateManager::getManager($request);
-		$press = $request->getContext();
+		$context = $request->getContext();
 
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		$recentItems = (int) $this->_parentPlugin->getSetting($press->getId(), 'recentItems');
+		// Bring in orderby constants
+		import('classes.submission.SubmissionDAO');
+
+		$args = [
+			'status' => STATUS_PUBLISHED,
+			'contextId' => $context->getId(),
+			'count' => 1000,
+			'orderBy' => ORDERBY_DATE_PUBLISHED,
+		];
+		$recentItems = (int) $this->_parentPlugin->getSetting($context->getId(), 'recentItems');
 		if ($recentItems > 0) {
-			import('lib.pkp.classes.db.DBResultRange');
-			$rangeInfo = new DBResultRange($recentItems, 1);
-			$publishedMonographObjects = $publishedMonographDao->getByPressId(
-				$press->getId(),
-				null,
-				$rangeInfo
-			);
-			$publishedMonographs = $publishedMonographObjects->toArray();
-		} else $publishedMonographs = array();
-		$templateMgr->assign('publishedMonographs', $publishedMonographs);
+			$args['count'] = $recentItems;
+		}
+		$templateMgr->assign('submissions', iterator_to_array(Services::get('submission')->getMany($args)));
 
-		$versionDao = DAORegistry::getDAO('VersionDAO');
+		$versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
 		$version = $versionDao->getCurrentVersion();
 		$templateMgr->assign('ompVersion', $version->getVersionString());
 

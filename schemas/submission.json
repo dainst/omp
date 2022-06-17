@@ -1,0 +1,48 @@
+{
+	"title": "Submission",
+	"description": "A submission to the press.",
+	"properties": {
+		"audience": {
+			"type": "string",
+			"validation": [
+				"nullable"
+			]
+		},
+		"audienceRangeExact": {
+			"type": "string",
+			"validation": [
+				"nullable"
+			]
+		},
+		"audienceRangeFrom": {
+			"type": "string",
+			"validation": [
+				"nullable"
+			]
+		},
+		"audienceRangeQualifier": {
+			"type": "string",
+			"validation": [
+				"nullable"
+			]
+		},
+		"audienceRangeTo": {
+			"type": "string",
+			"validation": [
+				"nullable"
+			]
+		},
+		"enableChapterPublicationDates": {
+			"type": "boolean"
+		},
+		"workType": {
+			"type": "integer",
+			"description": "Whether this submission is a monograph or an edited volume. One of `WORK_TYPE_EDITED_VOLUME` or `WORK_TYPE_AUTHORED_WORK`. Default: `WORK_TYPE_AUTHORED_WORK`.",
+			"apiSummary": true,
+			"default": 2,
+			"validation": [
+				"in:1,2"
+			]
+		}
+	}
+}
