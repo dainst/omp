@@ -23,6 +23,7 @@
 
 		<query>ALTER TABLE email_templates ADD context_id BIGINT</query>
 		<query>UPDATE email_templates SET context_id = assoc_id WHERE assoc_type=256 AND assoc_id IS NOT NULL</query>
+		<query>UPDATE email_templates SET context_id = 0 WHERE context_id IS NULL</query>
 		<query>ALTER TABLE email_templates DROP INDEX email_templates_assoc, DROP INDEX email_templates_email_key</query>
 		<query>ALTER TABLE email_templates DROP COLUMN assoc_type, DROP COLUMN assoc_id</query>
 		<!-- 16 = ROLE_ID_MANAGER, 17 = ROLE_ID_SUB_EDITOR, 256 and 512 = unused role ids -->
