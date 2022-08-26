@@ -40,3 +40,6 @@
 [submodule "plugins/generic/daiBookViewer"]
 	path = plugins/generic/daiBookViewer
 	url = https://github.com/dainst/dai-book-viewer-ojs-plugin.git
+[submodule "plugins/themes/publications-theme"]
+	path = plugins/themes/publications-theme
+	url = https://github.com/dainst/publications-theme.git
