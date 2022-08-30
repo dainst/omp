@@ -43,3 +43,6 @@
 [submodule "plugins/themes/publications-theme"]
 	path = plugins/themes/publications-theme
 	url = https://github.com/dainst/publications-theme.git
+[submodule "plugins/generic/piwik"]
+	path = plugins/generic/piwik
+	url = https://github.com/pkp/piwik.git
