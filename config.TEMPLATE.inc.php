@@ -29,7 +29,7 @@
 installed = Off
 
 ; The canonical URL to the OMP installation (excluding the trailing slash)
-base_url = "http://pkp.sfu.ca/omp"
+base_url = base_url
 
 ; Session cookie name
 session_cookie_name = OMPSID
@@ -124,7 +124,7 @@ enable_beacon = On
 [database]
 
 driver = mysqli
-host = localhost
+host = publications_db
 username = omp
 password = omp
 name = omp
