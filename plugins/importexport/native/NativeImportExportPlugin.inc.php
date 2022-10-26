@@ -167,7 +167,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 				if (!empty($submissionsWarnings)) {
 					$templateMgr->assign('submissionsWarnings', $submissionsWarnings);
 				}
-				// If there are any submissions or validataion errors
+				// If there are any submissions or validation errors
 				// delete imported submissions.
 				if (!empty($submissionsErrors) || !empty($validationErrors)) {
 					// remove all imported submissions
@@ -292,14 +292,25 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 					return;
 				}
 
-				$filter = 'native-xml=>monograph';
-				// is this monographs import:
+				$request = Application::get()->getRequest();
+				// Set global user
+				if (!$request->getUser()) {
+					Registry::set('user', $user);
+				}
+				// Set global context
+				if (!$request->getContext()) {
+					HookRegistry::register('Router::getRequestedContextPaths', function (string $hook, array $args) use ($press): bool {
+						$args[0] = [$press->getPath()];
+						return false;
+					});
+					$router = new PageRouter();
+					$router->setApplication(Application::get());
+					$request->setRouter($router);
+				}
+
 				$xmlString = file_get_contents($xmlFile);
 				$document = new DOMDocument();
 				$document->loadXml($xmlString);
-				if (in_array($document->documentElement->tagName, array('monograph', 'monographs'))) {
-					$filter = 'native-xml=>monograph';
-				}
 				$deployment = new NativeImportExportDeployment($press, $user);
 				$deployment->setImportPath(dirname($xmlFile));
 				$content = $this->importSubmissions($xmlString, $deployment);
@@ -346,12 +357,17 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 						$foundErrors = true;
 					}
 				}
-				// If there are any data or validataion errors
+				// If there are any data or validation errors
 				// delete imported objects.
 				if ($foundErrors || !empty($validationErrors)) {
-					// remove all imported issues and sumissions
+					// remove all imported issues and submissions
 					foreach (array_keys($errorTypes) as $assocType) {
 						$deployment->removeImportedObjects($assocType);
+					}
+					echo __('plugins.importexport.common.validationErrors') . "\n";
+					$i = 0;
+					foreach ($validationErrors as $validationError) {
+						echo ++$i . '. Line: ' . $validationError->line . ' Column: ' . $validationError->column . ' > ' . $validationError->message . "\n";
 					}
 				}
 				return;

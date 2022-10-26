@@ -745,8 +745,9 @@ msgstr "Reviewer Access"
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled"
 msgstr "One-click Reviewer Access"
 
+#, fuzzy
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.description"
-msgstr "Reviewers can be sent a secure link in the email invitation, which will allow them to access the review without logging in. Access to other pages requires them to log in."
+msgstr "Reviewers can be sent a secure link in the email invitation, which will log them in automatically when they click the link."
 
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.label"
 msgstr "Include a secure link in the email invitation to reviewers."
@@ -911,7 +912,7 @@ msgid "manager.setup.disableSubmissions.notAccepting"
 msgstr "This press is not accepting submissions at this time. Visit the workflow settings to allow submissions."
 
 msgid "manager.setup.disableSubmissions.description"
-msgstr "Prevent users from submitting new articles to the press. Submissions can be disabled for individual press series on the <a href="{$url}">press series</a> settings page."
+msgstr "Prevent users from submitting new articles to the press. Submissions can be disabled for individual press series on the <a href=\"{$url}\">press series</a> settings page."
 
 msgid "manager.setup.genres"
 msgstr "Genres"

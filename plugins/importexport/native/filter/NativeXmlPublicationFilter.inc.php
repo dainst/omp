@@ -74,6 +74,22 @@ class NativeXmlPublicationFilter extends NativeXmlPKPPublicationFilter {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	function handleElement($node)
+	{
+		$publication = parent::handleElement($node);
+
+		// Ensure the cover's thumbnail file is generated
+		if ($coverImage = $publication->getData('coverImage')) {
+			$params = ['coverImage' => $coverImage];
+			$publication = Services::get('publication')->edit($publication, $params, Application::get()->getRequest());
+		}
+
+		return $publication;
+	}
+
+	/**
 	 * Get the import filter for a given element.
 	 * @param $elementName string Name of XML element
 	 * @return Filter
@@ -214,7 +230,7 @@ class NativeXmlPublicationFilter extends NativeXmlPKPPublicationFilter {
 			if (is_a($n, 'DOMElement')) {
 				switch ($n->tagName) {
 					case 'cover_image': 
-						$coverImage['uploadName'] = $n->textContent; 
+						$coverImage['uploadName'] = uniqid() . '-' . basename($n->textContent);
 						break;
 					case 'cover_image_alt_text':
 						$coverImage['altText'] = $n->textContent; 

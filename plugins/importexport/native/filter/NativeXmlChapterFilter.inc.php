@@ -122,6 +122,9 @@ class NativeXmlChapterFilter extends NativeImportFilter {
 		$chapterAuthorDao = DAORegistry::getDAO('ChapterAuthorDAO'); /** @var $chapterAuthorDao ChapterAuthorDAO */
 
 		$authorId = $deployment->getAuthorDBId($n->getAttribute('author_id'));
+		if (!$authorId) {
+			$deployment->addError(ASSOC_TYPE_CHAPTER, $chapter->getId(), 'Author with ID "' . $n->getAttribute('author_id') . '" was not found');
+		}
 		$primaryContact = $n->getAttribute('primary_contact');
 		$seq = $n->getAttribute('seq');
 
@@ -135,15 +138,12 @@ class NativeXmlChapterFilter extends NativeImportFilter {
 	 */
 	function parseSubmissionFileRef($n, $chapter) {
 		$deployment = $this->getDeployment();
-		$context = $deployment->getContext();
-
-		$publication = $deployment->getPublication();
 
 		$fileId = $n->getAttribute('id');
 
-		$sourceFileId = $deployment->getFileDBId($fileId);
+		$sourceFileId = $deployment->getSubmissionFileDBId($fileId);
 		if ($sourceFileId) {
-			$submissionFile = Services::get('submissionFile')->get($fileId);
+			$submissionFile = Services::get('submissionFile')->get($sourceFileId);
 
 			if ($submissionFile) {
 				$submissionFile->setData('chapterId', $chapter->getId());
