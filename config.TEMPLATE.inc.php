@@ -92,7 +92,7 @@ allow_url_fopen = Off
 ; Generate RESTful URLs using mod_rewrite.  This requires the
 ; rewrite directive to be enabled in your .htaccess or httpd.conf.
 ; See FAQ for more details.
-restful_urls = Off
+restful_urls = On
 
  Restrict the list of allowed hosts to prevent HOST header injection.
 ; See docs/README.md for more details. The list should be JSON-formatted.
