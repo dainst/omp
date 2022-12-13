@@ -323,14 +323,53 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 		$suffixType = $this->getSetting($form->submissionContext->getId(), 'doiSuffix');
 		$pattern = '';
+
 		if ($suffixType === 'default') {
 			$pattern = '%p.%m';
 		} elseif ($suffixType === 'pattern') {
 			$pattern = $this->getSetting($form->submissionContext->getId(), 'doiPublicationSuffixPattern');
 		}
 
+		// create random generated suffix:
+		if ($suffixType === "randomId") {
+
+			// Show DOI assigned to pubObject if available:
+			if($form->publication->getData('pub-id::doi')) {
+
+				$description = "Der DOI des Publikationsobjekts ist:";
+			}
+			// Create random generated id and show some hints to assign it manually.
+			else {
+
+				$uniqueId = uniqid(); // 13 chars
+				$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
+				$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+				$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+				$doiSuffix = $part1."-".$part2;
+				$doi = $prefix . "/" . $doiSuffix;
+
+				$description = "<p>Dem Publikationsobjekt wurde noch kein DOI fest zugewiesen.</p>
+					<div id=\"DAI-DOI\">Zufallsgenerierter DOI:
+	   					<input type=\"text\" value=\"$doi\" id=\"randomDoi\"></input>
+						<p>- Kopiere den zufallsgenerierten DOI.</p>
+						<p>- Klicke auf Edit und füge den kopierten DOI in das Feld daneben ein.</p>
+						<p>- Klicke unten auf Speichern.</p>
+					</div>";
+			};
+
+			$fieldData = [
+				'label' => __('metadata.property.displayName.doi'),
+				'description' => $description,
+				'value' => $form->publication->getData('pub-id::doi'),
+				'optIntoEdit' => true,
+				'optIntoEditLabel' => "Edit",
+			];
+
+			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', $fieldData));
+
+		}
 		// Add a text field to enter the DOI if no pattern exists
-		if (!$pattern) {
+		elseif (!$pattern) {
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
