@@ -1,5 +1,7 @@
 #### OMPDatacite and DA|RA Plugin
 
+*Development version for OMP Version 3.3.0*
+
 #### Introduction
 This plugin registers DOIS for monographs and chapters  for DOI provider [Datacite.org](https://datacite.org).
 
@@ -47,8 +49,3 @@ git clone https://github.com/withanage/datacite
 Main Developer and Designer
 
 [https://github.com/withanage](https://github.com/withanage)
-
-Contributors
-
--  [Christian Marsilius](https://github.com/nongenti)
-
