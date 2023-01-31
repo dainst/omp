@@ -54,7 +54,11 @@ class VocabHandler extends PKPVocabHandler {
 
 		/** @var ONIXCodelistItemDAO */
 		$onixCodelistItemDao = DAORegistry::getDAO('ONIXCodelistItemDAO');
-		$codes = array_map(fn ($value) => trim($value), array_values($onixCodelistItemDao->getCodes('List' . $codeList, [], $term)));
+		// fix: fn-short-notation not supported for php 7.3 (comes with php 7.4)
+		// $codes = array_map(fn ($value) => trim($value)), array_values($onixCodelistItemDao->getCodes('List' . $codeList, [], $term)));
+		$codes = array_map(function ($value) {
+			return trim($value);
+		}, array_values($onixCodelistItemDao->getCodes('List' . $codeList, [], $term)));
 		asort($codes);
 		return $response->withJson($codes, 200);
 	}
