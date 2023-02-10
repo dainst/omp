@@ -322,6 +322,7 @@ class DOIPubIdPlugin extends PubIdPlugin {
 		$prefix = $this->getSetting($form->submissionContext->getId(), 'doiPrefix');
 
 		$suffixType = $this->getSetting($form->submissionContext->getId(), 'doiSuffix');
+
 		$pattern = '';
 
 		if ($suffixType === 'default') {
@@ -369,13 +370,15 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 		}
 		// Add a text field to enter the DOI if no pattern exists
-		elseif (!$pattern) {
+		else {
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
 				'value' => $form->publication->getData('pub-id::doi'),
 			]));
-		} else {
+		}
+		
+		/* else {
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
 				'value' => $form->publication->getData('pub-id::doi'),
@@ -404,7 +407,7 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				}
 			}
 			$form->addField(new \PKP\components\forms\FieldPubId('pub-id::doi', $fieldData));
-		}
+		} */
 	}
 
 	/**
