@@ -52,3 +52,6 @@ msgstr "DOI"
 
 msgid "plugins.pubIds.doi.editor.doiSuffixCustomIdentifierNotUnique"
 msgstr "Der angegebene DOI-Suffix wird bereits für ein anderes veröffentlichtes Element benutzt. Bitte vergeben Sie einen eindeutigen DOI-Suffix für jedes Element."
+
+msgid "plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier"
+msgstr "Mit dieser Option wird eine 8-stellige, zufallsgenerierte ID (bestehend aus Zahlen und Buchstaben) generiert."

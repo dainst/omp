@@ -86,6 +86,9 @@ msgstr "%p.%m for monographs<br />%p.%m.c%c for chapters<br />%p.%m.%f for publi
 msgid "plugins.pubIds.doi.manager.settings.doiSuffixCustomIdentifier"
 msgstr "Enter an individual DOI suffix for each published item. You'll find an additional DOI input field on each item's meta-data page."
 
+msgid "plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier"
+msgstr "This option generates an 8-digit, randomly generated ID (consisting of numbers and letters)."
+
 msgid "plugins.pubIds.doi.manager.settings.doiPublicationSuffixPatternRequired"
 msgstr "Please enter the DOI suffix pattern for monographs."
 
@@ -145,6 +148,8 @@ msgstr "The DOI is assigned to this {$pubObjectType}."
 
 msgid "plugins.pubIds.doi.editor.doiSuffixCustomIdentifierNotUnique"
 msgstr "The given DOI suffix is already in use for another published item. Please enter a unique DOI suffix for each item."
+
+
 
 msgid "plugins.pubIds.doi.editor.clearObjectsDoi"
 msgstr "Clear"
