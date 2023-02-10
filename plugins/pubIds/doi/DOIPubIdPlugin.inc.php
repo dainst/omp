@@ -85,12 +85,12 @@ class DOIPubIdPlugin extends PubIdPlugin {
 		// Determine the type of the publishing object.
 		$pubObjectType = $this->getPubObjectType($pubObject);
 
-		// Get the context id.
+		/* Get the context id.
 		if ($pubObjectType == 'Submission') {
 			$contextId = $pubObject->getContextId();
 		} else {
 			// Retrieve the submission.
-			$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+			$submissionDao = DAORegistry::getDAO('SubmissionDAO');
 			if (is_a($pubObject, 'Chapter')) {
 				$submission = $submissionDao->getById($pubObject->getMonographId(), null, true);
 			} else {
@@ -100,11 +100,14 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			if (!$submission) return null;
 			// Now we can identify the context.
 			$contextId = $submission->getContextId();
-		}
+		} */
+
 		// Check the context
-		$context = $this->getContext($contextId);
-		if (!$context) return null;
-		$contextId = $context->getId();
+		// $context = $this->getContext($contextId);
+		// if (!$context) return null;
+		// $contextId = $context->getId();
+
+		$contextId = $pubObject->getContextId();
 
 		// Check whether pub ids are enabled for the given object type.
 		$objectTypeEnabled = $this->isObjectTypeEnabled($pubObjectType, $contextId);
