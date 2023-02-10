@@ -17,7 +17,7 @@
 			<p class="pkp_help">{translate key="plugins.pubIds.doi.editor.assignDoi.assigned" pubId=$pubObject->getStoredPubId($pubIdPlugin->getPubIdType())}</p>
 		{/fbvFormSection}
 	{else}
-		{assign var=pubId value=$DOIPubIdPlugin->getPubId($pubObject)}
+		{assign var=pubId value=$PubIdPlugin->getPubId($pubObject)}
 		{if !$canBeAssigned}
 			{fbvFormSection}
 				{if !$pubId}
