@@ -90,7 +90,7 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$contextId = $pubObject->getContextId();
 		} else {
 			// Retrieve the submission.
-			$submissionDao = Application::getSubmissionDAO();
+			$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 			if (is_a($pubObject, 'Chapter')) {
 				$submission = $submissionDao->getById($pubObject->getMonographId(), null, true);
 			} else {
