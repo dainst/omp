@@ -375,3 +375,5 @@ msgstr "Renseignements de publication pour la version {$version}"
 msgid "submission.queries.production"
 msgstr "Discussions sur la production"
 
+msgid "submission.editorName"
+msgstr "{$editorName} (ed.)"
