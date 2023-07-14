@@ -32,7 +32,7 @@
 		</a>
 
 		<span class="title">
-			{$submissionFile->getLocalizedData('name')|escape}
+			{$publishedSubmission->getLocalizedTitle()|escape}
 		</span>
 
 		<a href="{$downloadUrl|escape}" class="download" download>
