@@ -581,11 +581,20 @@ msgstr "Gérer les catégories"
 msgid "catalog.manage.noMonographs"
 msgstr "Aucune monographie n'a été assignée."
 
+msgid "catalog.browseTitles"
+msgstr "{$numTitles} Titres"
+
 msgid "catalog.feature"
+msgstr "En vedette"
+
+msgid "catalog.featured"
 msgstr "En vedette"
 
 msgid "catalog.featuredBooks"
 msgstr "Livres en vedette"
+
+msgid "catalog.newReleases"
+msgstr "Nouvelles publications"
 
 msgid "catalog.dateAdded"
 msgstr "Ajouté le"
