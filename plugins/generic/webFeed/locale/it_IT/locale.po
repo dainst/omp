@@ -17,6 +17,9 @@ msgstr "Feed della rivista"
 msgid "plugins.generic.webfeed.description"
 msgstr "Questo plugin genera il feed RSS/Atom per il fascicolo corrente."
 
+msgid "plugins.generic.webfeed.newcontent"
+msgstr "Nuovo contenuto"
+
 msgid "plugins.generic.webfeed.settings"
 msgstr "Impostazioni"
 

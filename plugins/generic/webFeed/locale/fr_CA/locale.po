@@ -17,6 +17,9 @@ msgstr "Plugiciel de flux de nouvelles"
 msgid "plugins.generic.webfeed.description"
 msgstr "Ce plugiciel produit des flux de nouvelles en format Atom/RSS pour le numéro courant."
 
+msgid "plugins.generic.webfeed.newcontent"
+msgstr "Nouveau contenu"
+
 msgid "plugins.generic.webfeed.settings"
 msgstr "Paramètres"
 
