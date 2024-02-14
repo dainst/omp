@@ -533,6 +533,9 @@ msgstr "Page d'accueil"
 msgid "catalog.manage.newReleases"
 msgstr "Communiqués de presse"
 
+msgid "catalog.published"
+msgstr "Publié"
+
 msgid "catalog.manage.category"
 msgstr "Catégorie"
 
