@@ -582,7 +582,7 @@ msgid "catalog.manage.noMonographs"
 msgstr "Aucune monographie n'a été assignée."
 
 msgid "catalog.browseTitles"
-msgstr "{$numTitles} Titres"
+msgstr "{$numTitles} élément(s)"
 
 msgid "catalog.feature"
 msgstr "En vedette"
@@ -592,6 +592,12 @@ msgstr "En vedette"
 
 msgid "catalog.featuredBooks"
 msgstr "Livres en vedette"
+
+msgid "catalog.foundTitleSearch"
+msgstr "Un titre a été trouvé correspondant à \"{$searchQuery}\"."
+
+msgid "catalog.foundTitlesSearch"
+msgstr "{$number} des titres ont été trouvés correspondant à \"{$searchQuery}\"."
 
 msgid "catalog.newReleases"
 msgstr "Nouvelles publications"

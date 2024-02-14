@@ -653,6 +653,12 @@ msgstr "In evidenza"
 msgid "catalog.featuredBooks"
 msgstr "Libri in evidenza"
 
+msgid "catalog.foundTitleSearch"
+msgstr "1 titolo è stato trovato che corrisponde alla: \"{$searchQuery}\"."
+
+msgid "catalog.foundTitlesSearch"
+msgstr "{$number} titoli sono stati trovati che corrispondono alla \"{$searchQuery}\"."
+
 msgid "catalog.allBooks"
 msgstr "Tutti i libri"
 
