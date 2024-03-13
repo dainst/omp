@@ -662,6 +662,12 @@ msgstr "{$number} titoli sono stati trovati che corrispondono alla \"{$searchQue
 msgid "catalog.allBooks"
 msgstr "Tutti i libri"
 
+msgid "catalog.category.heading"
+msgstr "Tutti i libri"
+
+msgid "catalog.categories"
+msgstr "Categorie"
+
 msgid "catalog.newReleases"
 msgstr "Nuove pubblicazioni"
 

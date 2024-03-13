@@ -593,6 +593,12 @@ msgstr "En vedette"
 msgid "catalog.featuredBooks"
 msgstr "Livres en vedette"
 
+msgid "catalog.category.heading"
+msgstr "Tous les livres"
+
+msgid "catalog.categories"
+msgstr "Catégories"
+
 msgid "catalog.foundTitleSearch"
 msgstr "Un titre a été trouvé correspondant à \"{$searchQuery}\"."
 
