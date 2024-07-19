@@ -1,0 +1,624 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-30T06:23:43-07:00\n"
+"PO-Revision-Date: 2019-09-30T06:23:43-07:00\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "submission.upload.selectComponent"
+msgstr "Select component"
+
+msgid "submission.title"
+msgstr "Book Title"
+
+msgid "submission.select"
+msgstr "Select Submission"
+
+msgid "submission.synopsis"
+msgstr "Synopsis"
+
+msgid "submission.workflowType"
+msgstr "Submission Type"
+
+msgid "submission.workflowType.description"
+msgstr ""
+"A monograph is a work authored wholly by one or more authors. An edited "
+"volume has different authors for each chapter (with the chapter details "
+"entered later in this process.)"
+
+msgid "submission.workflowType.editedVolume.label"
+msgstr "Edited Volume"
+
+msgid "submission.workflowType.editedVolume"
+msgstr "Edited Volume: Authors are associated with their own chapter."
+
+msgid "submission.workflowType.authoredWork"
+msgstr "Monograph: Authors are associated with the book as a whole."
+
+msgid "submission.workflowType.change"
+msgstr "Change"
+
+msgid "submission.editorName"
+msgstr "{$editorName} (ed)"
+
+msgid "submission.monograph"
+msgstr "Monograph"
+
+msgid "submission.published"
+msgstr "Production Ready"
+
+msgid "submission.fairCopy"
+msgstr "Fair Copy"
+
+msgid "submission.authorListSeparator"
+msgstr "; "
+
+msgid "submission.artwork.permissions"
+msgstr "Permissions"
+
+msgid "submission.chapter"
+msgstr "Chapter"
+
+msgid "submission.chapters"
+msgstr "Chapters"
+
+msgid "submission.chapter.addChapter"
+msgstr "Add Chapter"
+
+msgid "submission.chapter.editChapter"
+msgstr "Edit Chapter"
+
+msgid "submission.chapter.pages"
+msgstr "Pages"
+
+msgid "submission.copyedit"
+msgstr "Copyedit"
+
+msgid "submission.publicationFormats"
+msgstr "Publication Formats"
+
+msgid "submission.proofs"
+msgstr "Proofs"
+
+msgid "submission.download"
+msgstr "Download"
+
+msgid "submission.sharing"
+msgstr "Share This"
+
+msgid "manuscript.submission"
+msgstr "Manuscript Submission"
+
+msgid "submission.round"
+msgstr "Round&nbsp;{$round}"
+
+msgid "submissions.queuedReview"
+msgstr "In Review"
+
+msgid "manuscript.submissions"
+msgstr "Manuscript Submissions"
+
+msgid "submission.metadata"
+msgstr "Metadata"
+
+msgid "submission.supportingAgencies"
+msgstr "Supporting Agencies"
+
+msgid "grid.action.addChapter"
+msgstr "Create a new chapter"
+
+msgid "grid.action.editChapter"
+msgstr "Edit this chapter"
+
+msgid "grid.action.deleteChapter"
+msgstr "Delete this chapter"
+
+msgid "submission.submit"
+msgstr "Start New Book Submission"
+
+msgid "submission.submit.newSubmissionMultiple"
+msgstr "Start a New Submission in"
+
+msgid "submission.submit.newSubmissionSingle"
+msgstr "New Submission"
+
+msgid "submission.submit.upload"
+msgstr "Upload Submission"
+
+msgid "author.volumeEditor"
+msgstr "Volume Editor"
+
+msgid "author.isVolumeEditor"
+msgstr "Identify this contributor as the editor of this volume."
+
+msgid "submission.submit.seriesPosition"
+msgstr "Series Position"
+
+msgid "submission.submit.seriesPosition.description"
+msgstr "Examples: Book 2, Volume 2"
+
+msgid "submission.submit.privacyStatement"
+msgstr "Privacy Statement"
+
+msgid "submission.submit.contributorRole"
+msgstr "Contributor's role"
+
+msgid "submission.submit.submissionFile"
+msgstr "Submission File"
+
+msgid "submission.submit.prepare"
+msgstr "Prepare"
+
+msgid "submission.submit.catalog"
+msgstr "Catalog"
+
+msgid "submission.submit.metadata"
+msgstr "Metadata"
+
+msgid "submission.submit.finishingUp"
+msgstr "Finishing Up"
+
+msgid "submission.submit.confirmation"
+msgstr "Confirmation"
+
+msgid "submission.submit.nextSteps"
+msgstr "Next Steps"
+
+msgid "submission.submit.coverNote"
+msgstr "Cover Note to Editor"
+
+msgid "submission.submit.generalInformation"
+msgstr "General Information"
+
+msgid "submission.submit.whatNext.description"
+msgstr ""
+"The press has been notified of your submission, and you've been emailed a "
+"confirmation for your records.  Once the editor has reviewed the submission, "
+"they will contact you."
+
+msgid "submission.submit.checklistErrors"
+msgstr ""
+"Please read and check off the items in the submission checklist.  There are "
+"{$itemsRemaining} items left unchecked."
+
+msgid "submission.submit.placement"
+msgstr "Submission Placement"
+
+msgid "submission.submit.userGroup"
+msgstr "Submit in my role as..."
+
+msgid "submission.submit.noContext"
+msgstr "This submission's press could not be found."
+
+msgid "grid.chapters.title"
+msgstr "Chapters"
+
+msgid "grid.copyediting.deleteCopyeditorResponse"
+msgstr "Delete Copyeditor Upload"
+
+msgid "submission.complete"
+msgstr "Approved"
+
+msgid "submission.incomplete"
+msgstr "Awaiting Approval"
+
+msgid "submission.editCatalogEntry"
+msgstr "Entry"
+
+msgid "submission.catalogEntry.new"
+msgstr "Add Entry"
+
+msgid "submission.catalogEntry.add"
+msgstr "Add Selected to Catalog"
+
+msgid "submission.catalogEntry.select"
+msgstr "Select monographs to add to the catalog"
+
+msgid "submission.catalogEntry.selectionMissing"
+msgstr "You must select at least one monograph to add to the catalog."
+
+msgid "submission.catalogEntry.confirm"
+msgstr "Add this book to the public catalog"
+
+msgid "submission.catalogEntry.confirm.required"
+msgstr ""
+"Please confirm that the submission is ready to be placed in the catalog."
+
+msgid "submission.catalogEntry.isAvailable"
+msgstr "This monograph is ready to be included in the public catalog."
+
+msgid "submission.catalogEntry.viewSubmission"
+msgstr "View Submission"
+
+msgid "submission.catalogEntry.chapterPublicationDates"
+msgstr "Publication Dates"
+
+msgid "submission.catalogEntry.disableChapterPublicationDates"
+msgstr "All chapters will use the publication date of the monograph."
+
+msgid "submission.catalogEntry.enableChapterPublicationDates"
+msgstr "Each chapter may have its own publication date."
+
+msgid "submission.catalogEntry.monographMetadata"
+msgstr "Monograph"
+
+msgid "submission.catalogEntry.catalogMetadata"
+msgstr "Catalog"
+
+msgid "submission.catalogEntry.publicationMetadata"
+msgstr "Publication Format"
+
+msgid "submission.event.metadataPublished"
+msgstr "The monograph's metadata is approved for publication."
+
+msgid "submission.event.metadataUnpublished"
+msgstr "The monograph's metadata is no longer published."
+
+msgid "submission.event.publicationFormatMadeAvailable"
+msgstr "The publication format \"{$publicationFormatName}\" is made available."
+
+msgid "submission.event.publicationFormatMadeUnavailable"
+msgstr ""
+"The publication format \"{$publicationFormatName}\" is no longer available."
+
+msgid "submission.event.publicationFormatPublished"
+msgstr ""
+"The publication format \"{$publicationFormatName}\" is approved for "
+"publication."
+
+msgid "submission.event.publicationFormatUnpublished"
+msgstr ""
+"The publication format \"{$publicationFormatName}\" is no longer published."
+
+msgid "submission.event.catalogMetadataUpdated"
+msgstr "The catalog metadata was updated."
+
+msgid "submission.event.publicationMetadataUpdated"
+msgstr "The publication format metadata for \"{$formatName}\" was updated."
+
+msgid "submission.event.publicationFormatCreated"
+msgstr "The publication format \"{$formatName}\" was created."
+
+msgid "submission.event.publicationFormatRemoved"
+msgstr "The publication format \"{$formatName}\" was removed."
+
+msgid "editor.submission.decision.sendExternalReview"
+msgstr "Send to External Review"
+
+msgid "workflow.review.externalReview"
+msgstr "External Review"
+
+msgid "submission.upload.fileContents"
+msgstr "Submission Component"
+
+msgid "submission.dependentFiles"
+msgstr "Dependent Files"
+
+msgid "submission.metadataDescription"
+msgstr ""
+"These specifications are based on the Dublin Core metadata set, an "
+"international standard used to describe press content."
+
+msgid "section.any"
+msgstr "Any Series"
+
+msgid "submission.list.monographs"
+msgstr "Monographs"
+
+msgid "submission.list.countMonographs"
+msgstr "{$count} monographs"
+
+msgid "submission.list.itemsOfTotalMonographs"
+msgstr "{$count} of {$total} monographs"
+
+msgid "submission.list.orderFeatures"
+msgstr "Order Features"
+
+msgid "submission.list.orderingFeatures"
+msgstr ""
+"Drag-and-drop or tap the up and down buttons to change the order of features "
+"on the homepage."
+
+msgid "submission.list.orderingFeaturesSection"
+msgstr ""
+"Drag-and-drop or tap the up and down buttons to change the order of features "
+"in {$title}."
+
+msgid "submission.list.saveFeatureOrder"
+msgstr "Save Order"
+
+msgid "submission.list.viewEntry"
+msgstr "View Entry"
+
+msgid "catalog.browseTitles"
+msgstr "{$numTitles} Titles"
+
+msgid "publication.catalogEntry"
+msgstr "Catalog Entry"
+
+msgid "publication.catalogEntry.success"
+msgstr "The catalog entry details have been updated."
+
+msgid "publication.invalidSeries"
+msgstr "The series for this publication could not be found."
+
+msgid "publication.inactiveSeries"
+msgstr "{$series} (Inactive)"
+
+msgid "publication.required.issue"
+msgstr ""
+"The publication must be assigned to an issue before it can be published."
+
+msgid "publication.publishedIn"
+msgstr "Published in <a href=\"{$issueUrl}\">{$issueName}</a>."
+
+msgid "publication.publish.confirmation"
+msgstr ""
+"All publication requirements have been met. Are you sure you want to make "
+"this catalog entry public?"
+
+msgid "publication.scheduledIn"
+msgstr "Scheduled for publication in <a href=\"{$issueUrl}\">{$issueName}</a>."
+
+msgid "submission.publication"
+msgstr "Publication"
+
+msgid "publication.status.published"
+msgstr "Published"
+
+msgid "submission.status.scheduled"
+msgstr "Scheduled"
+
+msgid "publication.status.unscheduled"
+msgstr "Unscheduled"
+
+msgid "submission.publications"
+msgstr "Publications"
+
+msgid "publication.copyrightYearBasis.issueDescription"
+msgstr ""
+"The copyright year will be set automatically when this is published in an "
+"issue."
+
+msgid "publication.copyrightYearBasis.submissionDescription"
+msgstr ""
+"The copyright year will be set automatically based on the publication date."
+
+msgid "publication.datePublished"
+msgstr "Date Published"
+
+msgid "publication.editDisabled"
+msgstr "This version has been published and can not be edited."
+
+msgid "publication.event.published"
+msgstr "The submission was published."
+
+msgid "publication.event.scheduled"
+msgstr "The submission was scheduled for publication."
+
+msgid "publication.event.unpublished"
+msgstr "The submission was unpublished."
+
+msgid "publication.event.versionPublished"
+msgstr "A new version was published."
+
+msgid "publication.event.versionScheduled"
+msgstr "A new version was scheduled for publication."
+
+msgid "publication.event.versionUnpublished"
+msgstr "A version was removed from publication."
+
+msgid "publication.invalidSubmission"
+msgstr "The submission for this publication could not be found."
+
+msgid "publication.publish"
+msgstr "Publish"
+
+msgid "publication.publish.requirements"
+msgstr "The following requirements must be met before this can be published."
+
+msgid "publication.required.declined"
+msgstr "A declined submission can not be published."
+
+msgid "publication.required.reviewStage"
+msgstr ""
+"The submission must be in the Copyediting or Production stages before it can "
+"be published."
+
+msgid "submission.license.description"
+msgstr ""
+"The license will be set automatically to <a href='{$licenseUrl}' "
+"target='_blank'>{$licenseName}</a> when this is published."
+
+msgid "submission.copyrightHolder.description"
+msgstr ""
+"Copyright will be assigned automatically to {$copyright} when this is "
+"published."
+
+msgid "submission.copyrightOther.description"
+msgstr "Assign copyright for published submissions to the following party."
+
+msgid "publication.unpublish"
+msgstr "Unpublish"
+
+msgid "publication.unpublish.confirm"
+msgstr "Are you sure you don't want this to be published?"
+
+msgid "publication.unschedule.confirm"
+msgstr "Are you sure you don't want this scheduled for publication?"
+
+msgid "publication.version.details"
+msgstr "Publication details for version {$version}"
+
+msgid "submission.queries.production"
+msgstr "Production Discussions"
+
+msgid "publication.chapter.landingPage"
+msgstr "Chapter Page"
+
+msgid "publication.chapter.hasLandingPage"
+msgstr ""
+"Show this chapter on its own page and link to that page from the book's "
+"table of contents."
+
+msgid "publication.publish.success"
+msgstr "Publication status successfully changed."
+
+msgid "chapter.volume"
+msgstr "Volume"
+
+msgid "submission.withoutChapter"
+msgstr "{$name} — Without this chapter"
+
+msgid "submission.chapterCreated"
+msgstr " — Chapter created"
+
+msgid "chapter.pages"
+msgstr "Pages"
+
+msgid "editor.submission.decision.sendInternalReview"
+msgstr "Send to Internal Review"
+
+msgid "editor.submission.decision.sendInternalReview.description"
+msgstr "This submission is ready to be sent for internal review."
+
+msgid "editor.submission.decision.sendInternalReview.log"
+msgstr "{$editorName} sent this submission to the internal review stage."
+
+msgid "editor.submission.decision.sendInternalReview.completed"
+msgstr "Sent for Internal Review"
+
+msgid "editor.submission.decision.sendInternalReview.completed.description"
+msgstr ""
+"The submission, {$title}, has been sent to the internal review stage. The "
+"author has been notified, unless you chose to skip that email."
+
+msgid "editor.submission.decision.sendInternalReview.notifyAuthorsDescription"
+msgstr ""
+"Send an email to the authors to let them know that this submission will be "
+"sent for internal review. If possible, give the authors some indication of "
+"how long the internal review process might take and when they should expect "
+"to hear from the editors again."
+
+msgid "editor.submission.decision.promoteFiles.internalReview"
+msgstr "Select files that should be sent to the internal review stage."
+
+msgid "editor.submission.decision.sendExternalReview.log"
+msgstr "{$editorName} sent this submission to the external review stage."
+
+msgid "editor.submission.decision.sendExternalReview.completed"
+msgstr "Sent for External Review"
+
+msgid "editor.submission.decision.sendExternalReview.completed.description"
+msgstr "The submission, {$title}, has been sent to the external review stage."
+
+msgid "editor.submission.decision.backToReview"
+msgstr "Back to Review"
+
+msgid "editor.submission.decision.backToReview.description"
+msgstr ""
+"Revert the decision to accept this submission and send it back to the review "
+"stage."
+
+msgid "editor.submission.decision.backToReview.log"
+msgstr ""
+"{$editorName} reverted the decision to accept this submission and sent it "
+"back to the review stage."
+
+msgid "editor.submission.decision.backToReview.completed"
+msgstr "Sent Back to Review"
+
+msgid "editor.submission.decision.backToReview.completed.description"
+msgstr "The submission, {$title}, was sent back to the review stage."
+
+msgid "editor.submission.decision.backToReview.notifyAuthorsDescription"
+msgstr ""
+"Send an email to the authors to let them know that their submission is being "
+"sent back to the review stage. Explain why this decision was made and inform "
+"the author of what further review will be undertaken."
+
+msgid "editor.submission.decision.sendExternalReview.notifyAuthorsDescription"
+msgstr ""
+"Send an email to the authors to let them know that this submission will be "
+"sent for peer review. If possible, give the authors some indication of how "
+"long the peer review process might take and when they should expect to hear "
+"from the editors again."
+
+msgid "editor.submission.decision.promoteFiles.externalReview"
+msgstr "Select files that should be sent to the review stage."
+
+msgid "editor.submission.recommend.sendExternalReview"
+msgstr "Recommend Send to External Review"
+
+msgid "editor.submission.recommend.sendExternalReview.description"
+msgstr "Recommend that this submission be sent to the external review stage."
+
+msgid "editor.submission.recommend.sendExternalReview.log"
+msgstr ""
+"{$editorName} recommended that this submission be sent to the external "
+"review stage."
+
+msgid "doi.submission.incorrectContext"
+msgstr ""
+"Could not create a DOI for the following submission: {$pubObjectTitle}. It "
+"does not exist in the current press context."
+
+msgid "publication.chapter.licenseUrl"
+msgstr "License URL"
+
+msgid "publication.chapterDefaultLicenseURL"
+msgstr "Default Chapter License URL"
+
+msgid "submission.copyright.description"
+msgstr ""
+"Please read and understand the copyright terms for submissions to this press."
+
+msgid "submission.wizard.notAllowed.description"
+msgstr ""
+"You are not allowed to submit to this press because authors must be "
+"registered by the editorial staff. If you believe this is an error, please "
+"contact <a href='mailto:{$email}'>{$name}</a>."
+
+msgid "submission.wizard.noSectionAllowed.description"
+msgstr ""
+"You are not allowed to submit to this press because submissions to all "
+"sections of this press have been deactivated or restricted. If you believe "
+"this is an error, please contact <a href='mailto:{$email}'>{$name}</a>."
+
+msgid "submission.wizard.sectionClosed.message"
+msgstr ""
+"{$contextName} is not accepting submissions to the {$section} series. If you "
+"need help recovering your submission, please contact <a href='mailto:"
+"{$email}'>{$name}</a>."
+
+msgid "submission.sectionNotFound"
+msgstr "The series for this submission could not be found."
+
+msgid "submission.sectionRestrictedToEditors"
+msgstr "Only editorial staff are allowed to submit to this series."
+
+msgid "submission.wizard.submitting.monograph"
+msgstr "Submitting a <strong>Monograph</strong>."
+
+msgid "submission.wizard.submitting.monographInLanguage"
+msgstr ""
+"Submitting a <strong>Monograph</strong> in <strong>{$language}</strong>."
+
+msgid "submission.wizard.submitting.editedVolume"
+msgstr "Submitting an <strong>Edited Volume</strong>."
+
+msgid "submission.wizard.submitting.editedVolumeInLanguage"
+msgstr ""
+"Submitting an <strong>Edited Volume</strong> in <strong>{$language}</strong>."
+
+msgid "submission.wizard.chapters.description"
+msgstr ""
+"Please provide all of the chapters of this submission. If you are submitting "
+"an edited volume, please make sure that each chapter indicates the "
+"contributors for that chapter."

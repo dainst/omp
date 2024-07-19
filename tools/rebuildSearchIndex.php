@@ -8,32 +8,80 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class rebuildSearchIndex
+ *
  * @ingroup tools
  *
  * @brief CLI tool to rebuild the monograph keyword search database.
  */
 
-require(dirname(__FILE__) . '/bootstrap.inc.php');
+require dirname(__FILE__) . '/bootstrap.php';
 
-class rebuildSearchIndex extends CommandLineTool {
+use APP\core\Application;
+use PKP\cliTool\CommandLineTool;
+use PKP\config\Config;
+use PKP\db\DAORegistry;
+use PKP\plugins\Hook;
 
-	/**
-	 * Print command usage information.
-	 */
-	public function usage() {
-		echo "Script to rebuild monograph search index\n"
-			. "Usage: {$this->scriptName}\n";
-	}
+class rebuildSearchIndex extends CommandLineTool
+{
+    /**
+     * Print command usage information.
+     */
+    public function usage(): void
+    {
+        echo "Script to rebuild monograph search index\n"
+            . "Usage: {$this->scriptName} [options] [press_path]\n\n"
+            . "options: The standard index implementation does\n"
+            . "         not support any options. For other\n"
+            . "         implementations please see the corresponding\n"
+            . "         plugin documentation (e.g. 'plugins/generic/\n"
+            . "         lucene/README').\n";
+    }
 
-	/**
-	 * Rebuild the search index for all monographs in all presses.
-	 */
-	public function execute() {
-		$monographSearchIndex = Application::getSubmissionSearchIndex();
-		$monographSearchIndex->rebuildIndex(true);
-	}
+    /**
+     * Rebuild the search index for all monographs in all presses.
+     */
+    public function execute(): void
+    {
+        // Check whether we have (optional) switches.
+        $switches = [];
+        while (count($this->argv) && substr($this->argv[0], 0, 1) === '-') {
+            $switches[] = array_shift($this->argv);
+        }
+
+        // If we have another argument that this must be a press path.
+        $press = null;
+        if (count($this->argv)) {
+            $pressPath = array_shift($this->argv);
+            $pressDao = DAORegistry::getDAO('PressDAO'); /** @var \APP\press\PressDAO $pressDao */
+            $press = $pressDao->getByPath($pressPath);
+            if (!$press) {
+                exit(__('search.cli.rebuildIndex.unknownPress', ['pressPath' => $pressPath]) . "\n");
+            }
+        }
+
+        // Register a router hook so that we can construct
+        // useful URLs to press content.
+        Hook::add('Request::getBaseUrl', [$this, 'callbackBaseUrl']);
+
+        // Let the search implementation re-build the index.
+        $monographSearchIndex = Application::getSubmissionSearchIndex();
+        $monographSearchIndex->rebuildIndex(true, $press, $switches);
+    }
+
+    /**
+     * Callback to patch the base URL which will be required
+     * when constructing galley/supp file download URLs.
+     *
+     * @see \App\core\Request::getBaseUrl()
+     */
+    public function callbackBaseUrl(string $hookName, array $params): bool
+    {
+        $baseUrl = & $params[0];
+        $baseUrl = Config::getVar('general', 'base_url');
+        return Hook::ABORT;
+    }
 }
 
-$tool = new rebuildSearchIndex(isset($argv) ? $argv : array());
+$tool = new rebuildSearchIndex($argv ?? []);
 $tool->execute();
-

@@ -26,16 +26,40 @@
 <!DOCTYPE scheduled_tasks SYSTEM "../lib/pkp/dtd/scheduledTasks.dtd">
 
 <scheduled_tasks>
-	<task class="lib.pkp.classes.task.ReviewReminder">
+	<task class="PKP\task\ReviewReminder">
 		<descr>Send automated reminders to reviewers to confirm or complete their assignments.</descr>
 		<frequency hour="0"/>
 	</task>
-	<task class="lib.pkp.classes.task.PublishSubmissions">
+	<task class="PKP\task\PublishSubmissions">
 		<descr>Publish submissions that have been scheduled for publication.</descr>
 		<frequency day="0"/>
 	</task>
-	<task class="lib.pkp.classes.task.StatisticsReport">
+	<task class="PKP\task\StatisticsReport">
 		<descr>Send automated statistics reports to press managers and editors.</descr>
+		<frequency day="1"/>
+	</task>
+	<task class="PKP\task\RemoveUnvalidatedExpiredUsers">
+		<descr>Automatically remove unvalidated and expired users.</descr>
+		<frequency day="1"/>
+	</task>
+	<task class="PKP\task\UpdateIPGeoDB">
+		<descr>Update the DB-IP city lite database periodically to ensure the geographical stats remain accurate.</descr>
+		<frequency day="10"/>
+	</task>
+	<task class="APP\tasks\UsageStatsLoader">
+		<descr>Process the usage stats logs and load the numbers into the DB tables.</descr>
+		<frequency hour="0"/>
+	</task>
+	<task class="PKP\task\EditorialReminders">
+		<descr>Send a monthly reminder email to editors about their outstanding tasks</descr>
+		<frequency day="1"/>
+	</task>
+	<task class="PKP\task\ProcessQueueJobs">
+		<descr>Process pending queue jobs in the default queue driver and queue</descr>
+		<frequency second="0"/>
+	</task>
+	<task class="PKP\task\RemoveFailedJobs">
+		<descr>Automatically remove jobs that failed more than X days ago. The time limit can be changed in the the delete_failed_jobs_after setting in the config file.</descr>
 		<frequency day="1"/>
 	</task>
 </scheduled_tasks>

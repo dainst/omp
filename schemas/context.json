@@ -6,7 +6,7 @@
 			"type": "string",
 			"validation": [
 				"nullable",
-				"in:title-1,title-2,datePublished-1,datePublished-2,seriesPosition-1,seriesPosition-2"
+				"in:title-ASC,title-DESC,datePublished-ASC,datePublished-DESC,seriesPosition-ASC,seriesPosition-DESC"
 			]
 		},
 		"codeType": {
@@ -64,6 +64,32 @@
 		},
 		"displayNewReleases": {
 			"type": "boolean",
+			"validation": [
+				"nullable"
+			]
+		},
+		"enabledDoiTypes": {
+			"type": "array",
+			"items": {
+				"type": "string",
+				"validation": [
+					"in:publication,representation,file,chapter"
+				]
+			},
+		  	"default": ["publication"]
+		},
+		"doiCreationTime": {
+			"type": "string",
+			"default": "copyEditCreationTime"
+		},
+		"doiChapterSuffixPattern": {
+			"type": "string",
+			"validation": [
+				"nullable"
+			]
+		},
+		"doiSubmissionFileSuffixPattern": {
+			"type": "string",
 			"validation": [
 				"nullable"
 			]
@@ -128,7 +154,7 @@
 			"properties": {
 				"temporaryFileId": {
 					"type": "integer",
-					"writeOnly": "true"
+					"writeOnly": true
 				},
 				"name": {
 					"type": "string"
@@ -152,6 +178,11 @@
 					"type": "string"
 				}
 			}
+		},
+		"doiVersioning": {
+			"type": "boolean",
+			"default": false,
+			"description": "Whether each publication version should receive a unique DOI"
 		}
 	}
 }

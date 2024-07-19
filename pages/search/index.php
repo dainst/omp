@@ -12,16 +12,14 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_search
+ *
  * @brief Handle search requests.
  *
  */
 
 switch ($op) {
-	case 'index':
-	case 'search':
-		define('HANDLER_CLASS', 'SearchHandler');
-		import('pages.search.SearchHandler');
-		break;
+    case 'index':
+    case 'search':
+        define('HANDLER_CLASS', 'APP\pages\search\SearchHandler');
+        break;
 }
-
-

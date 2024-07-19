@@ -1,0 +1,659 @@
+# Pia Piontkowitz <pia.piontkowitz@rub.de>, 2021, 2022, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-30T06:23:43-07:00\n"
+"PO-Revision-Date: 2023-04-26 17:49+0000\n"
+"Last-Translator: Pia Piontkowitz <pia.piontkowitz@rub.de>\n"
+"Language-Team: German <http://translate.pkp.sfu.ca/projects/omp/submission/"
+"de/>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.13.1\n"
+
+msgid "submission.upload.selectComponent"
+msgstr "Komponente auswählen"
+
+msgid "submission.title"
+msgstr "Buchtitel"
+
+msgid "submission.select"
+msgstr "Wählen Sie ein Manuskript aus"
+
+msgid "submission.synopsis"
+msgstr "Über dieses Buch"
+
+msgid "submission.workflowType"
+msgstr "Art des Buches"
+
+msgid "submission.workflowType.description"
+msgstr ""
+"Eine Monographie ist ein Werk, das von einer Autorin/einem Autor oder "
+"mehreren Autor/innen gemeinsam verfasst worden ist. Ein Sammelband besteht "
+"aus mehreren Kapiteln jeweils unterschiedlicher Autor/innen (detaillierte "
+"Kapitelangaben sind erst zu einem späteren Zeitpunkt im "
+"Veröffentlichungsprozess zu machen)."
+
+msgid "submission.workflowType.editedVolume.label"
+msgstr "Sammelband"
+
+msgid "submission.workflowType.editedVolume"
+msgstr "Sammelband: Autor/innen sind mit dem eigenen Kapitel assoziiert."
+
+msgid "submission.workflowType.authoredWork"
+msgstr "Monographie: Autor/innen sind mit dem Buch als Ganzes assoziiert."
+
+msgid "submission.workflowType.change"
+msgstr "Ändern"
+
+msgid "submission.editorName"
+msgstr "{$editorName} (Hrsg)"
+
+msgid "submission.monograph"
+msgstr "Monographie"
+
+msgid "submission.published"
+msgstr "Druckreif"
+
+msgid "submission.fairCopy"
+msgstr "Reinschrift"
+
+msgid "submission.authorListSeparator"
+msgstr "; "
+
+msgid "submission.artwork.permissions"
+msgstr "Rechte"
+
+msgid "submission.chapter"
+msgstr "Kapitel"
+
+msgid "submission.chapters"
+msgstr "Kapitel"
+
+msgid "submission.chapter.addChapter"
+msgstr "Kapitel hinzufügen"
+
+msgid "submission.chapter.editChapter"
+msgstr "Kapitel bearbeiten"
+
+msgid "submission.chapter.pages"
+msgstr "Seiten"
+
+msgid "submission.copyedit"
+msgstr "Lektorat"
+
+msgid "submission.publicationFormats"
+msgstr "Formate"
+
+msgid "submission.proofs"
+msgstr "Proofs"
+
+msgid "submission.download"
+msgstr "Download"
+
+msgid "submission.sharing"
+msgstr "Teilen"
+
+msgid "manuscript.submission"
+msgstr "Manuskript einreichen"
+
+msgid "submission.round"
+msgstr "Durchgang&nbsp;{$round}"
+
+msgid "submissions.queuedReview"
+msgstr "In Begutachtung"
+
+msgid "manuscript.submissions"
+msgstr "Manuskripte einreichen"
+
+msgid "submission.metadata"
+msgstr "Metadaten"
+
+msgid "submission.supportingAgencies"
+msgstr "Träger"
+
+msgid "grid.action.addChapter"
+msgstr "Ein neues Kapitel erzeugen"
+
+msgid "grid.action.editChapter"
+msgstr "Kapitel bearbeiten"
+
+msgid "grid.action.deleteChapter"
+msgstr "Kapitel löschen"
+
+msgid "submission.submit"
+msgstr "Ein neues Buchmanuskript einreichen"
+
+msgid "submission.submit.newSubmissionMultiple"
+msgstr "Ein neues Buchmanuskript einreichen bei"
+
+msgid "submission.submit.newSubmissionSingle"
+msgstr "Ein neues Manuskript bei {$contextName} einreichen"
+
+msgid "submission.submit.upload"
+msgstr "Einreichung hochladen"
+
+msgid "author.volumeEditor"
+msgstr "Band Herausgeber/in"
+
+msgid "author.isVolumeEditor"
+msgstr "Diese Person als Herausgeber/in des Bandes identifizieren."
+
+msgid "submission.submit.seriesPosition"
+msgstr "Position innerhalb der Reihe (z.B. Band 2)"
+
+msgid "submission.submit.seriesPosition.description"
+msgstr "Beispiel: Buch 2, Band 2"
+
+msgid "submission.submit.privacyStatement"
+msgstr "Datenschutzerklärung"
+
+msgid "submission.submit.contributorRole"
+msgstr "Funktion des Beiträgers/der Beiträgerin"
+
+msgid "submission.submit.submissionFile"
+msgstr "Manuskriptdatei"
+
+msgid "submission.submit.prepare"
+msgstr "Vorbereiten"
+
+msgid "submission.submit.catalog"
+msgstr "Katalog"
+
+msgid "submission.submit.metadata"
+msgstr "Metadaten"
+
+msgid "submission.submit.finishingUp"
+msgstr "Fertigstellen"
+
+msgid "submission.submit.confirmation"
+msgstr "Bestätigung"
+
+msgid "submission.submit.nextSteps"
+msgstr "Die nächsten Schritte"
+
+msgid "submission.submit.coverNote"
+msgstr "Vermerk für den/die Herausgeber/in"
+
+msgid "submission.submit.generalInformation"
+msgstr "Allgemeine Informationen"
+
+msgid "submission.submit.whatNext.description"
+msgstr ""
+"Der Verlag wurde über die Einsendung Ihres Manuskriptes informiert. Für Ihre "
+"Unterlagen haben wir Ihnen eine Bestätigung per E-Mail zugesandt. Sobald der/"
+"die Herausgeber/in das Manuskript geprüft hat, wird er sich mit Ihnen in "
+"Verbindung setzen."
+
+msgid "submission.submit.checklistErrors"
+msgstr ""
+"Bitte lesen und bestätigen Sie die Punkte der Einreichungscheckliste. "
+"{$itemsRemaining} Punkte wurden bisher noch nicht bestätigt."
+
+msgid "submission.submit.placement"
+msgstr "Manuskriptplatzierung"
+
+msgid "submission.submit.userGroup"
+msgstr "Einreichen in meiner Funktion als ..."
+
+msgid "submission.submit.noContext"
+msgstr "Der Verlag der Einreichung konnte nicht gefunden werden."
+
+msgid "grid.chapters.title"
+msgstr "Kapitel"
+
+msgid "grid.copyediting.deleteCopyeditorResponse"
+msgstr "Vom Lektor hochgeladenes Dokument löschen"
+
+msgid "submission.complete"
+msgstr "Freigegeben"
+
+msgid "submission.incomplete"
+msgstr "Warte auf Freigabe"
+
+msgid "submission.editCatalogEntry"
+msgstr "Eintrag"
+
+msgid "submission.catalogEntry.new"
+msgstr "Neuer Katalogeintrag"
+
+msgid "submission.catalogEntry.add"
+msgstr "Auswahl dem Katalog hinzufügen"
+
+msgid "submission.catalogEntry.select"
+msgstr "Wählen Sie Monographien aus um sie dem Katalog hinzuzufügen"
+
+msgid "submission.catalogEntry.selectionMissing"
+msgstr ""
+"Es muss mindestens eine Monographie ausgewählt werden, um sie dem Katalog "
+"hinzuzufügen."
+
+msgid "submission.catalogEntry.confirm"
+msgstr "Dieses Buch dem Katalog hinzufügen"
+
+msgid "submission.catalogEntry.confirm.required"
+msgstr ""
+"Bitte bestätigen Sie, dass der Publikationsprozess abgeschlossen ist und das "
+"Buch in den Katalog aufgenommen werden soll."
+
+msgid "submission.catalogEntry.isAvailable"
+msgstr ""
+"Diese Monographie ist fertig und soll in den öffentlichen Katalog "
+"aufgenommen werden."
+
+msgid "submission.catalogEntry.viewSubmission"
+msgstr "Einreichung ansehen"
+
+msgid "submission.catalogEntry.chapterPublicationDates"
+msgstr "Publikationsdaten"
+
+msgid "submission.catalogEntry.disableChapterPublicationDates"
+msgstr "Alle Kapitel werden das Publikationsdatum der Monographie verwenden."
+
+msgid "submission.catalogEntry.enableChapterPublicationDates"
+msgstr "Jedes Kapitel kann ein eigenes Publikationsdatum haben."
+
+msgid "submission.catalogEntry.monographMetadata"
+msgstr "Monographie"
+
+msgid "submission.catalogEntry.catalogMetadata"
+msgstr "Katalog"
+
+msgid "submission.catalogEntry.publicationMetadata"
+msgstr "Format"
+
+msgid "submission.event.metadataPublished"
+msgstr ""
+"Die Metadaten der Monographie sind zur Veröffentlichung akzeptiert worden."
+
+msgid "submission.event.metadataUnpublished"
+msgstr ""
+"Die Veröffentlichung der Metadaten dieser Monographie wurde eingestellt."
+
+msgid "submission.event.publicationFormatMadeAvailable"
+msgstr "Das \"{$publicationFormatName}\"-Format wurde verfügbar gemacht."
+
+msgid "submission.event.publicationFormatMadeUnavailable"
+msgstr "Das \"{$publicationFormatName}\"-Format ist nicht länger verfügbar."
+
+msgid "submission.event.publicationFormatPublished"
+msgstr ""
+"Das \"{$publicationFormatName}\"-Format ist für die Veröffentlichung "
+"akzeptiert worden."
+
+msgid "submission.event.publicationFormatUnpublished"
+msgstr ""
+"Die Veröffentlichung des \"{$publicationFormatName}\"-Formats wurde "
+"eingestellt."
+
+msgid "submission.event.catalogMetadataUpdated"
+msgstr "Die Katalogmetadaten wurden aktualisiert."
+
+msgid "submission.event.publicationMetadataUpdated"
+msgstr "Die Metadaten für das Format \"{$formatName}\" wurden upgedatet."
+
+msgid "submission.event.publicationFormatCreated"
+msgstr "Das Format \"{$formatName}\" wurde erstellt."
+
+msgid "submission.event.publicationFormatRemoved"
+msgstr "Das Format \"{$formatName}\" wurde entfernt."
+
+msgid "editor.submission.decision.sendExternalReview"
+msgstr "In externe Begutachtung geben"
+
+msgid "workflow.review.externalReview"
+msgstr "Externe Begutachtung"
+
+msgid "submission.upload.fileContents"
+msgstr "Einreichungs-Komponente"
+
+msgid "submission.dependentFiles"
+msgstr "Unselbstständige Dateien"
+
+msgid "submission.metadataDescription"
+msgstr ""
+"Diese Spezifizierungen basieren auf dem Dublin Core Metadaten-Set. Dies ist "
+"ein internationaler Standard zur Beschreibung von Verlagsinhalten."
+
+msgid "section.any"
+msgstr "Beliebige Reihe"
+
+msgid "submission.list.monographs"
+msgstr "Monographien"
+
+msgid "submission.list.countMonographs"
+msgstr "{$count} Monographien"
+
+msgid "submission.list.itemsOfTotalMonographs"
+msgstr "{$count} von {$total} Monographien"
+
+msgid "submission.list.orderFeatures"
+msgstr "Features sortieren"
+
+msgid "submission.list.orderingFeatures"
+msgstr ""
+"Drag-and-drop oder klicken Sie die Hoch- und Runter-Pfeile um die Sortierung "
+"der Features auf der Homepage zu verändern."
+
+msgid "submission.list.orderingFeaturesSection"
+msgstr ""
+"Drag-and-drop oder klicken Sie die Hoch- und Runter-Pfeile um die Sortierung "
+"der Features in {$title} zu verändern."
+
+msgid "submission.list.saveFeatureOrder"
+msgstr "Sortierung speichern"
+
+msgid "submission.list.viewEntry"
+msgstr "Eintrag ansehen"
+
+msgid "catalog.browseTitles"
+msgstr "{$numTitles} Titel"
+
+msgid "publication.catalogEntry"
+msgstr "Katalog"
+
+msgid "publication.catalogEntry.success"
+msgstr "Die Details des Katalogeintrags wurden aktualisiert."
+
+msgid "publication.invalidSeries"
+msgstr "Die Reihe dieser Publikation konnte nicht gefunden werden."
+
+msgid "publication.inactiveSeries"
+msgstr "{$series} (Inaktiv)"
+
+msgid "publication.required.issue"
+msgstr ""
+"Die Publikation muss einer Ausgabe zugewiesen werden, bevor sie publiziert "
+"werden kann."
+
+msgid "publication.publishedIn"
+msgstr "Veröffentlicht in <a href=\"{$issueUrl}\">{$issueName}</a>."
+
+msgid "publication.publish.confirmation"
+msgstr ""
+"Alle Vorraussetzungen für die Veröffentlichung sind erfüllt. Sind Sie "
+"sicher, dass Sie diesen Katalogeintrag publizieren möchten?"
+
+msgid "publication.scheduledIn"
+msgstr ""
+"Für die Publikation in <a href=\"{$issueUrl}\">{$issueName}</a> vorgesehen."
+
+msgid "submission.publication"
+msgstr "Veröffentlichung"
+
+msgid "publication.status.published"
+msgstr "Veröffentlicht"
+
+msgid "submission.status.scheduled"
+msgstr "Eingeplant"
+
+msgid "publication.status.unscheduled"
+msgstr "Nicht eingeplant"
+
+msgid "submission.publications"
+msgstr "Veröffentlichungen"
+
+msgid "publication.copyrightYearBasis.issueDescription"
+msgstr ""
+"Das Copyright-Jahr wird automatisch gesetzt, wenn dieser Beitrag in einer "
+"Ausgabe veröffentlicht wird."
+
+msgid "publication.copyrightYearBasis.submissionDescription"
+msgstr ""
+"Das Copyright-Jahr wird, basierend auf dem Veröffentlichungsdatum, "
+"automatisch gesetzt."
+
+msgid "publication.datePublished"
+msgstr "Veröffentlichungsdatum"
+
+msgid "publication.editDisabled"
+msgstr "Diese Version wurde veröffentlicht und kann nicht geändert werden."
+
+msgid "publication.event.published"
+msgstr "Der Beitrag wurde veröffentlicht."
+
+msgid "publication.event.scheduled"
+msgstr "Der Beitrag wurde zur Veröffentlichung vorgesehen."
+
+msgid "publication.event.unpublished"
+msgstr "Der Beitrag wurde zurückgezogen."
+
+msgid "publication.event.versionPublished"
+msgstr "Eine neue Version wurde veröffentlicht."
+
+msgid "publication.event.versionScheduled"
+msgstr "Eine neue Version wurde zur Veröffentlichung vorgesehen."
+
+msgid "publication.event.versionUnpublished"
+msgstr "Eine Version wurde zurückgezogen."
+
+msgid "publication.invalidSubmission"
+msgstr ""
+"Die Einreichung für diese Veröffentlichung konnte nicht gefunden werden."
+
+msgid "publication.publish"
+msgstr "Veröffentlichen"
+
+msgid "publication.publish.requirements"
+msgstr ""
+"Die folgenden Bedingungen müssen erfüllt sein, bevor dies veröffentlicht "
+"werden kann."
+
+msgid "publication.required.declined"
+msgstr "Ein abgelehnter Beitrag kann nicht veröffentlicht werden."
+
+msgid "publication.required.reviewStage"
+msgstr ""
+"Die Einreichung muss sich im Copyediting oder im Produktionsschritt befinden "
+"um veröffentlicht werden zu können."
+
+msgid "submission.license.description"
+msgstr ""
+"Die Lizenz wird bei Veröffentlichung automatisch auf <a href='{$licenseUrl}' "
+"target='_blank'>{$licenseName}</a> gesetzt."
+
+msgid "submission.copyrightHolder.description"
+msgstr ""
+"{$copyright} wird bei Veröffentlichung automatisch als Rechteinhaber gesetzt."
+
+msgid "submission.copyrightOther.description"
+msgstr "Die Rechte am veröffentlichten Beitrag folgender Gruppe zuordnen."
+
+msgid "publication.unpublish"
+msgstr "Zurückziehen"
+
+msgid "publication.unpublish.confirm"
+msgstr "Sind sie sicher, dass dies nicht veröffentlicht werden soll?"
+
+msgid "publication.unschedule.confirm"
+msgstr ""
+"Sind sie sicher, dass dies nicht zur Veröffentlichung eingeplant werden soll?"
+
+msgid "publication.version.details"
+msgstr "Veröffentlichungsdetails für Version {$version}"
+
+msgid "submission.queries.production"
+msgstr "Diskussion zur Herstellung"
+
+msgid "publication.chapter.landingPage"
+msgstr "Kapitelseite"
+
+msgid "publication.chapter.hasLandingPage"
+msgstr ""
+"Dieses Kapitel auf einer eigenen Seite anzeigen, auf die vom "
+"Inhaltsverzeichnis der Publikation aus verlinkt wird."
+
+msgid "publication.publish.success"
+msgstr "Der Publikationsstatus wurde erfolgreich verändert."
+
+msgid "chapter.volume"
+msgstr "Band"
+
+msgid "submission.withoutChapter"
+msgstr "{$name} — Ohne dieses Kapitel"
+
+msgid "submission.chapterCreated"
+msgstr " — Kapitel kreiert"
+
+msgid "chapter.pages"
+msgstr "Seiten"
+
+msgid "editor.submission.decision.sendInternalReview"
+msgstr "Zur internen Begutachtung schicken"
+
+msgid "editor.submission.decision.sendInternalReview.description"
+msgstr ""
+"Die Einreichung ist für die Weitergabe in die interne Begutachtung bereit."
+
+msgid "editor.submission.decision.sendInternalReview.log"
+msgstr ""
+"{$editorName} hat diese Einreichung in die interne Begutachtung geschickt."
+
+msgid "editor.submission.decision.sendInternalReview.completed"
+msgstr "Zur internen Begutachtung geschickt"
+
+msgid "editor.submission.decision.sendInternalReview.completed.description"
+msgstr ""
+"Die Einreichung {$title} wurde in die interne Begutachtung geschickt. Die "
+"Autor/innen wurden benachrichtigt, es sei denn, Sie haben diese E-Mail "
+"übersprungen."
+
+msgid "editor.submission.decision.sendInternalReview.notifyAuthorsDescription"
+msgstr ""
+"Eine E-Mail an die Autor/innen senden, um sie darüber zu informieren, dass "
+"ihre Einreichung zur internen Begutachtung geschickt wird. Sofern möglich, "
+"geben Sie den Autor/innen einen Hinweis darauf, wie lange die Begutachtung "
+"dauern wird und wann sie von den Redakteur/innen eine Rückmeldung erwarten "
+"können."
+
+msgid "editor.submission.decision.promoteFiles.internalReview"
+msgstr ""
+"Dateien auswählen, die zur internen Begutachtung geschickt werden sollen."
+
+msgid "editor.submission.decision.sendExternalReview.log"
+msgstr ""
+"{$editorName} hat diese Einreichung in die externe Begutachtung geschickt."
+
+msgid "editor.submission.decision.sendExternalReview.completed"
+msgstr "Zur externen Begutachtung geschickt"
+
+msgid "editor.submission.decision.sendExternalReview.completed.description"
+msgstr "Die Einreichung {$title} wurde in die externe Begutachtung geschickt."
+
+msgid "editor.submission.decision.backToReview"
+msgstr "Zurück zur Begutachtung"
+
+msgid "editor.submission.decision.backToReview.description"
+msgstr ""
+"Annahmeentscheidung über diese Einreichung rückgängig machen und die "
+"Einreichung in die Begutachtung zurückschicken."
+
+msgid "editor.submission.decision.backToReview.log"
+msgstr ""
+"{$editorName} hat die Entscheidung, diese Einreichung zu akzeptieren, "
+"rückgängig gemacht und sie in die Begutachtung zurückgeschickt."
+
+msgid "editor.submission.decision.backToReview.completed"
+msgstr "In die Begutachtung zurückgeschickt"
+
+msgid "editor.submission.decision.backToReview.completed.description"
+msgstr "Die Einreichung {$title} wurde in die Begutachtung zurückgeschickt."
+
+msgid "editor.submission.decision.backToReview.notifyAuthorsDescription"
+msgstr ""
+"Eine E-Mail an die Autor/innen senden, um sie darüber zu informieren, dass "
+"ihre Einreichung in die Begutachtung zurückgeschickt wird. Erklären Sie, "
+"warum diese Entscheidung getroffen wurde und informieren Sie die Autor/"
+"innen, welche weiteren Begutachtungen unternommen werden."
+
+msgid "editor.submission.decision.sendExternalReview.notifyAuthorsDescription"
+msgstr ""
+"Eine E-Mail an die Autor/innen senden, um sie darüber zu informieren, dass "
+"ihre Einreichung zum Peer Review geschickt wird. Sofern möglich, geben Sie "
+"den Autor/innen einen Hinweis darauf, wie lange das Peer Review-Verfahren "
+"dauern wird und wann sie von den Redakteur/innen eine Rückmeldung erwarten "
+"können."
+
+msgid "editor.submission.decision.promoteFiles.externalReview"
+msgstr "Dateien auswählen, die zur Begutachtung geschickt werden sollen."
+
+msgid "editor.submission.recommend.sendExternalReview"
+msgstr "Empfehlen, zur externen Begutachtung zu schicken"
+
+msgid "editor.submission.recommend.sendExternalReview.description"
+msgstr ""
+"Empfehlen, dass diese Einreichung zur externen Begutachtung geschickt werden "
+"soll."
+
+msgid "editor.submission.recommend.sendExternalReview.log"
+msgstr ""
+"{$editorName} hat empfohlen, diese Einreichung zur externen Begutachtung zu "
+"schicken."
+
+msgid "doi.submission.incorrectContext"
+msgstr ""
+"DOI für die Einreichung {$pubObjectTitle} konnte nicht kreiert werden. Die "
+"Einreichung existiert im aktuellen Verlagskontext nicht."
+
+msgid "publication.chapter.licenseUrl"
+msgstr "Lizenz URL"
+
+msgid "publication.chapterDefaultLicenseURL"
+msgstr "Default Kapitel Lizenz URL"
+
+msgid "submission.copyright.description"
+msgstr ""
+"Bitte lesen und verstehen Sie die Copyright-Bestimmungen für Beiträge an "
+"diesen Verlag."
+
+msgid "submission.wizard.notAllowed.description"
+msgstr ""
+"Sie können keine Beiträge in diesem Verlag einreichen, da Autor/innen von "
+"der Redaktion registriert werden müssen. Wenn Sie glauben, dass dies ein "
+"Fehler ist, wenden Sie sich bitte an <a href='mailto:{$email}'>{$name}</a>."
+
+msgid "submission.wizard.noSectionAllowed.description"
+msgstr ""
+"Sie können keine Beiträge in dieser Zeitschrift einreichen, da Einreichungen "
+"für alle Reihen dieses Verlags deaktiviert oder restriktiert sind. Wenn Sie "
+"glauben, dass dies ein Fehler ist, wenden Sie sich bitte an <a "
+"href='mailto:{$email}'>{$name}</a>."
+
+msgid "submission.wizard.sectionClosed.message"
+msgstr ""
+"{$contextName} akzeptiert keine Einreichungen für die Sektion {$section}. "
+"Wenn Sie Hilfe bei der Wiederherstellung Ihrer Einreichung benötigen, bitte "
+"kontaktieren Sie <a href='mailto:{$email}'>{$name}</a>."
+
+msgid "submission.sectionNotFound"
+msgstr "Die Reihe für diese Einreichung konnte nicht gefunden werden."
+
+msgid "submission.sectionRestrictedToEditors"
+msgstr "Nur die Reaktion kann Beiträge in dieser Reihe einreichen."
+
+msgid "submission.wizard.submitting.monograph"
+msgstr "Einreichung einer <strong>Monographie</strong>."
+
+msgid "submission.wizard.submitting.monographInLanguage"
+msgstr ""
+"Einreichung einer <strong>Monographie</strong> auf "
+"<strong>{$language}</strong>."
+
+msgid "submission.wizard.submitting.editedVolume"
+msgstr "Einreichung eines <strong>Sammelbandes</strong>."
+
+msgid "submission.wizard.submitting.editedVolumeInLanguage"
+msgstr ""
+"Einreichungs eines <strong>Sammelbandes</strong> auf "
+"<strong>{$language}</strong>."
+
+msgid "submission.wizard.chapters.description"
+msgstr ""
+"Bitte geben Sie alle Kapitel dieser Einreichung an. Wenn Sie einen "
+"Sammelband einreichen, vergewissern Sie sich bitte, dass in jedem Kapitel "
+"die Autor/innen angegeben sind, die für das jeweilige Kapitel verantwortlich "
+"sind."

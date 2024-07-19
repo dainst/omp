@@ -12,9 +12,9 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup api_v1_backend
+ *
  * @brief Handle requests for backend API.
  *
  */
 
-import('api.v1._submissions.BackendSubmissionsHandler');
-return new BackendSubmissionsHandler();
+return new \APP\API\v1\_submissions\BackendSubmissionsHandler();

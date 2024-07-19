@@ -12,9 +12,9 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_stats
+ *
  * @brief Handle requests for statistics pages.
  *
  */
 
-import('pages.stats.StatsHandler');
-define('HANDLER_CLASS', 'StatsHandler');
+define('HANDLER_CLASS', 'APP\pages\stats\StatsHandler');

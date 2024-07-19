@@ -18,11 +18,11 @@
 	{rdelim});
 </script>
 
-<form class="pkp_form" id="editChapterForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT component="grid.users.chapter.ChapterGridHandler" op="updateChapter"}">
+<form class="pkp_form" id="editChapterForm" method="post" action="{url router=PKPApplication::ROUTE_COMPONENT component="grid.users.chapter.ChapterGridHandler" op="updateChapter"}">
 	{csrf}
 	<input type="hidden" name="submissionId" value="{$submissionId|escape}" />
 	<input type="hidden" name="publicationId" value="{$publicationId|escape}" />
-	<input type="hidden" name="chapterId" value="{$chapterId|default:""|escape}" />
+	<input type="hidden" name="chapterId" value="{$chapterId|escape}" />
 
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="chapterFormNotification"}
 
@@ -48,19 +48,28 @@
 		{/fbvFormSection}
 	{/if}
 
+	{if $submissionWorkType === 1}
+		{fbvFormSection title="publication.chapter.licenseUrl" for="customExtras"}
+		<div class="pkpFormField__description">{$chapterLicenseUrlDescription}</div>
+		{fbvElement type="text" id="licenseUrl" value=$licenseUrl inline=true size=$fbvStyles.size.LARGE}
+		{/fbvFormSection}
+	{/if}
+
+	{fbvFormSection list=true title="publication.chapter.landingPage" for="customExtras"}
+	{fbvElement type="checkbox" name="isPageEnabled" id="isPageEnabled" checked=$isPageEnabled|compare:true label="publication.chapter.hasLandingPage" value="1" translate="true"}
+	{/fbvFormSection}
+
 	{fbvFormSection list=true title="submission.submit.addAuthor"}
 		{foreach from=$chapterAuthorOptions item="chapterAuthor" key="id"}
 			{fbvElement type="checkbox" id="authors[]" value=$id checked=in_array($id, $selectedChapterAuthors) label=$chapterAuthor|escape translate=false}
 		{/foreach}
 	{/fbvFormSection}
 
-	{if $chapterId}
-		{fbvFormSection list=true title="submission.files"}
-			{foreach from=$chapterFileOptions item="chapterFile" key="id"}
-				{fbvElement type="checkbox" id="files[]" value=$id checked=in_array($id, $selectedChapterFiles) label=$chapterFile|escape translate=false}
-			{/foreach}
-		{/fbvFormSection}
-	{/if}
+	{fbvFormSection list=true title="submission.files"}
+		{foreach from=$chapterFileOptions item="chapterFile" key="id"}
+			{fbvElement type="checkbox" id="files[]" value=$id checked=in_array($id, $selectedChapterFiles) label=$chapterFile|escape translate=false}
+		{/foreach}
+	{/fbvFormSection}
 
 	<p><span class="formRequired">{translate key="common.requiredField"}</span></p>
 	{fbvFormButtons submitText="common.save"}

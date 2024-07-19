@@ -12,14 +12,16 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup api_v1_submissions
+ *
  * @brief Handle requests for submission API functions.
  *
  */
+
+use APP\core\Application;
+
 $requestPath = Application::get()->getRequest()->getRequestPath();
 if (strpos($requestPath, '/files')) {
-	import('lib.pkp.api.v1.submissions.PKPSubmissionFileHandler');
-	return new PKPSubmissionFileHandler();
+    return new \PKP\API\v1\submissions\PKPSubmissionFileHandler();
 } else {
-	import('lib.pkp.api.v1.submissions.PKPSubmissionHandler');
-	return new PKPSubmissionHandler();
+    return new \PKP\API\v1\submissions\PKPSubmissionHandler();
 }

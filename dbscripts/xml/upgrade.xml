@@ -3,45 +3,33 @@
 <!--
   * dbscripts/xml/upgrade.xml
   *
-  * Copyright (c) 2014-2022 Simon Fraser University
-  * Copyright (c) 2003-2022 John Willinsky
+  * Copyright (c) 2014-2021 Simon Fraser University
+  * Copyright (c) 2003-2021 John Willinsky
   * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
   *
   * Upgrade descriptor file.
   -->
 
-<install version="3.3.0.13">
+<install version="3.4.0.5">
 	<code function="checkPhpVersion" />
 
-	<!-- there are some column and table name changes that need to occur first. -->
-	<upgrade minversion="0.9.9.0" maxversion="1.0.9.0">
-		<!-- Upgrade prior versions to 1.1.0.0 -->
-		<code function="syncSeriesAssocType" />
-		<data file="dbscripts/xml/upgrade/1.1.0.0_preupdate.xml" condition="return $installer->columnExists('plugin_settings', 'press_id');" />
+	<upgrade minversion="0.9.9.0" maxversion="3.0.9.9">
+		<!-- OMP < 1.2.0 upgrade unsupported -->
+		<code function="abort" message="installer.unsupportedUpgradeError" />
 	</upgrade>
 
-	<upgrade minversion="0.9.9.0" maxversion="1.1.9.0">
-		<!-- Upgrade prior versions to 1.2.0.0 -->
-		<data file="dbscripts/xml/upgrade/1.2.0.0_preupdate.xml" condition="return $installer->tableExists('series_editors');" />
-	</upgrade>
-
-	<upgrade minversion="0.9.9.0" maxversion="1.2.0.9">
-		<data file="dbscripts/xml/upgrade/3.1.0_preupdate_commentsToEditor.xml" condition="return $installer->columnExists('submissions', 'comments_to_ed');" />
-		<data file="dbscripts/xml/upgrade/3.1.0_preupdate.xml" />
-	</upgrade>
-
-	<upgrade minversion="0.9.9.0" maxversion="3.1.0.9">
+	<upgrade minversion="3.1.0.0" maxversion="3.1.0.9">
 		<data file="dbscripts/xml/upgrade/3.1.1_preupdate_citations.xml" condition="return $installer->columnExists('citations', 'assoc_id');" />
 		<data file="dbscripts/xml/upgrade/3.1.1_preupdate_payments.xml" condition="return $installer->columnExists('completed_payments', 'press_id');" />
 	</upgrade>
-	<upgrade minversion="0.9.9.0" maxversion="3.1.9.9">
+	<upgrade minversion="3.1.0.0" maxversion="3.1.9.9">
 		<data file="dbscripts/xml/upgrade/3.1.2_preupdate_user_author_names.xml" condition="return $installer->columnExists('users', 'first_name');" />
 		<data file="dbscripts/xml/upgrade/3.1.2_preupdate_chapters.xml" condition="return $installer->columnExists('submission_chapters', 'chapter_seq');" />
 		<data file="dbscripts/xml/upgrade/3.1.2_preupdate_categories.xml" condition="return $installer->columnExists('categories', 'press_id');" />
 		<data file="dbscripts/xml/upgrade/3.1.2_preupdate_pub_id.xml" condition="return $installer->columnExists('published_submissions', 'pub_id');" />
 	</upgrade>
 
-	<upgrade minversion="0.9.9.0" maxversion="3.1.9.9">
+	<upgrade minversion="3.1.0.0" maxversion="3.1.9.9">
 		<code function="migrateSubmissionCoverImages" />
 		<data file="dbscripts/xml/upgrade/3.2.0_preupdate_email_templates.xml" />
 		<data file="dbscripts/xml/upgrade/3.2.0_preupdate_versioning.xml" />
@@ -49,7 +37,7 @@
 		<data file="dbscripts/xml/upgrade/3.2.0_preupdate_last_activity.xml" />
 	</upgrade>
 
-	<upgrade minversion="3.0.0.0" maxversion="3.1.9.9">
+	<upgrade minversion="3.1.0.0" maxversion="3.1.9.9">
 		<!-- Old schema syncs: These are deprecated! -->
 		<schema file="lib/pkp/xml/schema/common.xml" />
 		<schema file="lib/pkp/xml/schema/scheduledTasks.xml" />
@@ -78,52 +66,11 @@
 	<code function="installDefaultNavigationMenus" />
 	<code function="migrateStaticPagesToNavigationMenuItems" />
 
-	<upgrade minversion="0.9.9.0" maxversion="3.1.9.9">
+	<upgrade minversion="3.1.0.0" maxversion="3.1.9.9">
 		<code function="migrateUserAndAuthorNames" condition="return $installer->tableExists('users_tmp');" />
 	</upgrade>
 
-	<upgrade minversion="0.9.9.0" maxversion="1.0.9.9">
-		<!-- Upgrade prior versions to 1.1.0.0 -->
-		<data file="dbscripts/xml/upgrade/1.1.0.0_update.xml" />
-		<code function="fixFilenames" />
-		<code function="enableDefaultTheme" />
-	</upgrade>
-
-	<upgrade minversion="0.9.9.0" maxversion="1.0.0.0">
-		<!--
-		 - Upgrade from 1.0.0.0 (excluding 1.0.1.0, which was
-		 - briefly in the omp-stable-1_0 branch).
-		 -->
-		<data file="dbscripts/xml/upgrade/1.1.0.0_update2.xml" />
-	</upgrade>
-
-	<upgrade minversion="0.9.9.0" maxversion="1.1.0.9">
-		<code function="fixAuthorSettings" /><!-- Bug #8663 -->
-		<data file="dbscripts/xml/upgrade/1.1.1.0_update.xml" />
-	</upgrade>
-
-	<upgrade minversion="0.9.9.0" maxversion="1.1.9.9">
-		<code function="htmlifyEmailTemplates" /><!-- Bug #8929 -->
-		<data file="dbscripts/xml/upgrade/1.2.0.0_update.xml" />
-		<code function="convertQueries" />
-		<code function="installEmailTemplate" key="REVIEW_REQUEST_REMIND_AUTO" locales="de_DE,el_GR,en_US,es_ES,fr_CA,pt_BR" />
-		<code function="installEmailTemplate" key="REVIEW_REQUEST_REMIND_AUTO_ONECLICK" locales="de_DE,el_GR,en_US,es_ES,fr_CA,pt_BR" />
-		<data file="dbscripts/xml/upgrade/1.2.0.0_postupdate.xml" />
-		<note file="docs/release-notes/README-BEACON" />
-		<code function="convertCommentsToEditor" condition="return $installer->tableExists('submissions_tmp');" />
-	</upgrade>
-
-	<upgrade minversion="1.2.0.0" maxversion="1.2.0.9">
-		<code function="fixQueriesAssocTypes" />
-		<code function="convertCommentsToEditor" condition="return $installer->tableExists('submissions_tmp');" />
-	</upgrade>
-
-	<upgrade minversion="0.9.9.0" maxversion="1.2.0.9">
-		<data file="dbscripts/xml/upgrade/3.1.0_update.xml" />
-		<note file="docs/release-notes/README-3.1.0" />
-	</upgrade>
-
-	<upgrade minversion="0.9.9.0" maxversion="3.1.0.9">
+	<upgrade minversion="3.1.0.0" maxversion="3.1.0.9">
 		<data file="dbscripts/xml/upgrade/3.1.1_notifications.xml" />
 		<data file="dbscripts/xml/upgrade/3.1.1_update.xml" />
 		<code function="installEmailTemplate" key="EDITOR_DECISION_INITIAL_DECLINE" locales="en_US" />
@@ -132,12 +79,12 @@
 		<note file="docs/release-notes/README-3.1.1" />
 	</upgrade>
 
-	<upgrade minversion="0.9.9.0" maxversion="3.1.1.9">
+	<upgrade minversion="3.1.0.0" maxversion="3.1.1.9">
 		<data file="dbscripts/xml/upgrade/3.1.2_update.xml" />
 		<note file="docs/release-notes/README-3.1.2" />
 	</upgrade>
 
-	<upgrade minversion="0.9.9.0" maxversion="3.1.9.9">
+	<upgrade minversion="3.1.0.0" maxversion="3.1.9.9">
 		<data file="dbscripts/xml/upgrade/3.2.0_update.xml" />
 		<data file="dbscripts/xml/upgrade/3.2.0_stylesheet.xml" />
 		<data file="dbscripts/xml/upgrade/3.2.0_navigation_menu_items_locale_change.xml" />
@@ -154,17 +101,109 @@
 		<note file="docs/release-notes/README-3.2.0" />
 	</upgrade>
 
-	<upgrade minversion="2.4.0.0" maxversion="3.2.0.9">
+	<upgrade minversion="3.1.0.0" maxversion="3.2.0.9">
 		<data file="dbscripts/xml/upgrade/3.2.1_update.xml" />
 		<code function="installEmailTemplate" key="ANNOUNCEMENT" locales="ca_ES,da_DK,en_US,es_ES,pt_BR" />
-		<migration class="lib.pkp.classes.migration.upgrade.PKPv3_2_1SubeditorCategoriesMigration" />
+		<migration class="PKP\migration\upgrade\PKPv3_2_1SubeditorCategoriesMigration" />
 		<note file="docs/release-notes/README-3.2.1" />
 	</upgrade>
 
-	<upgrade minversion="3.0.0.0" maxversion="3.2.9.9">
-		<migration class="lib.pkp.classes.migration.upgrade.PKPv3_3_0UpgradeMigration" />
-		<migration class="classes.migration.upgrade.OMPv3_3_0UpgradeMigration" />
+	<upgrade minversion="3.1.0.0" maxversion="3.2.9.9">
+		<migration class="APP\migration\upgrade\OMPv3_3_0UpgradeMigration" />
 		<note file="docs/release-notes/README-3.3.0" />
+	</upgrade>
+
+	<upgrade minversion="3.1.0.0" maxversion="3.3.9.9">
+		<migration class="APP\migration\upgrade\v3_4_0\PreflightCheckMigration" fallback="3.3.9.9" />
+		<migration class="PKP\migration\upgrade\v3_4_0\I8060_UpdateUserLocalesDefaultToEmptyArrayFromNull" />
+		<migration class="PKP\migration\upgrade\v3_4_0\I7245_UpdateUserLocaleStringToParsableJsonString" />
+		<migration class="APP\migration\upgrade\v3_4_0\I3573_AddPrimaryKeys" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6093_AddForeignKeys" />
+		<migration class="APP\migration\upgrade\v3_4_0\MergeLocalesMigration"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\FailedJobsMigration" />
+		<migration class="PKP\migration\upgrade\v3_4_0\UpgradeMigration" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6091_AddFilterNamespaces" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6807_SetLastModified" />
+		<migration class="APP\migration\upgrade\v3_4_0\I7132_AddSourceChapterId" />
+		<migration class="APP\migration\upgrade\v3_4_0\I7264_UpdateEmailTemplates"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I7014_DoiMigration"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I7265_EditorialDecisions"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I7624_StrftimeDeprecation"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I7592_RemoveUnusedEmailTemplates"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I7190_RemoveOrphanFilters" />
+		<migration class="PKP\migration\upgrade\v3_4_0\I7190_UpdateFilters" />
+		<migration class="PKP\migration\upgrade\v3_4_0\I8073_RemoveNotesWithoutQueriesAndRelatedObjects" />
+		<migration class="PKP\migration\upgrade\v3_4_0\I2890_EmailTemplatesVarcharLengthUpdate"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I2890_AddSetNullForOnDeleteToReviewRoundIdForeign"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I6895_CreateNewInstitutionsTables" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6782_OrphanedMetrics" />
+		<migration class="PKP\migration\upgrade\v3_4_0\I6782_UsageStatsSettings" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6782_CreateNewMetricsTables" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6782_MetricsContext" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6782_MetricsSeries" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6782_MetricsSubmission" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6782_MetricsGeo" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6782_CleanOldMetrics" />
+		<migration class="APP\migration\upgrade\v3_4_0\I6782_RemovePlugins" />
+		<migration class="PKP\migration\upgrade\v3_4_0\I7286_BatchesMigration"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I8151_ExtendSettingValues"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I8151_ExtendSettingValues"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I7366_UpdateUserAPIKeySettings"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I8093_UpdateUserGroupRelationTablesFK"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I7725_DecisionConstantsUpdate"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I4789_AddReviewerRequestResentColumns"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I7287_RemoveEmailTemplatesDefault"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I5716_EmailTemplateAssignments"/>
+		<migration class="APP\migration\upgrade\v3_4_0\InstallEmailTemplates"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I7874_NotificationMetadataModifiedRemove"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I7191_EditorAssignments"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I7191_InstallSubmissionHelpDefaults"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I7191_SubmissionChecklistMigration"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I7191_SubmissionProgressType"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I7191_ResubscribeSubeditors"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I8027_DoiVersioning"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I6306_EnableCategories"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I8592_SiteNotificationSubscriptions"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I6241_RequiredGenres"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I7128_SeriesEntityDAORefactor" />
+		<migration class="PKP\migration\upgrade\v3_4_0\I7486_RenameUnconsideredColumnToConsidered"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I7486_RemoveItemViewsTable"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I8508_ConvertCurrentLogFile"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I8866_DispatchRegionCodesFixingJobs"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I8992_FixEmptyUrlPaths"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I9040_DropSettingType"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I9039_DropDeprecatedFields"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I8933_EventLogLocalized"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I9094_FixSortSetting"/>
+		<data file="dbscripts/xml/upgrade/3.4.0_preupdate_email_templates.xml" />
+		<note file="docs/release-notes/README-3.4.0" />
+	</upgrade>
+
+	<upgrade minversion="3.1.0.0" maxversion="3.2.9.9">
+		<migration class="PKP\migration\upgrade\v3_4_0\I7249_UpdateUsersUniqueIndex_v3_1"/>
+	</upgrade>
+
+	<upgrade minversion="3.3.0.0" maxversion="3.3.9.9">
+		<migration class="PKP\migration\upgrade\v3_4_0\I7249_UpdateUsersUniqueIndex"/>
+	</upgrade>
+
+	<upgrade minversion="3.1.0.0" maxversion="3.4.0.1">
+		<migration class="PKP\migration\upgrade\v3_4_0\I9136_MigrateUniqueSiteId"/>
+		<migration class="APP\migration\upgrade\v3_4_0\I9231_FixMetricsIndexes"/>
+	</upgrade>
+
+	<upgrade minversion="3.1.0.0" maxversion="3.4.0.4">
+		<migration class="APP\migration\upgrade\v3_4_0\I9627_AddUsageStatsTemporaryTablesIndexes"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I9535_FixEmptyFileStage"/>
+	</upgrade>
+
+	<upgrade minversion="3.1.0.0" maxversion="3.4.0.5">
+		<migration class="PKP\migration\upgrade\v3_4_0\I9830_FixEmptyUserLocales" />
+	</upgrade>
+
+	<upgrade minversion="3.4.0.0" maxversion="3.4.0.5">
+		<!-- Only new 3.4 installations need this fix -->
+		<migration class="PKP\migration\upgrade\v3_4_0\I8592_SiteNotificationSubscriptions"/>
 	</upgrade>
 
 	<!-- Update plugin configuration - should be done as the final upgrade task -->

@@ -30,9 +30,9 @@
 	{rdelim});
 </script>
 
-<form class="pkp_form" id="seriesForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT component="grid.settings.series.SeriesGridHandler" op="updateSeries" seriesId=$seriesId}">
+<form class="pkp_form" id="seriesForm" method="post" action="{url router=PKPApplication::ROUTE_COMPONENT component="grid.settings.series.SeriesGridHandler" op="updateSeries" seriesId=$seriesId}">
 	{csrf}
-	<input type="hidden" name="seriesId" value="{$seriesId|default:""|escape}"/>
+	<input type="hidden" name="seriesId" value="{$seriesId|escape}"/>
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="seriesFormNotification"}
 
 	{fbvFormArea id="file"}
@@ -45,7 +45,7 @@
 
 	{if $image}
 		{capture assign="altTitle"}{translate key="submission.currentCoverImage"}{/capture}
-		<img class="pkp_helpers_container_center" height="{$image.thumbnailHeight}" width="{$image.thumbnailWidth}" src="{url router=$smarty.const.ROUTE_PAGE page="catalog" op="thumbnail" type="series" id=$seriesId}" alt="{$altTitle|escape}" />
+		<img class="pkp_helpers_container_center" height="{$image.thumbnailHeight}" width="{$image.thumbnailWidth}" src="{url router=PKPApplication::ROUTE_PAGE page="catalog" op="thumbnail" type="series" id=$seriesId}" alt="{$altTitle|escape}" />
 	{/if}
 
 	{fbvFormArea id="seriesInfo"}
@@ -68,7 +68,7 @@
 
 		{fbvFormSection list="true"}
 			{fbvElement type="checkbox" id="isInactive" value=1 checked=$isInactive label="manager.sections.form.deactivateSection"}
-			{fbvElement type="checkbox" id="restricted" value=1 label="manager.series.restricted" checked=$restricted}
+			{fbvElement type="checkbox" id="editorRestricted" value=1 label="manager.series.restricted" checked=$editorRestricted}
 		{/fbvFormSection}
 
 		{fbvFormSection label="catalog.manage.series.issn" description="manager.setup.issnDescription"}
@@ -80,13 +80,23 @@
 			{fbvElement type="select" id="sortOption" from=$sortOptions selected=$sortOption translate=false}
 		{/fbvFormSection}
 
-		{if count($availableSubeditors)}
-			{fbvFormSection list=true title="submissionGroup.assignedSubEditors"}
-				{foreach from=$availableSubeditors item="subEditor" key="id"}
-					{fbvElement type="checkbox" id="subEditors[]" value=$id checked=in_array($id, $assignedToSeries) label=$subEditor|escape translate=false}
-				{/foreach}
-			{/fbvFormSection}
-		{/if}
+		{fbvFormSection list=true title="manager.sections.form.assignEditors"}
+		<div>{translate key="manager.sections.form.assignEditors.description"}</div>
+		{foreach from=$assignableUserGroups item="assignableUserGroup"}
+			{assign var="role" value=$assignableUserGroup.userGroup->getLocalizedName()}
+			{assign var="userGroupId" value=$assignableUserGroup.userGroup->getId()}
+			{foreach from=$assignableUserGroup.users item=$username key="id"}
+				{fbvElement
+					type="checkbox"
+					id="subEditors[{$userGroupId}][]"
+					value=$id
+					checked=(isset($subeditorUserGroups[$id]) && in_array($userGroupId, $subeditorUserGroups[$id]))
+					label={translate key="manager.sections.form.assignEditorAs" name=$username role=$role}
+					translate=false
+				}
+			{/foreach}
+		{/foreach}
+		{/fbvFormSection}
 
 		{if count($allCategories)}
 			{fbvFormSection list=true title="grid.category.categories"}
@@ -97,7 +107,7 @@
 		{/if}
 
 		{capture assign="instruct"}
-			{capture assign="sampleUrl"}{url router=$smarty.const.ROUTE_PAGE page="catalog" op="series" path="Path"}{/capture}
+			{capture assign="sampleUrl"}{url router=PKPApplication::ROUTE_PAGE page="catalog" op="series" path="Path"}{/capture}
 			{translate key="grid.series.urlWillBe" sampleUrl=$sampleUrl}
 		{/capture}
 		{fbvFormSection title="series.path" required=true for="path"}

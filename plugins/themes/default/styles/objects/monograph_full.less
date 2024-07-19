@@ -56,7 +56,7 @@
 
 		.orcid {
 			display: block;
-			font-size: @font-tiny;
+			font-size: @font-sml;
 			line-height: @double;
 
 			&:before {
@@ -77,6 +77,7 @@
 		.item {
 			padding: @double @base;
 			border-bottom: @bg-border;
+			word-wrap: break-word;
 		}
 
 		.label {
@@ -94,6 +95,10 @@
 
 		ul {
 			&:extend(.pkp_unstyled_list);
+		}
+
+		.label + p {
+			margin-top: 0;
 		}
 	}
 

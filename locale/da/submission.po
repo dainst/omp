@@ -1,0 +1,689 @@
+# Niels Erik Frederiksen <nef@kb.dk>, 2021.
+# Alexandra Fogtmann-Schulz <alfo@kb.dk>, 2022, 2023.
+# Jesper B. Thestrup <jbt@kb.dk>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-11-28T15:10:05-08:00\n"
+"PO-Revision-Date: 2023-02-04 05:17+0000\n"
+"Last-Translator: Alexandra Fogtmann-Schulz <alfo@kb.dk>\n"
+"Language-Team: Danish <http://translate.pkp.sfu.ca/projects/omp/submission/"
+"da_DK/>\n"
+"Language: da_DK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.13.1\n"
+
+msgid "submission.upload.selectComponent"
+msgstr "Vælg komponent"
+
+msgid "submission.title"
+msgstr "Bogtitel"
+
+msgid "submission.select"
+msgstr "Vælg indsendelse"
+
+msgid "submission.synopsis"
+msgstr "Synopsis"
+
+msgid "submission.workflowType"
+msgstr "Indsendelsestype"
+
+msgid "submission.workflowType.description"
+msgstr ""
+"En monografi er et værk, der helt igennem er skrevet af en eller flere "
+"forfattere. En antologi (redigeret værk) har forskellige forfattere til "
+"hvert enkelt kapitel (med kapiteloplysninger indtastet senere i denne "
+"proces.)"
+
+msgid "submission.workflowType.editedVolume.label"
+msgstr "Antologi"
+
+msgid "submission.workflowType.editedVolume"
+msgstr "Antologi: Forfattere er knyttet til deres eget kapitel."
+
+msgid "submission.workflowType.authoredWork"
+msgstr "Monografi: Forfattere er forbundet med bogen som helhed."
+
+msgid "submission.workflowType.change"
+msgstr "Skift"
+
+msgid "submission.editorName"
+msgstr "{$editorName} (ed)"
+
+msgid "submission.monograph"
+msgstr "Monografi"
+
+msgid "submission.published"
+msgstr "Klar til produktion"
+
+msgid "submission.fairCopy"
+msgstr "Renskrift"
+
+msgid "submission.authorListSeparator"
+msgstr "; "
+
+msgid "submission.artwork.permissions"
+msgstr "Tilladelser"
+
+msgid "submission.chapter"
+msgstr "Kapitel"
+
+msgid "submission.chapters"
+msgstr "Kapitler"
+
+msgid "submission.chapter.addChapter"
+msgstr "Tilføj kapitel"
+
+msgid "submission.chapter.editChapter"
+msgstr "Redigér kapitel"
+
+msgid "submission.chapter.pages"
+msgstr "Sider"
+
+msgid "submission.copyedit"
+msgstr "Manuskriptredigering"
+
+msgid "submission.publicationFormats"
+msgstr "Publikationsformater"
+
+msgid "submission.proofs"
+msgstr "Korrekturer"
+
+msgid "submission.download"
+msgstr "Download"
+
+msgid "submission.sharing"
+msgstr "Del dette"
+
+msgid "manuscript.submission"
+msgstr "Manuskriptindsendelse"
+
+msgid "submission.round"
+msgstr "Runde&nbsp;{$round}"
+
+msgid "submissions.queuedReview"
+msgstr "Til bedømmelse"
+
+msgid "manuscript.submissions"
+msgstr "Manuskriptindsendelser"
+
+msgid "submission.metadata"
+msgstr "Metadata"
+
+msgid "submission.supportingAgencies"
+msgstr "Støtteinstanser"
+
+msgid "grid.action.addChapter"
+msgstr "Opret et nyt kapitel"
+
+msgid "grid.action.editChapter"
+msgstr "Redigér dette kapitel"
+
+msgid "grid.action.deleteChapter"
+msgstr "Slet dette kapitel"
+
+msgid "submission.submit"
+msgstr "Påbegynd ny indsendelse af bog"
+
+msgid "submission.submit.newSubmissionMultiple"
+msgstr "Påbegynd en ny indsendelse i"
+
+msgid "submission.submit.newSubmissionSingle"
+msgstr "Ny indsendelse"
+
+msgid "submission.submit.upload"
+msgstr "Upload indsendelse"
+
+msgid "author.volumeEditor"
+msgstr "Bindredaktør"
+
+msgid "author.isVolumeEditor"
+msgstr "Definér denne bidragyder som værende redaktør af dette bind."
+
+msgid "submission.submit.seriesPosition"
+msgstr "Seriens position"
+
+msgid "submission.submit.seriesPosition.description"
+msgstr "Eksempler: Bog 2, bind 2"
+
+msgid "submission.submit.privacyStatement"
+msgstr "Erklæring om beskyttelse af personlige oplysninger"
+
+msgid "submission.submit.contributorRole"
+msgstr "Bidragyderens rolle"
+
+msgid "submission.submit.submissionFile"
+msgstr "Indsendelsesfil"
+
+msgid "submission.submit.prepare"
+msgstr "Forbered"
+
+msgid "submission.submit.catalog"
+msgstr "Katalog"
+
+msgid "submission.submit.metadata"
+msgstr "Metadata"
+
+msgid "submission.submit.finishingUp"
+msgstr "Færdiggør"
+
+msgid "submission.submit.confirmation"
+msgstr "Bekræftelse"
+
+msgid "submission.submit.nextSteps"
+msgstr "Næste trin"
+
+msgid "submission.submit.coverNote"
+msgstr "Følgeskrivelse til redaktør"
+
+msgid "submission.submit.generalInformation"
+msgstr "Generel information"
+
+msgid "submission.submit.whatNext.description"
+msgstr ""
+"Udgiveren har fået besked om din indsendelse, og du har modtaget en e-mail "
+"med en bekræftelse for modtagelse af din indsendelse. Når redaktøren har "
+"gennemgået indsendelsen, vil du blive kontaktet."
+
+msgid "submission.submit.checklistErrors"
+msgstr ""
+"Læs og tjek  alle punkter på indsendelsestjeklisten Der er {$itemsRemaining} "
+"punkter, der ikke er markeret."
+
+msgid "submission.submit.placement"
+msgstr "Indsendelsesplacering"
+
+msgid "submission.submit.userGroup"
+msgstr "Indsend i min rolle som ..."
+
+msgid "submission.submit.noContext"
+msgstr "Denne indsendelses udgiver blev ikke fundet."
+
+msgid "grid.chapters.title"
+msgstr "Kapitler"
+
+msgid "grid.copyediting.deleteCopyeditorResponse"
+msgstr "Slet upload fra manuskriptredaktør"
+
+msgid "submission.complete"
+msgstr "Godkendt"
+
+msgid "submission.incomplete"
+msgstr "Afventer godkendelse"
+
+msgid "submission.editCatalogEntry"
+msgstr "Indgang"
+
+msgid "submission.catalogEntry.new"
+msgstr "Tilføj indgang"
+
+msgid "submission.catalogEntry.add"
+msgstr "Føj valgte til katalog"
+
+msgid "submission.catalogEntry.select"
+msgstr "Vælg de monografier, der skal føjes til kataloget"
+
+msgid "submission.catalogEntry.selectionMissing"
+msgstr ""
+"Du skal vælge mindst en monografi for at foretage en tilføjelse til "
+"kataloget."
+
+msgid "submission.catalogEntry.confirm"
+msgstr "Føj denne bog til det offentlige katalog"
+
+msgid "submission.catalogEntry.confirm.required"
+msgstr "Bekræft, at indsendelsen er klar til at blive placeret i kataloget."
+
+msgid "submission.catalogEntry.isAvailable"
+msgstr ""
+"Denne monografi er klar til at blive inkluderet i det offentliggjorte "
+"katalog."
+
+msgid "submission.catalogEntry.viewSubmission"
+msgstr "Se indsendelse"
+
+msgid "submission.catalogEntry.chapterPublicationDates"
+msgstr "Publikationsdato"
+
+msgid "submission.catalogEntry.disableChapterPublicationDates"
+msgstr "Alle kapitler bruger monografiens publiceringsdato."
+
+msgid "submission.catalogEntry.enableChapterPublicationDates"
+msgstr "Hvert kapitel kan have sin egen publikationsdato."
+
+msgid "submission.catalogEntry.monographMetadata"
+msgstr "Monografi"
+
+msgid "submission.catalogEntry.catalogMetadata"
+msgstr "Katalog"
+
+msgid "submission.catalogEntry.publicationMetadata"
+msgstr "Publikationsformat"
+
+msgid "submission.event.metadataPublished"
+msgstr "Monografiens metadata er godkendt til publicering."
+
+msgid "submission.event.metadataUnpublished"
+msgstr "Monografiens metadata er ikke længere publiceret."
+
+msgid "submission.event.publicationFormatMadeAvailable"
+msgstr ""
+"Publikationsformatet \"{$publicationFormatName}\" stilles til rådighed."
+
+msgid "submission.event.publicationFormatMadeUnavailable"
+msgstr ""
+"Publikationsformatet \"{$publicationFormatName}\" er ikke længere "
+"tilgængeligt."
+
+msgid "submission.event.publicationFormatPublished"
+msgstr ""
+"Publikationsformatet \"{$publicationFormatName}\" er godkendt til "
+"publicering."
+
+msgid "submission.event.publicationFormatUnpublished"
+msgstr ""
+"Publikationsformatet \"{$publicationFormatName}\" er ikke længere "
+"tilgængeligt."
+
+msgid "submission.event.catalogMetadataUpdated"
+msgstr "Katalog-metadata blev opdateret."
+
+msgid "submission.event.publicationMetadataUpdated"
+msgstr "Publikationsformatets metadata til \"{$formatName}\" blev opdateret."
+
+msgid "submission.event.publicationFormatCreated"
+msgstr "Publikationsformatet \"{$formatName}\" blev oprettet."
+
+msgid "submission.event.publicationFormatRemoved"
+msgstr "Publikationsformatet \"{$formatName}\" blev fjernet."
+
+msgid "editor.submission.decision.sendExternalReview"
+msgstr "Send til ekstern bedømmelse"
+
+msgid "workflow.review.externalReview"
+msgstr "Ekstern bedømmelse"
+
+msgid "submission.upload.fileContents"
+msgstr "Indsendelseskomponent"
+
+msgid "submission.dependentFiles"
+msgstr "Afhængige filer"
+
+msgid "submission.metadataDescription"
+msgstr ""
+"Disse specifikationer er baseret på Dublin Core-metadatasættet, en "
+"international standard, der bruges til at beskrive indhold hos udgiveren."
+
+msgid "section.any"
+msgstr "Enhver serie"
+
+msgid "submission.list.monographs"
+msgstr "Monografier"
+
+msgid "submission.list.countMonographs"
+msgstr "{$count} monografier"
+
+msgid "submission.list.itemsOfTotalMonographs"
+msgstr "{$count} af {$total} monografier"
+
+msgid "submission.list.orderFeatures"
+msgstr "Bestil funktioner"
+
+msgid "submission.list.orderingFeatures"
+msgstr ""
+"Træk og slip eller tryk på op- og ned-knapperne for at ændre rækkefølgen af "
+"funktionerne på startsiden."
+
+msgid "submission.list.orderingFeaturesSection"
+msgstr ""
+"Træk og slip eller tryk på op- og ned-knapperne for at ændre rækkefølgen af "
+"funktionerne i {$title}."
+
+msgid "submission.list.saveFeatureOrder"
+msgstr "Gem rækkefølge"
+
+msgid "submission.list.viewEntry"
+msgstr "Se post"
+
+msgid "catalog.browseTitles"
+msgstr "{$numTitles} titler"
+
+msgid "publication.catalogEntry"
+msgstr "Katalogindgang"
+
+msgid "publication.catalogEntry.success"
+msgstr "Informationer under katalogindgangen er blevet opdateret."
+
+msgid "publication.invalidSeries"
+msgstr "Denne publikations seriebetegnelse blev ikke fundet."
+
+msgid "publication.inactiveSeries"
+msgstr "{$series} (Inaktiv)"
+
+msgid "publication.required.issue"
+msgstr "Publikationen skal tilknyttes et nummer, inden det kan publiceres."
+
+msgid "publication.publishedIn"
+msgstr "Publiceret i <a href=\"{$issueUrl}\">{$issueName}</a>."
+
+msgid "publication.publish.confirmation"
+msgstr ""
+"Alle publikationskrav er opfyldt. Er du sikker på, at du vil offentliggøre "
+"denne katalogpost?"
+
+msgid "publication.scheduledIn"
+msgstr "Planlagt til publicering i <a href=\"{$issueUrl}\">{$issueName}</a>."
+
+msgid "submission.publication"
+msgstr "Publikation"
+
+msgid "publication.status.published"
+msgstr "Publiceret"
+
+msgid "submission.status.scheduled"
+msgstr "Planlagt"
+
+msgid "publication.status.unscheduled"
+msgstr "Ikke planlagt"
+
+msgid "submission.publications"
+msgstr "Publikationer"
+
+msgid "publication.copyrightYearBasis.issueDescription"
+msgstr ""
+"Copyright-året indstilles automatisk, når dette offentliggøres i et nummer."
+
+msgid "publication.copyrightYearBasis.submissionDescription"
+msgstr "Copyright-året indstilles automatisk ud fra publiceringsdatoen."
+
+msgid "publication.datePublished"
+msgstr "Dato publiceret"
+
+msgid "publication.editDisabled"
+msgstr "Denne version er blevet publiceret og kan ikke redigeres."
+
+msgid "publication.event.published"
+msgstr "Indsendelsen blev publiceret."
+
+msgid "publication.event.scheduled"
+msgstr "Indsendelsen var planlagt til publicering."
+
+msgid "publication.event.unpublished"
+msgstr "Indsendelsen blev ikke publiceret."
+
+msgid "publication.event.versionPublished"
+msgstr "En ny version blev publiceret."
+
+msgid "publication.event.versionScheduled"
+msgstr "En ny version var planlagt til publicering."
+
+msgid "publication.event.versionUnpublished"
+msgstr "En version blev fjernet fra publikationen."
+
+msgid "publication.invalidSubmission"
+msgstr "Indsendelsen til denne publikation kunne ikke findes."
+
+msgid "publication.publish"
+msgstr "Publicér"
+
+msgid "publication.publish.requirements"
+msgstr "Følgende krav skal være opfyldt, før dette kan offentliggøres."
+
+msgid "publication.required.declined"
+msgstr "En afvist indsendelse kan ikke offentliggøres."
+
+msgid "publication.required.reviewStage"
+msgstr ""
+"Indsendelsen skal være under manuskriptredigerings- eller "
+"produktionstrinnet, før det kan offentliggøres."
+
+msgid "submission.license.description"
+msgstr ""
+"Licensen indstilles automatisk til <a href='{$licenseUrl}' "
+"target='_blank'>{$ licensnavn}</a>, når dette publiceres."
+
+msgid "submission.copyrightHolder.description"
+msgstr "Copyright tildeles automatisk {$copyright}, når dette publiceres."
+
+msgid "submission.copyrightOther.description"
+msgstr ""
+"Tildel copyright i forbindelse med offentliggjorte indsendelser til følgende "
+"gruppe."
+
+msgid "publication.unpublish"
+msgstr "Træk tilbage"
+
+msgid "publication.unpublish.confirm"
+msgstr "Er du sikker på, at du ikke ønsker, at dette skal publiceres?"
+
+msgid "publication.unschedule.confirm"
+msgstr ""
+"Er du sikker på, at du ikke vil have dette planlagt til senere publicering?"
+
+msgid "publication.version.details"
+msgstr "Publikationsoplysninger i forbindelse med version {$version}"
+
+msgid "submission.queries.production"
+msgstr "Drøftelser under produktion"
+
+msgid "publication.chapter.landingPage"
+msgstr "Kapitelside"
+
+msgid "publication.chapter.hasLandingPage"
+msgstr ""
+"Vis dette kapitel på egen side og link til denne fra bogens "
+"indholdsfortegnelse."
+
+msgid "publication.publish.success"
+msgstr "Publikationens status blev ændret."
+
+msgid "chapter.volume"
+msgstr "Bind/årgang"
+
+msgid "submission.withoutChapter"
+msgstr "{$name} — Uden dette kapitel"
+
+msgid "submission.chapterCreated"
+msgstr " — Kapitel oprettet"
+
+msgid "chapter.pages"
+msgstr "Sider"
+
+msgid "editor.submission.decision.sendInternalReview"
+msgstr "Send til intern bedømmelse"
+
+msgid "editor.submission.decision.sendInternalReview.description"
+msgstr "Denne indsendelse er klar til at blive sendt til intern bedømmelse."
+
+msgid "editor.submission.decision.sendInternalReview.log"
+msgstr "{$editorName} sendte denne indsendelse til intern bedømmelsestrinnet."
+
+msgid "editor.submission.decision.sendInternalReview.completed"
+msgstr "Sendt til intern bedømmelse"
+
+msgid "editor.submission.decision.sendInternalReview.completed.description"
+msgstr ""
+"Indsendelsen, {$title}, er blevet sendt til intern bedømmelsestrinnet. "
+"Forfatteren har fået besked, medmindre du valgte at springe e-mailen over."
+
+msgid "editor.submission.decision.sendInternalReview.notifyAuthorsDescription"
+msgstr ""
+"Send en e-mail til forfatterne for at informere dem om, at deres indsendelse "
+"er sendt til intern bedømmelse. Giv om muligt forfatterne en indikation på, "
+"hvor lang tid processen med intern bedømmelse vil tage, samt hvornår de skal "
+"forvente at høre fra redaktørerne igen."
+
+msgid "editor.submission.decision.promoteFiles.internalReview"
+msgstr "Vælg filer der skal sendes til det interne bedømmelsestrin."
+
+msgid "editor.submission.decision.sendExternalReview.log"
+msgstr ""
+"{$editorName} sendte denne indsendelse til det eksterne bedømmelsestrin."
+
+msgid "editor.submission.decision.sendExternalReview.completed"
+msgstr "Sendt til ekstern bedømmelse"
+
+msgid "editor.submission.decision.sendExternalReview.completed.description"
+msgstr ""
+"Indsendelsen, {$title}, er blevet sendt til ekstern bedømmelsestrinnet."
+
+msgid "editor.submission.decision.backToReview"
+msgstr "Tilbage til bedømmelse"
+
+msgid "editor.submission.decision.backToReview.description"
+msgstr ""
+"Omgør beslutningen om at godkende denne indsendelse og send den tilbage til "
+"bedømmelsestrinnet."
+
+msgid "editor.submission.decision.backToReview.log"
+msgstr ""
+"{$editorName} omgjorde beslutningen om at godkende denne indsendelse og "
+"sendte den tilbage bedømmelsestrinnet."
+
+msgid "editor.submission.decision.backToReview.completed"
+msgstr "Sendt tilbage til bedømmelse"
+
+msgid "editor.submission.decision.backToReview.completed.description"
+msgstr ""
+"Indsendelsen, {$title}, er blevet sendt tilbage til bedømmelsestrinnet."
+
+msgid "editor.submission.decision.backToReview.notifyAuthorsDescription"
+msgstr ""
+"Send en e-mail til forfatterne for at informere dem om, at deres indsendelse "
+"er blevet sendt tilbage til bedømmelsestrinnet. Forklar hvorfor denne "
+"beslutning blev truffet og informer forfatterne om hvilken bedømmelse, "
+"indsendelsen vil gå igennem."
+
+msgid "editor.submission.decision.sendExternalReview.notifyAuthorsDescription"
+msgstr ""
+"Send en e-mail til forfatterne for at informere dem om, at deres indsendelse "
+"vil blive sendt til fagfællebedømmelse. Giv om muligt forfatterne en "
+"indikation på, hvor lang tid processen med fagfællebedømmelse vil tage, samt "
+"hvornår de skal forvente at høre fra redaktørerne igen."
+
+msgid "editor.submission.decision.promoteFiles.externalReview"
+msgstr "Vælg filer der skal sendes til bedømmelsestrinnet."
+
+msgid "editor.submission.recommend.sendExternalReview"
+msgstr "Anbefal at sende til ekstern bedømmelse"
+
+msgid "editor.submission.recommend.sendExternalReview.description"
+msgstr ""
+"Anbefal at denne indsendelse bliver sendt til trinnet for ekstern bedømmelse."
+
+msgid "editor.submission.recommend.sendExternalReview.log"
+msgstr ""
+"{$editorName} anbefalede, at denne indsendelse bliver sendt til trinnet for "
+"ekstern bedømmelse."
+
+msgid "doi.submission.incorrectContext"
+msgstr ""
+"Kunne ikke generere et DOI til den følgende indsendelse: {$pubObjectTitle}. "
+"Den eksisterer ikke hos denne udgiver."
+
+msgid "publication.chapter.licenseUrl"
+msgstr "Licens URL"
+
+msgid "publication.chapterDefaultLicenseURL"
+msgstr "Standard kapitel licens URL"
+
+msgid "submission.copyright.description"
+msgstr ""
+"Læs og forstå venligst ophavsretsbetingelserne for at indsende til denne "
+"udgiver/forlag."
+
+msgid "submission.wizard.notAllowed.description"
+msgstr ""
+"Du har ikke lov til at indsende et manuskript til denne udgiver, idet "
+"forfattere skal registreres først af redaktionen. Hvis du mener, dette er en "
+"fejl, så kontakt venligst <a href='mailto:{$email}'>{$name}</a>."
+
+msgid "submission.wizard.noSectionAllowed.description"
+msgstr ""
+"Du har ikke lov til at indsende et manuskript til denne udgiver, idet "
+"indsendelser til alle sektioner hos denne udgiver er blevet deaktiveret "
+"eller begrænset. Hvis du mener, dette er en fejl, så kontakt venligst <a "
+"href='mailto:{$email}'>{$name}</a>."
+
+msgid "submission.wizard.sectionClosed.message"
+msgstr ""
+"{$contextName} accepterer ikke indsendelser til {$section}-serien. Hvis du "
+"har brug for hjælp til få din indsendelse tilbage, bedes du kontakte <a "
+"href='mailto:{$email}'>{$name}</a>."
+
+msgid "submission.sectionNotFound"
+msgstr "Denne indsendelsesserie kunne ikke findes."
+
+msgid "submission.sectionRestrictedToEditors"
+msgstr "Kun medlemmer af redaktionen kan indsende til denne serie."
+
+msgid "submission.wizard.submitting.monograph"
+msgstr "Indsender en <strong>Monografi</strong>."
+
+msgid "submission.wizard.submitting.monographInLanguage"
+msgstr ""
+"Indsender en <strong>Monografi</strong> på <strong>{$language}</strong>."
+
+msgid "submission.wizard.submitting.editedVolume"
+msgstr "Indsender en <strong>Antologi</strong>."
+
+msgid "submission.wizard.submitting.editedVolumeInLanguage"
+msgstr ""
+"Indsender en <strong>Antologi</strong> på <strong>{$language}</strong>."
+
+msgid "submission.wizard.chapters.description"
+msgstr ""
+"Vær venlig at angive alle kapitler i denne indsendelse. Hvis du indsender en "
+"antologi, så sørg for at angive alle bidragydere til hver enkelt kapitel."
+
+#~ msgid "submission.submit.title"
+#~ msgstr "Indsend en monografi"
+
+#~ msgid "submission.chaptersDescription"
+#~ msgstr ""
+#~ "Du kan opstille en liste over kapitlerne her og tilknytte forfattere fra "
+#~ "listen over bidragydere ovenfor. Disse forfattere kan få adgang til "
+#~ "kapitlet i forskellige faser af den redaktionelle proces."
+
+#~ msgid "submission.confirmSubmit"
+#~ msgstr ""
+#~ "Er du sikker på, at du ønsker at indsende dette manuskript til udgiveren?"
+
+#~ msgid "submission.submit.cancelSubmission"
+#~ msgstr ""
+#~ "Du kan afslutte denne indsendelse på et senere tidspunkt ved at vælge "
+#~ "aktive indsendelser fra forfatterens webside."
+
+#~ msgid "submission.submit.selectSeries"
+#~ msgstr "Vælg serie"
+
+#~ msgid "author.submit.seriesRequired"
+#~ msgstr "En gyldig serie er påkrævet."
+
+#~ msgid "submission.submit.form.localeRequired"
+#~ msgstr "Vælg et indsendelsessprog."
+
+#~ msgid "submission.submit.form.authorRequired"
+#~ msgstr "Der kræves mindst en forfatter."
+
+#~ msgid "submission.submit.form.authorRequiredFields"
+#~ msgstr "Forfatterens fornavn, efternavn og e-mail-adresse er påkrævet."
+
+#~ msgid "submission.submit.form.titleRequired"
+#~ msgstr "Indtast titlen på din monografi."
+
+#~ msgid "submission.submit.form.abstractRequired"
+#~ msgstr "Indsæt et kort resumé over din monografi."
+
+#~ msgid "submission.submit.form.contributorRoleRequired"
+#~ msgstr "Vælg bidragyderens rolle."
+
+#~ msgid "submission.submit.userGroupDescription"
+#~ msgstr "Hvis du sender et redigeret værk, bør du vælge redaktørrollen."
+
+#~ msgid "submission.submit.titleAndSummary"
+#~ msgstr "Titel og resume"

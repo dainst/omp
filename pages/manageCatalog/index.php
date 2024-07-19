@@ -12,16 +12,14 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_catalog
+ *
  * @brief Handle requests for catalog management functions.
  *
  */
 
 switch ($op) {
-	case 'index':
-	case 'homepage':
-		define('HANDLER_CLASS', 'ManageCatalogHandler');
-		import('pages.manageCatalog.ManageCatalogHandler');
-		break;
+    case 'index':
+    case 'homepage':
+        define('HANDLER_CLASS', 'APP\pages\manageCatalog\ManageCatalogHandler');
+        break;
 }
-
-

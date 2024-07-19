@@ -3,7 +3,7 @@
 /**
  * @defgroup plugins_importexport_onix30 ONIX 3.0 export plugin
  */
- 
+
 /**
  * @file plugins/importexport/onix30/index.php
  *
@@ -12,12 +12,9 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup plugins_importexport_onix30
+ *
  * @brief Wrapper for ONIX 3.0 XML export plugin.
  *
  */
 
-require_once('Onix30ExportPlugin.inc.php');
-
-return new Onix30ExportPlugin();
-
-
+return new \APP\plugins\importexport\onix30\Onix30ExportPlugin();
