@@ -10,7 +10,7 @@
   * Upgrade descriptor file.
   -->
 
-<install version="3.4.0.5">
+<install version="3.4.0.6">
 	<code function="checkPhpVersion" />
 
 	<upgrade minversion="0.9.9.0" maxversion="3.0.9.9">
@@ -168,7 +168,7 @@
 		<migration class="APP\migration\upgrade\v3_4_0\I7128_SeriesEntityDAORefactor" />
 		<migration class="PKP\migration\upgrade\v3_4_0\I7486_RenameUnconsideredColumnToConsidered"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I7486_RemoveItemViewsTable"/>
-		<migration class="PKP\migration\upgrade\v3_4_0\I8508_ConvertCurrentLogFile"/>
+	<!---<migration class="PKP\migration\upgrade\v3_4_0\I8508_ConvertCurrentLogFile"/> -->
 		<migration class="PKP\migration\upgrade\v3_4_0\I8866_DispatchRegionCodesFixingJobs"/>
 		<migration class="APP\migration\upgrade\v3_4_0\I8992_FixEmptyUrlPaths"/>
 		<migration class="APP\migration\upgrade\v3_4_0\I9040_DropSettingType"/>
