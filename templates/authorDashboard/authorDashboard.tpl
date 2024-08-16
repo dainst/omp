@@ -12,15 +12,7 @@
 {block name="page"}
 	<pkp-header :is-one-line="true" class="pkpWorkflow__header">
 		<h1 class="pkpWorkflow__identification">
-			<span class="pkpWorkflow__identificationId">{{ submission.id }}</span>
-			<span class="pkpWorkflow__identificationDivider">/</span>
-			<span class="pkpWorkflow__identificationAuthor">
-				{{ currentPublication.authorsStringShort }}
-			</span>
-			<span class="pkpWorkflow__identificationDivider">/</span>
-			<span class="pkpWorkflow__identificationTitle">
-				{{ localizeSubmission(currentPublication.title, currentPublication.locale) }}
-			</span>
+			{include file="workflow/submissionIdentification.tpl"}
 		</h1>
 		<template slot="actions">
 			<pkp-button
@@ -65,7 +57,7 @@
 				<ul>
 					{foreach from=$workflowStages item=stage}
 						<li class="pkp_workflow_{$stage.path} stageId{$stage.id}{if $stage.statusKey} initiated{/if}">
-							<a name="stage-{$stage.path}" class="{$stage.path} stageId{$stage.id}" href="{url router=$smarty.const.ROUTE_COMPONENT component="tab.authorDashboard.AuthorDashboardTabHandler" op="fetchTab" submissionId=$submission->getId() stageId=$stage.id escape=false}">
+							<a name="stage-{$stage.path}" class="{$stage.path} stageId{$stage.id}" href="{url router=PKPApplication::ROUTE_COMPONENT component="tab.authorDashboard.AuthorDashboardTabHandler" op="fetchTab" submissionId=$submission->getId() stageId=$stage.id escape=false}">
 								{translate key=$stage.translationKey}
 								{if $stage.statusKey}
 									<span class="pkp_screen_reader">
@@ -125,9 +117,16 @@
 						<pkp-form v-bind="components.{$smarty.const.FORM_TITLE_ABSTRACT}" @set="set" />
 					</tab>
 					<tab id="contributors" label="{translate key="publication.contributors"}">
-						<div id="contributors-grid" ref="contributors">
-							<spinner></spinner>
-						</div>
+						<contributors-list-panel
+							v-bind="components.contributors"
+							class="pkpWorkflow__contributors"
+							@set="set"
+							:items="workingPublication.authors"
+							:publication="workingPublication"
+							:publication-api-url="submissionApiUrl + '/publications/' + workingPublication.id"
+							@updated:publication="setWorkingPublication"
+							@updated:contributors="setContributors"
+						></contributors-list-panel>
 					</tab>
 					<tab id="chapters" label="{translate key="submission.chapters"}">
 						<div id="chapters-grid" ref="chapters">

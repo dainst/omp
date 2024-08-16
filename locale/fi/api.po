@@ -1,0 +1,42 @@
+# Antti-Jussi Nygård <ajnyga@gmail.com>, 2023.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2023-05-24 11:08+0000\n"
+"Last-Translator: Antti-Jussi Nygård <ajnyga@gmail.com>\n"
+"Language-Team: Finnish <http://translate.pkp.sfu.ca/projects/omp/api/fi/>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.13.1\n"
+
+msgid "api.submissions.400.submissionIdsRequired"
+msgstr ""
+"Anna yhden tai useamman luetteloon lisättävän käsikirjoituksen ID-tunniste."
+
+msgid "api.submissions.400.submissionsNotFound"
+msgstr "Yhtä tai useampaa määrittämääsi käsikirjoitusta ei löytynyt."
+
+msgid "api.submissions.400.wrongContext"
+msgstr "Pyytämääsi käsikirjoitusta ei ole tällä julkaisijalla."
+
+msgid "api.emails.403.disabled"
+msgstr ""
+"Sähköposti-ilmoituksia ei ole otettu käyttöön tämän julkaisijan sivustolla."
+
+msgid "api.emailTemplates.403.notAllowedChangeContext"
+msgstr ""
+"Sinulla ei ole lupaa siirtää tätä sähköpostipohjaa toiseen julkaisijaan."
+
+msgid "api.publications.403.contextsDidNotMatch"
+msgstr "Pyytämäsi julkaistu versio ei kuulu tälle julkaisijalle."
+
+msgid "api.publications.403.submissionsDidNotMatch"
+msgstr "Pyytämäsi julkaistu versio ei kuulu tähän käsikirjoitukseen."
+
+msgid "api.submissions.403.cantChangeContext"
+msgstr "Et voi vaihtaa käsikirjoitukseen liittyvää julkaisijaa."
+
+msgid "api.submission.400.inactiveSection"
+msgstr "Tämä sarja ei enää vastaanota käsikirjoituksia."

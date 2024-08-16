@@ -11,7 +11,8 @@
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @ingroup api_v1_announcements
+ *
  * @brief Handle API requests for announcements.
  */
-import('lib.pkp.api.v1.announcements.PKPAnnouncementHandler');
-return new PKPAnnouncementHandler();
+
+return new \PKP\API\v1\announcements\PKPAnnouncementHandler();

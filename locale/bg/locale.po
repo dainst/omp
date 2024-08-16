@@ -1,0 +1,233 @@
+# Cyril Kamburov <cc@intermedia.bg>, 2023, 2024.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-06-25 08:39+0000\n"
+"Last-Translator: Cyril Kamburov <cc@intermedia.bg>\n"
+"Language-Team: Bulgarian <http://translate.pkp.sfu.ca/projects/omp/locale/bg/"
+">\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.18.2\n"
+
+msgid "monograph.audience"
+msgstr "Аудитория"
+
+msgid "common.payments"
+msgstr "Плащания"
+
+msgid "monograph.audience.success"
+msgstr "Подробностите за аудиторията са актуализирани."
+
+msgid "monograph.coverImage"
+msgstr "Изображение на обложката"
+
+msgid "monograph.audience.rangeQualifier"
+msgstr "Квалификатор на обхвата на аудиторията"
+
+msgid "monograph.audience.rangeFrom"
+msgstr "Обхват на аудиторията (от)"
+
+msgid "monograph.audience.rangeExact"
+msgstr "Обхват на аудиторията (прецизно)"
+
+msgid "monograph.languages"
+msgstr "Езици (английски, френски, испански)"
+
+msgid "monograph.publicationFormat"
+msgstr "Формат"
+
+msgid "monograph.publicationFormatDetails"
+msgstr "Подробности за наличния формат на публикация: {$format}"
+
+msgid "monograph.miscellaneousDetails"
+msgstr "Подробности за тази монография"
+
+msgid "monograph.carousel.publicationFormats"
+msgstr "Формати:"
+
+msgid "submission.pageProofs"
+msgstr "Коректури"
+
+msgid "monograph.task.addNote"
+msgstr "Добавяне към задачите"
+
+msgid "monograph.accessLogoOpen.altText"
+msgstr "Отворен достъп"
+
+msgid "monograph.publicationFormat.imprint"
+msgstr "Импринт (Търговска марка)"
+
+msgid "monograph.publicationFormat.pageCounts"
+msgstr "Брой страници"
+
+msgid "monograph.audience.rangeTo"
+msgstr "Обхват на аудиторията (до)"
+
+msgid "monograph.publicationFormats"
+msgstr "Публикационни формати"
+
+msgid "monograph.type"
+msgstr "Тип на подадения материал"
+
+msgid "monograph.proofReadingDescription"
+msgstr ""
+"Редакторът на оформление качва готовите за производство файлове, които са "
+"подготвени за публикуване тук. Използвайте <em>+Присвояване</em>, за да "
+"посочите автори и други, които да коригират коректурите на страницата, с "
+"коригирани файлове, качени за одобрение преди публикуване."
+
+msgid "monograph.publicationFormat.price"
+msgstr "Цена"
+
+msgid "monograph.publicationFormat.priceRequired"
+msgstr "Изисква се отбелязване на цена."
+
+msgid "monograph.publicationFormat.priceType"
+msgstr "Тип на цената"
+
+msgid "monograph.publicationFormat.discountAmount"
+msgstr "Намаление в проценти, ако е приложимо"
+
+msgid "monograph.publicationFormat.backMatterCount"
+msgstr "Задна корица"
+
+msgid "monograph.publicationFormat.productComposition"
+msgstr "Структура на изданието"
+
+msgid "monograph.publicationFormat.productIdentifierType"
+msgstr "Идентификатор на изданието"
+
+msgid "monograph.publicationFormat.productAvailability"
+msgstr "Достъп (наличност) до изданието"
+
+msgid "monograph.publicationFormat.returnInformation"
+msgstr "Идентификатор за връщане"
+
+msgid "monograph.publicationFormat.digitalInformation"
+msgstr "Цифрова информация"
+
+msgid "monograph.publicationFormat.productDimensionsSeparator"
+msgstr " x "
+
+msgid "monograph.publicationFormat.productFileSize.override"
+msgstr "Въведете собствена стойност за размера на файла?"
+
+msgid "monograph.publicationFormat.productHeight"
+msgstr "Височина"
+
+msgid "monograph.publicationFormat.productThickness"
+msgstr "Дебелина"
+
+msgid "monograph.publicationFormat.productWeight"
+msgstr "Тегло"
+
+msgid "monograph.publicationFormat.productWidth"
+msgstr "Ширина"
+
+msgid "monograph.publicationFormat.technicalProtection"
+msgstr "Цифрова техническа защита"
+
+msgid "monograph.publicationFormat.productRegion"
+msgstr "Регион на разпространение на изданието"
+
+msgid "monograph.publicationFormat.taxRate"
+msgstr "Данъчна ставка"
+
+msgid "monograph.publicationFormat.taxType"
+msgstr "Тип на данъчната ставка"
+
+msgid "monograph.publicationFormat.isApproved"
+msgstr ""
+"Включете метаданните за този формат на публикация в записа в каталога за "
+"тази книга."
+
+msgid "monograph.publicationFormat.noCodesAssigned"
+msgstr "Липсва идентификационен код."
+
+msgid "monograph.publicationFormat.missingONIXFields"
+msgstr "Липсват някои полета с метаданни."
+
+msgid "monograph.publicationFormat.openTab"
+msgstr "Отваряне на раздела за формат на публикация."
+
+msgid "grid.catalogEntry.publicationFormatType"
+msgstr "Формат на публикацията"
+
+msgid "grid.catalogEntry.nameRequired"
+msgstr "Изисква се име."
+
+msgid "grid.catalogEntry.validPriceRequired"
+msgstr "Изисква се валидна цена."
+
+msgid "grid.catalogEntry.publicationFormatDetails"
+msgstr "Детайли за формата на изданието"
+
+msgid "grid.catalogEntry.physicalFormat"
+msgstr "Физически формат"
+
+msgid "grid.catalogEntry.remotelyHostedContent"
+msgstr "Този формат ще бъде достъпен на отделен уебсайт"
+
+msgid "grid.catalogEntry.remoteURL"
+msgstr "URL на отдалечено хоствано съдържание"
+
+msgid "grid.catalogEntry.isbn"
+msgstr "ISBN"
+
+msgid "grid.catalogEntry.isbn13.description"
+msgstr "13-цифрен ISBN код, като например 978-951-98548-9-2."
+
+msgid "grid.catalogEntry.isbn10.description"
+msgstr "10-цифрен ISBN код, като например 951-98548-9-4."
+
+msgid "grid.catalogEntry.monographRequired"
+msgstr "Изисква се идентификационен номер на монография."
+
+msgid "monograph.publicationFormat.frontMatterCount"
+msgstr "Предна корица"
+
+msgid "monograph.publicationFormat.productFormDetailCode"
+msgstr "Подробности за изданието (не е задължително)"
+
+msgid "monograph.publicationFormat.productDimensions"
+msgstr "Физически размери"
+
+msgid "monograph.publicationFormat.countryOfManufacture"
+msgstr "Държава на издаване (производство)"
+
+msgid "monograph.publicationFormat.noMarketsAssigned"
+msgstr "Липсват данни за пазари и цени."
+
+msgid "monograph.publicationFormat.productFileSize"
+msgstr "Размер на файла в мегабайти"
+
+msgid "monograph.publicationFormat.formatDoesNotExist"
+msgstr ""
+"<p>Избраният от вас формат на публикация вече не съществува за тази "
+"монография.</p>"
+
+msgid "grid.catalogEntry.publicationFormatRequired"
+msgstr "Трябва да се избере формат на публикацията."
+
+msgid "grid.catalogEntry.availability"
+msgstr "Достъпност"
+
+msgid "grid.catalogEntry.isAvailable"
+msgstr "Достъпен"
+
+msgid "grid.catalogEntry.isNotAvailable"
+msgstr "Не е достъпен"
+
+msgid "grid.catalogEntry.proof"
+msgstr "Корекция"
+
+msgid "grid.catalogEntry.approvedRepresentation.title"
+msgstr "Одобрение на формата"
+
+msgid "grid.catalogEntry.approvedRepresentation.message"
+msgstr ""
+"<p>Одобрете метаданните за този формат. Метаданните могат да бъдат проверени "
+"от панела за редактиране за всеки формат.</p>"

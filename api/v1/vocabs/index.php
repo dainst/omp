@@ -11,8 +11,8 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup api_v1_vocabs
+ *
  * @brief Handle API requests for vocabs.
  */
 
-import('api.v1.vocabs.VocabHandler');
-return new VocabHandler();
+return new \APP\API\v1\vocabs\VocabHandler();

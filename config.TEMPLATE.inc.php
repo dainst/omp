@@ -1,4 +1,4 @@
-; <?php exit(); // DO NOT DELETE ?>
+; <?php exit; // DO NOT DELETE?>
 ; DO NOT DELETE THE ABOVE LINE!!!
 ; Doing so will expose this configuration file through your web site!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -31,6 +31,10 @@ installed = Off
 ; The canonical URL to the OMP installation (excluding the trailing slash)
 base_url = base_url
 
+; Enable strict mode. This will more aggressively cause errors/warnings when
+; deprecated behaviour exists in the codebase.
+strict = Off
+
 ; Session cookie name
 session_cookie_name = OMPSID
 
@@ -40,6 +44,11 @@ session_cookie_name = OMPSID
 ; Number of days to save login cookie for if user selects to remember
 ; (set to 0 to force expiration at end of current session)
 session_lifetime = 30
+
+; SameSite configuration for the cookie, see possible values and explanations
+; at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+; To set the "Secure" attribute for the cookie see the setting force_ssl at the [security] group
+session_samesite = Lax
 
 ; Enable support for running scheduled tasks
 ; Set this to On if you have set up the scheduled tasks script to
@@ -53,24 +62,18 @@ scheduled_tasks = Off
 scheduled_tasks_report_error_only = On
 
 ; Site time zone
-; Please refer to lib/pkp/registry/timeZones.xml for a full list of supported
+; Please refer to https://www.php.net/timezones for a full list of supported
 ; time zones.
-; I.e.:
-; <entry key="Europe/Amsterdam" name="Amsterdam" />
-; time_zone="Amsterdam"
+; I.e.: "Europe/Amsterdam"
+; time_zone="Europe/Amsterdam"
 time_zone = "UTC"
 
 ; Short and long date formats
-date_format_short = "%Y-%m-%d"
-date_format_long = "%B %e, %Y"
-datetime_format_short = "%Y-%m-%d %I:%M %p"
-datetime_format_long = "%B %e, %Y - %I:%M %p"
-time_format = "%I:%M %p"
-
-; Use URL parameters instead of CGI PATH_INFO. This is useful for broken server
-; setups that don't support the PATH_INFO environment variable.
-; WARNING: This option is DEPRECATED and will be removed in the future.
-disable_path_info = Off
+date_format_short = "Y-m-d"
+date_format_long = "F j, Y"
+datetime_format_short = "Y-m-d h:i A"
+datetime_format_long = "F j, Y - h:i A"
+time_format = "h:i A"
 
 ; Use fopen(...) for URL-based reads. Modern versions of dspace
 ; will not accept requests using fopen, as it does not provide a
@@ -80,14 +83,15 @@ allow_url_fopen = Off
 
 ; Base URL override settings: Entries like the following examples can
 ; be used to override the base URLs used by OMP. If you want to use a
-; proxy to rewrite URLs to OMP, configure your proxy's URL here.
-; Syntax: base_url[press_path] = http://www.myUrl.com
-; To override URLs that aren't part of a particular press, use a
-; press_path of "index".
-; Examples:
-; base_url[index] = http://www.myUrl.com
-; base_url[myPress] = http://www.myUrl.com/myPress
-; base_url[myOtherPress] = http://myOtherPress.myUrl.com
+; proxy to rewrite URLs to OMP, configure your proxy's URL with this format.
+; Syntax: base_url[press_path] = http://www.example.com
+;
+; Example1: URLs that aren't part of a particular press.
+;    Example1: base_url[index] = http://www.example.com
+; Example2: URLs that map to a subdirectory.
+;    Example2: base_url[myPress] = http://www.example.com/myPress
+; Example3: URLs that map to a subdomain.
+;    Example3: base_url[myOtherPress] = http://myOtherPress.example.com
 
 ; Generate RESTful URLs using mod_rewrite.  This requires the
 ; rewrite directive to be enabled in your .htaccess or httpd.conf.
@@ -101,9 +105,15 @@ restful_urls = On
 ; allowed_hosts = '["myjournal.tld", "anotherjournal.tld", "mylibrary.tld"]'
 allowed_hosts = ''
 
+; Restrict the list of allowed hosts to prevent HOST header injection.
+; See docs/README.md for more details. The list should be JSON-formatted.
+; An empty string indicates that all hosts should be trusted (not recommended!)
+; Example:
+; allowed_hosts = '["myjournal.tld", "anotherjournal.tld", "mylibrary.tld"]'
+allowed_hosts = ''
+
 ; Allow the X_FORWARDED_FOR header to override the REMOTE_ADDR as the source IP
-; Set this to "On" if you are behind a reverse proxy and you control the
-; X_FORWARDED_FOR header.
+; Set this to "On" if you are behind a reverse proxy and you control the X_FORWARDED_FOR
 ; Warning: This defaults to "On" if unset for backwards compatibility.
 trust_x_forwarded_for = Off
 
@@ -115,6 +125,16 @@ enable_minified = On
 ; Provide a unique site ID and OAI base URL to PKP for statistics and security
 ; alert purposes only.
 enable_beacon = On
+
+; The number of days a new user has to validate their account
+; A new user account will be expired and removed if this many days have passed since the user registered
+; their account, and they have not validated their account or logged in. If the user_validation_period is set to
+; 0, unvalidated accounts will never be removed. Use this setting to automatically remove bot registrations.
+user_validation_period = 28
+
+; Turn sandbox mode to On in order to prevent the software from interacting with outside systems.
+; Use this for development or testing purposes.
+sandbox = Off
 
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -182,10 +202,7 @@ web_cache_hours = 1
 [i18n]
 
 ; Default locale
-locale = en_US
-
-; Client output/input character set
-client_charset = utf-8
+locale = en
 
 ; Database connection character set
 connection_charset = utf8
@@ -222,6 +239,7 @@ umask = 0022
 ; a possible revision
 filename_revision_match = 70
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Fileinfo (MIME) Settings ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -236,7 +254,8 @@ filename_revision_match = 70
 
 [security]
 
-; Force SSL connections site-wide
+; Force SSL connections site-wide and also sets the "Secure" flag for session cookies
+; See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#secure
 force_ssl = Off
 
 ; Force SSL connections for login only
@@ -259,8 +278,7 @@ salt = "YouMustSetASecretKeyHere!!"
 ; The unique secret used for encoding and decoding API keys
 api_key_secret = ""
 
-; The number of seconds before a password reset hash expires (defaults to
-; 7200 seconds (2 hours)
+; The number of seconds before a password reset hash expires (defaults to 7200 / 2 hours)
 reset_seconds = 7200
 
 ; Allowed HTML tags for fields that permit restricted HTML.
@@ -269,34 +287,24 @@ reset_seconds = 7200
 ; stripped.
 allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,dd,b,i,u,img[src|alt],sup,sub,br,p"
 
-;Is implicit authentication enabled or not
+; Allowed HTML tags for submission titles only
+; Unspecified attributes will be stripped.
+allowed_title_html = "b,i,u,sup,sub"
 
-;implicit_auth = On
-
-;Implicit Auth Header Variables
-
-;implicit_auth_header_first_name = HTTP_TDL_GIVENNAME
-;implicit_auth_header_last_name = HTTP_TDL_SN
-;implicit_auth_header_email = HTTP_TDL_MAIL
-;implicit_auth_header_phone = HTTP_TDL_TELEPHONENUMBER
-;implicit_auth_header_initials = HTTP_TDL_METADATA_INITIALS
-;implicit_auth_header_mailing_address = HTTP_TDL_METADATA_TDLHOMEPOSTALADDRESS
-;implicit_auth_header_uin = HTTP_TDL_TDLUID
-
-; A space delimited list of uins to make admin
-;implicit_auth_admin_list = "100000040@tdl.org 85B7FA892DAA90F7@utexas.edu 100000012@tdl.org"
-
-; URL of the implicit auth 'Way Finder' page. See pages/login/LoginHandler.inc.php for usage.
-
-;implicit_auth_wayf_url = "/Shibboleth.sso/wayf"
-
-
+;N.b.: The implicit_auth parameter has been removed in favor of plugin implementations such as shibboleth
 
 ;;;;;;;;;;;;;;;;;;
 ; Email Settings ;
 ;;;;;;;;;;;;;;;;;;
 
 [email]
+
+; Default method to send emails
+; Available options: sendmail, smtp, log, phpmailer
+default = sendmail
+
+; Path to the sendmail, -bs argument is for using SMTP protocol
+sendmail_path = "/usr/sbin/sendmail -bs"
 
 ; Use SMTP for sending mail instead of mail()
 ; smtp = On
@@ -327,6 +335,10 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 ; Note: this is not recommended per PHPMailer documentation
 ; smtp_suppress_cert_check = On
 
+; Enable suppressing SSL/TLS peer verification by SMTP transports
+; Note: this is not recommended for security reasons
+; smtp_suppress_cert_check = On
+
 ; Allow envelope sender to be specified
 ; (may not be possible with some server configurations)
 ; allow_envelope_sender = Off
@@ -335,7 +347,7 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 ; default_envelope_sender = my_address@my_host.com
 
 ; Force the default envelope sender (if present)
-; This is useful if setting up a site-wide noreply address
+; This is useful if setting up a site-wide no-reply address
 ; The reply-to field will be set with the reply-to or from address.
 ; force_default_envelope_sender = Off
 
@@ -355,14 +367,6 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 ; You can use '%n' to insert the users name from the original from header
 ; and '%s' to insert the localized sitename.
 ; dmarc_compliant_from_displayname = '%n via %s'
-
-; Amount of time required between attempts to send non-editorial emails
-; in seconds. This can be used to help prevent email relaying via OMP.
-time_between_emails = 3600
-
-; Maximum number of recipients that can be included in a single email
-; (either as To:, Cc:, or Bcc: addresses) for a non-priveleged user
-max_recipients = 10
 
 ; If enabled, email addresses must be validated before login is possible.
 require_validation = Off
@@ -417,7 +421,8 @@ result_cache_hours = 1
 ; Enable OAI front-end to the site
 oai = On
 
-; OAI Repository identifier
+; OAI Repository identifier. This setting forms part of OAI-PMH record IDs.
+; Changing this setting may affect existing clients and is not recommended.
 repository_id = omp.pkp.sfu.ca
 
 
@@ -427,10 +432,10 @@ repository_id = omp.pkp.sfu.ca
 
 [interface]
 
-; Number of items to display per page; overridable on a per-press basis
+; Number of items to display per page; can be overridden on a per-press basis
 items_per_page = 50
 
-; Number of page links to display; overridable on a per-press basis
+; Number of page links to display; can be overridden on a per-press basis
 page_links = 10
 
 
@@ -451,6 +456,9 @@ recaptcha = off
 
 ; Whether or not to use Captcha on user registration
 captcha_on_register = on
+
+; Whether or not to use Captcha on user login
+captcha_on_login = on
 
 ; Validate the hostname in the ReCaptcha response
 recaptcha_enforce_hostname = Off
@@ -527,3 +535,61 @@ log_web_service_info = Off
 ; This setting overrides the 'curl.cainfo' parameter of the php.ini configuration file.
 [curl]
 ; cainfo = ""
+
+
+;;;;;;;;;;;;;;;;;;;;;;;
+; Job Queues Settings ;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+[queues]
+
+; Default queue driver
+default_connection = "database"
+
+; Default queue to use when a job is added to the queue
+default_queue = "queue"
+
+; Whether or not to turn on the built-in job runner
+;
+; When enabled, jobs will be processed at the end of each web
+; request to the application.
+;
+; Use of the built-in job runner is highly discouraged for high-volume
+; sites. Instead, a worker daemon or cron job should be configured
+; to process jobs off the application's main thread.
+;
+; See: https://docs.pkp.sfu.ca/admin-guide/en/advanced-jobs
+;
+job_runner = On
+
+; The maximum number of jobs to run in a single request when using
+; the built-in job runner.
+job_runner_max_jobs = 30
+
+; The maximum number of seconds the built-in job runner should spend
+; running jobs in a single request.
+;
+; This should be less than the max_execution_time the server has
+; configured for PHP.
+;
+; Lower this setting if jobs are failing due to timeouts.
+job_runner_max_execution_time = 30
+
+; The maximum consumerable memory that should be spent by the built-in
+; job runner when running jobs.
+;
+; Set as a percentage, such as 80%:
+;
+; job_runner_max_memory = 80
+;
+; Or set as a fixed value in megabytes:
+;
+; job_runner_max_memory = 128M
+;
+; When setting a fixed value in megabytes, this should be less than the
+; memory_limit the server has configured for PHP.
+job_runner_max_memory = 80
+
+; Remove failed jobs from the database after the following number of days.
+; Remove this setting to leave failed jobs in the database.
+delete_failed_jobs_after = 180

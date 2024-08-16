@@ -1,0 +1,211 @@
+# Weblate Admin <alec@smecher.bc.ca>, 2023.
+# Rudy Hahusseau <rudy.hahusseau@univ-lorraine.fr>, 2023.
+# Germán Huélamo Bautista <germanhuelamo@gmail.com>, 2023, 2024.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-04-24 20:28+0000\n"
+"Last-Translator: Germán Huélamo Bautista <germanhuelamo@gmail.com>\n"
+"Language-Team: French <http://translate.pkp.sfu.ca/projects/omp/admin/fr_FR/>"
+"\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.18.2\n"
+
+msgid "admin.hostedContexts"
+msgstr "Maisons d’édition hébergées"
+
+msgid "admin.overwriteConfigFileInstructions"
+msgstr ""
+"<h4>NOTE!</div>\n"
+"<p>Le système ne peut pas écraser automatiquement le fichier de "
+"configuration. Pour appliquer les modifications de configuration, vous devez "
+"ouvrir <tt>config.inc.php</tt> dans un éditeur de texte approprié et "
+"remplacer son contenu par le contenu de la zone de texte ci-dessous.</p>"
+
+msgid "admin.settings.config.success"
+msgstr "Les paramètres de configuration du site ont bien été mis à jour."
+
+msgid "admin.settings.redirectInstructions"
+msgstr ""
+"Les requêtes envoyées au site principal seront redirigées vers cette maison "
+"d’édition. Cela peut par exemple être utile si le site n’héberge qu’une "
+"seule maison d’édition."
+
+msgid "admin.languages.supportedLocalesInstructions"
+msgstr ""
+"Sélectionnez tous les paramètres régionaux qui seront supportés sur le site. "
+"Les paramètres régionaux sélectionnés seront disponibles pour toutes les "
+"maisons d’édition installées sur le site et apparaîtront dans le menu de "
+"sélection de langue visible sur toutes les pages du site (lesquels peuvent "
+"être remplacés sur les pages d’une maison d’édition particulière). Si seul "
+"un paramètre régional est sélectionné, le menu de bascule de la langue n’"
+"apparaîtra pas et les maisons d’édition n’auront pas accès aux paramètres de "
+"langue étendus."
+
+msgid "admin.settings.enableBulkEmails.description"
+msgstr ""
+"Sélectionnez les maisons d’édition hébergées qui doivent être autorisées à "
+"effectuer des envois massifs de courriels. Lorsque cette fonctionnalité est "
+"activée, un·e gestionnaire peut envoyer un courriel à tous·tes les "
+"utilisateur·rice·s enregistrés auprès de sa maison d’édition. L’utilisation "
+"abusive de cette fonctionnalité pour envoyer des courriels non sollicités "
+"peut enfreindre les lois anti-spam dans certaines juridictions et entraîner "
+"le blocage des courriels envoyés depuis votre serveur en tant que courriers "
+"indésirables. Demandez un avis technique avant d’activer cette "
+"fonctionnalité et envisagez de consulter les responsables éditoriaux pour "
+"vous assurer qu’elle est utilisée de manière appropriée. D’autres "
+"restrictions de cette fonctionnalité peuvent être activées pour chaque "
+"maison d’édition en visitant son assistant de configuration dans la liste "
+"des <a href=\"{$hostedContextsUrl}\">Maisons d’édition hébergées</a>."
+
+msgid "admin.settings.statistics.geo.description"
+msgstr ""
+"Sélectionnez le type de statistiques géographiques d’utilisation pouvant "
+"être collectées par les maisons d’édition sur ce site. Des statistiques "
+"géographiques plus détaillées peuvent augmenter considérablement la taille "
+"de votre base de données et, dans de rares cas, peuvent porter atteinte à l’"
+"anonymat de vos visiteurs. Chaque maison d’édition peut configurer ce "
+"paramètre différemment, mais une maison d’édition ne peut jamais collecter "
+"des enregistrements plus détaillés que ce qui est configuré ici. Par "
+"exemple, si le site ne prend en charge que le pays et la région, la maison d’"
+"édition peut sélectionner le pays et la région ou uniquement le pays. La "
+"maison d’édition ne pourra pas suivre le pays, la région et la ville."
+
+msgid "admin.settings.statistics.sushi.public.description"
+msgstr ""
+"Rendre ou non les points de terminaison [endpoints] de l’API SUSHI "
+"accessibles publiquement pour toutes les maisons d’édition sur ce site. Si "
+"vous activez l’API publique, chaque maison d’édition peut remplacer ce "
+"paramètre pour rendre ses statistiques privées. Cependant, si vous "
+"désactivez l’API publique, les maisons d’édition ne peuvent pas rendre leur "
+"propre API publique."
+
+msgid "admin.settings.appearance.success"
+msgstr "Les paramètres d’apparence du site ont bien été mis à jour."
+
+msgid "admin.settings.info.success"
+msgstr "Les informations du site ont bien été mises à jour."
+
+msgid "admin.settings.redirect"
+msgstr "Redirection de la maison d’édition"
+
+msgid "admin.settings.noPressRedirect"
+msgstr "Ne pas rediriger"
+
+msgid "admin.languages.primaryLocaleInstructions"
+msgstr ""
+"Ceci sera la langue par défaut pour le site et les maisons d’édition "
+"hébergées."
+
+msgid "admin.locale.maybeIncomplete"
+msgstr "* Les paramètres régionaux marqués peuvent être incomplets."
+
+msgid "admin.languages.confirmUninstall"
+msgstr ""
+"Voulez-vous vraiment désinstaller ce paramètre régional ? Cela pourrait "
+"affecter toutes les maisons d’édition hébergées qui l’utiliseraient "
+"actuellement."
+
+msgid "admin.languages.installNewLocalesInstructions"
+msgstr ""
+"Sélectionnez les autres paramètres régionaux que vous souhaitez installer "
+"sur ce système. Les paramètres régionaux doivent être installés avant de "
+"pouvoir être utilisés par les maisons d’édition hébergées. Consultez la "
+"documentation OMP pour plus d’informations sur l’ajout de support pour de "
+"nouvelles langues."
+
+msgid "admin.languages.confirmDisable"
+msgstr ""
+"Voulez-vous vraiment désactiver ce paramètre régional ? Cela pourrait "
+"affecter toutes les maisons d’édition hébergées qui l’utiliseraient "
+"actuellement."
+
+msgid "admin.systemVersion"
+msgstr "Version d’OMP"
+
+msgid "admin.systemConfiguration"
+msgstr "Configuration d’OMP"
+
+msgid "admin.presses.pressSettings"
+msgstr "Paramètres de la maison d’édition"
+
+msgid "admin.presses.noneCreated"
+msgstr "Aucune maison d’édition n’a été créée."
+
+msgid "admin.contexts.create"
+msgstr "Créer une maison d’édition"
+
+msgid "admin.contexts.form.titleRequired"
+msgstr "Un titre est requis."
+
+msgid "admin.contexts.form.pathRequired"
+msgstr "Un chemin est requis."
+
+msgid "admin.contexts.form.pathAlphaNumeric"
+msgstr ""
+"Le chemin ne peut contenir que des caractères alphanumériques plus _ et -. "
+"Il doit commencer et se terminer par un caractère alphanumérique."
+
+msgid "admin.contexts.form.pathExists"
+msgstr "Le chemin choisi est déjà utilisé par une autre maison d’édition."
+
+msgid "admin.contexts.form.primaryLocaleNotSupported"
+msgstr ""
+"Le paramètre régional principal doit être un de ceux pris en charge par la "
+"maison d’édition."
+
+msgid "admin.contexts.form.create.success"
+msgstr "{$name} a bien été créé."
+
+msgid "admin.contexts.form.edit.success"
+msgstr "{$name} a bien été modifié."
+
+msgid "admin.contexts.contextDescription"
+msgstr "Description de la maison d’édition"
+
+msgid "admin.presses.addPress"
+msgstr "Ajouter une maison d’édition"
+
+msgid "admin.settings.disableBulkEmailRoles.description"
+msgstr ""
+"Un·e gestionnaire ne pourra pas effectuer d’envoi massif de courriels à l’un "
+"des rôles sélectionnés ci-dessous. Utilisez ce paramètre pour limiter les "
+"abus de la fonction de notification par courriel. Par exemple, il peut être "
+"plus sûr de désactiver l’envoi massif de courriels à des groupes "
+"d’utilisateur·rice·s qui n’ont pas consenti à recevoir de tels "
+"messages.<br><br>La fonction d’envoi massif de courriels peut être "
+"complètement désactivée pour cette maison d’édition dans <a href=\""
+"{$siteSettingsUrl}\">Admin > Paramètres du site</a>."
+
+msgid "admin.settings.disableBulkEmailRoles.contextDisabled"
+msgstr ""
+"La fonctionnalité d’envoi massif de courriels a été désactivée pour cette "
+"maison d’édition. Activez cette fonctionnalité dans <a href=\""
+"{$siteSettingsUrl}\">Admin > Paramètres du site</a>."
+
+msgid "admin.siteManagement.description"
+msgstr ""
+"Ajouter, modifier ou supprimer des maisons d’édition de ce site et gérer les "
+"paramètres au niveau du site."
+
+msgid "admin.job.processLogFile.invalidLogEntry.chapterId"
+msgstr "L’ID du chapitre n’est pas un nombre entier"
+
+msgid "admin.job.processLogFile.invalidLogEntry.seriesId"
+msgstr "L’ID de la collection n’est pas un nombre entier"
+
+msgid "admin.settings.statistics.institutions.description"
+msgstr ""
+"Activez les statistiques institutionnelles si vous souhaitez que les maisons "
+"d’édition de ce site puissent collecter des statistiques d’utilisation par "
+"établissement. Les maisons d’édition devront ajouter l’établissement et ses "
+"plages d’adresses IP afin d’utiliser cette fonctionnalité. L’activation des "
+"statistiques institutionnelles peut augmenter considérablement la taille de "
+"votre base de données."
+
+msgid "admin.settings.statistics.sushiPlatform.isSiteSushiPlatform"
+msgstr ""
+"Utiliser ce site comme plateforme pour toutes les revues, tous les éditeurs."

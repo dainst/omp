@@ -1,0 +1,127 @@
+# paola <pjukic@yahoo.com>, 2021.
+# Karla Zapalac <karlazapalac98@gmail.com>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-08T17:42:28+00:00\n"
+"PO-Revision-Date: 2023-01-30 15:07+0000\n"
+"Last-Translator: Karla Zapalac <karlazapalac98@gmail.com>\n"
+"Language-Team: Croatian <http://translate.pkp.sfu.ca/projects/omp/"
+"importexport-users/hr_HR/>\n"
+"Language: hr_HR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.13.1\n"
+
+msgid "plugins.importexport.users.displayName"
+msgstr "Korisnički XML dodatak"
+
+msgid "plugins.importexport.users.description"
+msgstr "Uvoz i izvoz korisnika/ca"
+
+msgid "plugins.importexport.users.cliUsage"
+msgstr ""
+"Primjena: {$scriptName} {$pluginName} [command] ...\n"
+"Naredbe:\n"
+"\tUvoz [xmlFileName] [press_path] [optional flags]\n"
+"\tIzvoz [xmlFileName] [press_path]\n"
+"\tIzvoz [xmlFileName] [press_path] [role_path1] [role_path2] ...\n"
+"\n"
+"Opcionalno:\n"
+"\tcontinue_on_error: Ne zaustavljati se pri pojavljanju greške\n"
+"\n"
+"\tsend_notify: e-poštom poslati korisnička imena \n"
+" i lozinke uvezenim korisnicima\n"
+"\n"
+"Primjeri:\n"
+"\tKorisnike uvezite u myPress pomoću datoteke myImportFile.xml, u slučaju "
+"greške se nemojte zaustavljati:\n"
+"\t{$scriptName} {$pluginName} uvoz myImportFile.xml myPress "
+"continue_on_error\n"
+"\n"
+"\tIzvezite sve korisnike od myPress:\n"
+"\t{$scriptName} {$pluginName} izvoz myExportFile myPress\n"
+"\n"
+"\tIzvezite sve korisnike koji su registrirani kao recenzenti samo u ulozi "
+"recenzenata::\n"
+"\t{$scriptName} {$pluginName} izvoz myExportFile.xml myPress reviewer\n"
+
+msgid "plugins.importexport.users.import.importUsers"
+msgstr "Uvezi korisnike/ce"
+
+msgid "plugins.importexport.users.import.instructions"
+msgstr ""
+"Odaberite XML datoteku koja sadrži informacije o korisnicima koje želite "
+"uvesti. Detalje u vezi formata ove datoteke naći ćete u pomoći.<br /><br /"
+">Ukoliko unesena datoteka sadrži bilo koja korisnička imena ili adrese e-"
+"pošte koje već postoje u sustavu, ti korisnici neće biti uneseni, već će "
+"njihove uloge biti dodijeljene onima postojećih korisnika."
+
+msgid "plugins.importexport.users.import.dataFile"
+msgstr "Datoteka s podacima o korisnicima"
+
+msgid "plugins.importexport.users.import.sendNotify"
+msgstr ""
+"Pošalji e-poštom svakom unesenom korisniku obavijest koja sadrži njegovo "
+"korisničko ime i lozinku."
+
+msgid "plugins.importexport.users.import.continueOnError"
+msgstr "U slučaju greške nastavi s unošenjem ostalih korisnika."
+
+msgid "plugins.importexport.users.import.usersWereImported"
+msgstr "Sljedeći korisnici su uspješno uneseni u sustav"
+
+msgid "plugins.importexport.users.import.errorsOccurred"
+msgstr "Pogreške koje su se pojavile prilikom unošenja"
+
+msgid "plugins.importexport.users.import.confirmUsers"
+msgstr "Molim potvrdite da su ovo korisnici koje želite unijeti u sustav"
+
+msgid "plugins.importexport.users.import.warning"
+msgstr "Upozorenje"
+
+msgid "plugins.importexport.users.import.encryptionMismatch"
+msgstr ""
+"Nije moguće koristiti lozinke pohranjene hash funkcijom {$importHash}; OMP "
+"je podešen da koristi {$ompHash}. Ukoliko nastavite, morat ćete ponovno "
+"postaviti lozinke ovako unesenih korisnika."
+
+msgid "plugins.importexport.users.unknownPress"
+msgstr "Navedena je nepoznata putanja \"{$contextPath}\"."
+
+msgid "plugins.importexport.users.export.exportUsers"
+msgstr "Izvezi korisnike"
+
+msgid "plugins.importexport.users.export.exportByRole"
+msgstr "Izvezi po ulozi"
+
+msgid "plugins.importexport.users.export.exportAllUsers"
+msgstr "Izvezi sve"
+
+msgid "plugins.importexport.users.export.errorsOccurred"
+msgstr "Pogreške koje su se pojavile prilikom izvoza"
+
+msgid "plugins.importexport.users.importComplete"
+msgstr ""
+"Uvoz je uspješno dovršen. Uvezeni su korisnici s korisničkim imenima i "
+"adresama e-pošte koji se još ne koriste, zajedno s pripadajućim ulogama "
+"korisnika."
+
+msgid "plugins.importexport.users.results"
+msgstr "Rezultati"
+
+msgid "plugins.importexport.users.uploadFile"
+msgstr "Učitajte datoteku pod \"Uvoz\" kako biste nastavili."
+
+msgid "plugins.importexport.users.import.failedToImportUser"
+msgstr "Neuspjelo unošenje korisnika"
+
+msgid "plugins.importexport.users.import.failedToImportRole"
+msgstr "Neuspjelo unošenje uloga korisnika"
+
+msgid "plugins.importexport.users.import.noFileError"
+msgstr "Datoteka nije poslana!"

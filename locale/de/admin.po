@@ -1,0 +1,213 @@
+# Pia Piontkowitz <pia.piontkowitz@rub.de>, 2021, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-30T06:23:43-07:00\n"
+"PO-Revision-Date: 2023-04-29 14:49+0000\n"
+"Last-Translator: Pia Piontkowitz <pia.piontkowitz@rub.de>\n"
+"Language-Team: German <http://translate.pkp.sfu.ca/projects/omp/admin/de/>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.13.1\n"
+
+msgid "admin.hostedContexts"
+msgstr "Gehostete Verlage"
+
+msgid "admin.settings.appearance.success"
+msgstr ""
+"Die Einstellungen zum Aussehen der Seite wurden erfolgreich aktualisiert."
+
+msgid "admin.settings.config.success"
+msgstr ""
+"Die Einstellungen zur Konfiguration der Seite wurden erfolgreich "
+"aktualisiert."
+
+msgid "admin.settings.info.success"
+msgstr "Die Seiteninformationen wurden erfolgreich aktualisiert."
+
+msgid "admin.settings.redirect"
+msgstr "Weiterleitung an den Verlag"
+
+msgid "admin.settings.redirectInstructions"
+msgstr ""
+"Auf der Startseite eingehende Fragen werden an diesen Verlag weitergeleitet. "
+"Dies kann beispielsweise eine praktische Lösung sein, wenn die Website nur "
+"einen einzigen Verlag hostet."
+
+msgid "admin.settings.noPressRedirect"
+msgstr "Nicht umleiten"
+
+msgid "admin.languages.primaryLocaleInstructions"
+msgstr ""
+"Dies wird die voreingestellte Sprache für diese Website und alle gehosteten "
+"Verlage sein."
+
+msgid "admin.languages.supportedLocalesInstructions"
+msgstr ""
+"Wählen Sie alle Regionaleinstellungen aus, die auf dieser Seite unterstützt "
+"werden sollen. Die ausgewählten Regionaleinstellungen werden allen Verlagen, "
+"die von dieser Website gehostet werden, verfügbar gemacht und erscheinen "
+"ebenfalls in einem Sprachauswahlmenü, das auf jeder Seite der Website "
+"erscheinen wird (das Menü kann auf verlagsspezifischen Seiten überschrieben "
+"werden). Wurde nur eine Regionaleinstellung ausgewählt, erscheint weder ein "
+"Sprachwechselblock noch stehen erweiterte Spracheinstellungen zur Verfügung."
+
+msgid "admin.locale.maybeIncomplete"
+msgstr "* Die markierten Regionaleinstellungen können unvollständig sein."
+
+msgid "admin.languages.confirmUninstall"
+msgstr ""
+"Sind Sie sicher, dass Sie diese Regionaleinstellung deinstallieren möchten? "
+"Dies kann Auswirkungen auf alle Verlage haben, die zurzeit diese "
+"Regionaleinstellung verwenden."
+
+msgid "admin.languages.installNewLocalesInstructions"
+msgstr ""
+"Wählen Sie zusätzliche Regionaleinstellungen (Locales) aus, um deren "
+"Unterstützung in diesem System zu installieren. Locales müssen installiert "
+"sein, bevor sie von den gehosteten Verlagen genutzt werden können. In der "
+"OMP-Dokumentation erhalten Sie weitere Informationen darüber, wie Sie "
+"zusätzliche Unterstützung für neue Sprachen erhalten können."
+
+msgid "admin.languages.confirmDisable"
+msgstr ""
+"Sind Sie sicher, dass Sie diese Regionaleinstellung löschen wollen? Dies "
+"wird alle Verlage auf Ihrer Plattform betreffen, die diese "
+"Regionaleinstellung benutzen."
+
+msgid "admin.systemVersion"
+msgstr "OMP-Version"
+
+msgid "admin.systemConfiguration"
+msgstr "OMP-Konfiguration"
+
+msgid "admin.presses.pressSettings"
+msgstr "Verlagseinstellungen"
+
+msgid "admin.presses.noneCreated"
+msgstr "Es wurden noch keine Verlage angelegt."
+
+msgid "admin.contexts.create"
+msgstr "Verlag anlegen"
+
+msgid "admin.contexts.form.titleRequired"
+msgstr "Die Angabe des Titels ist erforderlich."
+
+msgid "admin.contexts.form.pathRequired"
+msgstr "Die Angabe des Pfades ist erforderlich."
+
+msgid "admin.contexts.form.pathAlphaNumeric"
+msgstr ""
+"Der Pfad darf nur Buchstaben und Zahlen, Unterstriche und Bindestriche "
+"enthalten und muss mit einem Buchstaben oder einer Zahl beginnen und enden."
+
+msgid "admin.contexts.form.pathExists"
+msgstr "Der ausgewählte Pfad wird bereits von einem anderen Verlag verwendet."
+
+msgid "admin.contexts.form.primaryLocaleNotSupported"
+msgstr ""
+"Die primären Regionaleinstellungen müssen eine der für den Verlag "
+"ausgewählten Regionaleinstellungen (Locales) sein."
+
+msgid "admin.contexts.form.create.success"
+msgstr "{$name} wurde erfolgreich erstellt."
+
+msgid "admin.contexts.form.edit.success"
+msgstr "{$name} wurde erfolgreich bearbeitet."
+
+msgid "admin.contexts.contextDescription"
+msgstr "Verlagsbeschreibung"
+
+msgid "admin.presses.addPress"
+msgstr "Verlag hinzufügen"
+
+msgid "admin.overwriteConfigFileInstructions"
+msgstr ""
+"<h4>Beachten Sie:</h4>\n"
+"<p>Das System konnte die Konfigurationsdatei nicht automatisch "
+"überschreiben. Um Ihre Änderungen der Konfiguration anzuwenden, öffnen Sie "
+"<tt>config.inc.php</tt> mit einem geeigneten Texteditor und ersetzen Sie den "
+"Inhalt durch den Text im nachstehenden Textfeld.</p>"
+
+msgid "admin.settings.enableBulkEmails.description"
+msgstr ""
+"Wählen Sie die gehosteten Verlage, die Massen-E-Mails senden dürfen. Wenn "
+"dieses Feature aktiviert ist, kann ein/e Verlagsmanager/in eine E-Mail an "
+"alle registrierten Nutzer/innen des Verlags schicken.<br><br>Der Missbrauch "
+"dieses Features um ungebetene E-Mails zu verschicken kann gegen Anti-Spam "
+"Gesetze verstoßen und dazu führen, dass E-Mails Ihres Servers als Spam "
+"blockiert werden. Erbitten Sie sich technische Hilfe, bevor Sie dieses "
+"Feature aktivieren und ziehen Sie es in Erwägung, mit Verlagsmanager/innen "
+"in Kontakt zu treten um zu vergewisseren, dass dieses Feature für den "
+"beabsichtigten Zweck verwendet wird.<br><br>Weitere Einschränkungen dieses "
+"Features können für jeden Verlag im Konfigurationsassistenten in der Liste "
+"der <a href=\"{$hostedContextsUrl}\">gehosteten Verlage</a> aktiviert werden."
+
+msgid "admin.settings.disableBulkEmailRoles.description"
+msgstr ""
+"Ein/e Verlagsmanager/in wird keine Massen-E-Mails an die unten ausgewählten "
+"Rollen verschicken können. Benutzen Sie diese Einstellung, um Missbrauch des "
+"Benachrichtigungsfeatures einzuschränken. Es könnte z.B. sicherer sein, "
+"Lesende, Autor/innen, oder weitere große Nutzer/innengruppen, die nicht "
+"zugestimmt haben, solche E-Mails zu erhalten, auszuschließen.<br><br>Das "
+"Massen-E-Mail-Feature kann für diesen Verlag unter <a href=\""
+"{$siteSettingsUrl}\">Administration > Einstellungen der Website</a>komplett "
+"deaktiviert werden."
+
+msgid "admin.settings.disableBulkEmailRoles.contextDisabled"
+msgstr ""
+"Das Massen-E-Mail-Feature wurde für diesen Verlag deaktiviert. Es kann unter "
+"<a href=\"{$siteSettingsUrl}\">Administration > Einstellungen der Website</"
+"a> aktiviert werden."
+
+msgid "admin.siteManagement.description"
+msgstr ""
+"Verlage hinzufügen, bearbeiten, oder löschen und seitenübergreifende "
+"Einstellungen verwalten."
+
+msgid "admin.job.processLogFile.invalidLogEntry.chapterId"
+msgstr "Kapitel ID ist keine ganze Zahl"
+
+msgid "admin.job.processLogFile.invalidLogEntry.seriesId"
+msgstr "Reihen ID ist keine ganze Zahl"
+
+msgid "admin.settings.statistics.geo.description"
+msgstr ""
+"Wählen Sie die Art der geografischen Nutzungsstatistiken, die von Verlagen "
+"auf dieser Website erfasst werden können. Detailliertere geografische "
+"Statistiken können die Größe Ihrer Datenbank beträchtlich erhöhen und in "
+"einigen seltenen Fällen die Anonymität Ihrer Besucher/innen gefährden. Jeder "
+"Verlag kann diese Einstellungen anders konfigurieren, aber ein Verlag kann "
+"niemals detailliertere Datensätze als die hier konfigurierten sammeln. Wenn "
+"die Website zum Beispiel nur Land und Region unterstützt, kann der Verlag "
+"Land und Region oder nur Land auswählen. Der Verlag ist nicht in der Lage, "
+"Land, Region und Ort zu erfassen."
+
+msgid "admin.settings.statistics.institutions.description"
+msgstr ""
+"Aktivieren Sie institutionelle Statistiken, wenn Sie möchten, dass die "
+"Verlage auf dieser Website Nutzungsstatistiken nach Institutionen sammeln "
+"können. Die Verlage müssen die Einrichtung und ihre IP Ranges hinzufügen, um "
+"diese Funktion nutzen zu können. Die Aktivierung der institutionellen "
+"Statistiken kann die Größe Ihrer Datenbank beträchtlich erhöhen."
+
+msgid "admin.settings.statistics.sushi.public.description"
+msgstr ""
+"Ob die SUSHI-API-Endpunkte für alle Verlage auf dieser Website öffentlich "
+"zugänglich sein sollen oder nicht. Wenn Sie die öffentliche API aktivieren, "
+"kann jeder Verlag diese Einstellung außer Kraft setzen, um seine Statistiken "
+"privat zu machen. Wenn Sie jedoch die öffentliche API deaktivieren, können "
+"die Verlage ihre eigene API nicht öffentlich machen."
+
+#~ msgid "admin.contexts.confirmDelete"
+#~ msgstr ""
+#~ "Sind Sie sicher, dass Sie diesen Verlag und alle Verlagsinhalte endgültig "
+#~ "löschen möchten?"
+
+#, fuzzy
+msgid "admin.settings.statistics.sushiPlatform.isSiteSushiPlatform"
+msgstr "Website als Plattform für alle Zeitschriften verwenden."

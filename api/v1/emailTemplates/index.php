@@ -11,7 +11,8 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup api_v1_emailTemplates
+ *
  * @brief Handle API requests for emailTemplates.
  */
-import('lib.pkp.api.v1.emailTemplates.PKPEmailTemplateHandler');
-return new PKPEmailTemplateHandler();
+
+return new \PKP\API\v1\emailTemplates\PKPEmailTemplateHandler();

@@ -12,9 +12,9 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup api_v1_users
+ *
  * @brief Handle requests for user API functions.
  *
  */
 
-import('api.v1.users.UserHandler');
-return new UserHandler();
+return new \APP\API\v1\users\UserHandler();

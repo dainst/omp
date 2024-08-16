@@ -33,15 +33,7 @@
 			>
 				{translate key="common.declined"}
 			</badge>
-			<span class="pkpWorkflow__identificationId">{{ submission.id }}</span>
-			<span class="pkpWorkflow__identificationDivider">/</span>
-			<span class="pkpWorkflow__identificationAuthor">
-				{{ currentPublication.authorsStringShort }}
-			</span>
-			<span class="pkpWorkflow__identificationDivider">/</span>
-			<span class="pkpWorkflow__identificationTitle">
-				{{ localizeSubmission(currentPublication.fullTitle, currentPublication.locale) }}
-			</span>
+			{include file="workflow/submissionIdentification.tpl"}
 		</h1>
 		<template slot="actions">
 			<pkp-button
@@ -50,6 +42,13 @@
 				:href="submission.urlPublished"
 			>
 				{translate key="common.view"}
+			</pkp-button>
+			<pkp-button
+				v-else-if="submission.status !== getConstant('STATUS_PUBLISHED') && submission.stageId >= getConstant('WORKFLOW_STAGE_ID_EDITING')"
+				element="a"
+				:href="submission.urlPublished"
+			>
+				{translate key="common.preview"}
 			</pkp-button>
 			<dropdown
 				class="pkpWorkflow__identificationWorkType"
@@ -114,6 +113,24 @@
 				{capture assign=submissionProgressBarUrl}{url op="submissionProgressBar" submissionId=$submission->getId() stageId=$requestedStageId contextId="submission" escape=false}{/capture}
 				{load_url_in_div id="submissionProgressBarDiv" url=$submissionProgressBarUrl}
 			</div>
+
+			{* Modal to select one of the revision decisions *}
+			<modal
+				:close-label="__('common.close')"
+				name="selectRevisionDecision"
+				title="Revisions"
+			>
+				<pkp-form v-bind="components.{$smarty.const.FORM_SELECT_REVISION_DECISION}" @set="set" @success="goToRevisionDecision" />
+			</modal>
+
+			{* Modal to select one of the revision recommendations *}
+			<modal
+				:close-label="__('common.close')"
+				name="selectRevisionRecommendation"
+				title="Revisions"
+			>
+				<pkp-form v-bind="components.{$smarty.const.FORM_SELECT_REVISION_RECOMMENDATION}" @set="set" @success="goToRevisionDecision" />
+			</modal>
 		</tab>
 		<tab id="marketing" label="{translate key="settings.libraryFiles.category.marketing"}">
 			<tabs :is-side-tabs="true" :track-history="true" :label="publicationTabsLabel">
@@ -121,7 +138,7 @@
 					<pkp-form v-bind="components.{$smarty.const.FORM_AUDIENCE}" @set="set" />
 				</tab>
 				<tab id="representatives" label="{translate key="grid.catalogEntry.representatives"}">
-					{capture assign=representativesGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.catalogEntry.RepresentativesGridHandler" op="fetchGrid" submissionId=$submission->getId() escape=false}{/capture}
+					{capture assign=representativesGridUrl}{url router=PKPApplication::ROUTE_COMPONENT component="grid.catalogEntry.RepresentativesGridHandler" op="fetchGrid" submissionId=$submission->getId() escape=false}{/capture}
 					{load_url_in_div id="representativesGridContainer" url=$representativesGridUrl}
 				</tab>
 				<tab id="publicationDates" label="{translate key="grid.catalogEntry.publicationDates"}">
@@ -209,9 +226,16 @@
 							<pkp-form v-bind="components.{$smarty.const.FORM_TITLE_ABSTRACT}" @set="set" />
 						</tab>
 						<tab id="contributors" label="{translate key="publication.contributors"}">
-							<div id="contributors-grid" ref="contributors">
-								<spinner></spinner>
-							</div>
+							<contributors-list-panel
+								v-bind="components.contributors"
+								class="pkpWorkflow__contributors"
+								@set="set"
+								:items="workingPublication.authors"
+								:publication="workingPublication"
+								:publication-api-url="submissionApiUrl + '/publications/' + workingPublication.id"
+								@updated:publication="setWorkingPublication"
+								@updated:contributors="setContributors"
+							></contributors-list-panel>
 						</tab>
 						<tab id="chapters" label="{translate key="submission.chapters"}">
 							<div id="chapters-grid" ref="chapters">

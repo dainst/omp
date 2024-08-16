@@ -3,7 +3,7 @@
 /**
  * @defgroup pages_payment Payment page
  */
- 
+
 /**
  * @file pages/payment/index.php
  *
@@ -12,15 +12,13 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_payment
+ *
  * @brief Handle requests for interactions between the payment system and external
  * sites/systems.
  */
 
 switch ($op) {
-	case 'plugin':
-		define('HANDLER_CLASS', 'PaymentHandler');
-		import('pages.payment.PaymentHandler');
-		break;
+    case 'plugin':
+        define('HANDLER_CLASS', 'APP\pages\payment\PaymentHandler');
+        break;
 }
-
-
