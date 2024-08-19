@@ -1,8 +1,15 @@
-# pkp plugins:
-
+# pkp-libs:
 [submodule "lib/pkp"]
 	path = lib/pkp
-	url = https://github.com/pkp/pkp-lib
+	url = https://github.com/pkp/pkp-lib.git
+	branch = stable-3_4_0
+
+[submodule "lib/ui-library"]
+	path = lib/ui-library
+	url = https://github.com/pkp/ui-library.git
+	branch = stable-3_4_0
+
+# pkp plugins:
 
 [submodule "plugins/generic/customBlockManager"]
 	path = plugins/generic/customBlockManager
@@ -31,10 +38,6 @@
 [submodule "plugins/generic/googleAnalytics"]
 	path = plugins/generic/googleAnalytics
 	url = https://github.com/pkp/googleAnalytics
-
-[submodule "lib/ui-library"]
-	path = lib/ui-library
-	url = https://github.com/pkp/ui-library
 
 [submodule "plugins/generic/acron"]
 	path = plugins/generic/acron
