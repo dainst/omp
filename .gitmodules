@@ -39,6 +39,10 @@
 	path = plugins/generic/googleAnalytics
 	url = https://github.com/pkp/googleAnalytics
 
+[submodule "plugins/generic/piwik"]
+	path = plugins/generic/piwik
+	url = https://github.com/pkp/piwik.git
+
 [submodule "plugins/generic/acron"]
 	path = plugins/generic/acron
 	url = https://github.com/pkp/acron
