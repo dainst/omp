@@ -17,7 +17,7 @@
 
 [submodule "plugins/generic/staticPages"]
 	path = plugins/generic/staticPages
-	url = https://github.com/pkp/staticPages
+	url = https://github.com/pkp/staticPages.git
 	
 [submodule "plugins/generic/tinymce"]
 	path = plugins/generic/tinymce
