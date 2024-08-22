@@ -55,6 +55,14 @@
 	path = plugins/generic/webFeed
 	url = https://github.com/pkp/webFeed.git
 
+
+# external-plugins:
+
+[submodule "plugins/generic/datacite"]
+	path = plugins/generic/datacite
+	url = https://github.com/withanage/datacite.git
+
+
 # dai-plugins
 
 [submodule "plugins/themes/publicationstheme"]
@@ -69,9 +77,7 @@
 [submodule "plugins/generic/cilantro"]
 	path = plugins/generic/cilantro
 	url = https://github.com/dainst/ojs-cilantro-plugin
+
 [submodule "plugins/generic/authorRequirements"]
 	path = plugins/generic/authorRequirements
 	url = https://github.com/pkp/authorRequirements.git
-[submodule "plugins/generic/datacite"]
-	path = plugins/generic/datacite
-	url = https://github.com/withanage/datacite.git
