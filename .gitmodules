@@ -69,3 +69,6 @@
 [submodule "plugins/generic/cilantro"]
 	path = plugins/generic/cilantro
 	url = https://github.com/dainst/ojs-cilantro-plugin
+[submodule "plugins/generic/authorRequirements"]
+	path = plugins/generic/authorRequirements
+	url = https://github.com/pkp/authorRequirements.git
