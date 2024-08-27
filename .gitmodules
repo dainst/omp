@@ -61,7 +61,7 @@
 [submodule "plugins/generic/datacite"]
 	path = plugins/generic/datacite
 	url = https://github.com/withanage/datacite.git
-
+	branch = stable-3_4_0
 
 # dai-plugins
 
