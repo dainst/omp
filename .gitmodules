@@ -81,6 +81,3 @@
 [submodule "plugins/generic/authorRequirements"]
 	path = plugins/generic/authorRequirements
 	url = https://github.com/pkp/authorRequirements.git
-[submodule "plugins/importexport/datacite"]
-	path = plugins/importexport/datacite
-	url = https://github.com/withanage/datacite.git
