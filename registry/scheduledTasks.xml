@@ -26,22 +26,6 @@
 <!DOCTYPE scheduled_tasks SYSTEM "../lib/pkp/dtd/scheduledTasks.dtd">
 
 <scheduled_tasks>
-	<task class="PKP\task\ReviewReminder">
-		<descr>Send automated reminders to reviewers to confirm or complete their assignments.</descr>
-		<frequency hour="0"/>
-	</task>
-	<task class="PKP\task\PublishSubmissions">
-		<descr>Publish submissions that have been scheduled for publication.</descr>
-		<frequency day="0"/>
-	</task>
-	<task class="PKP\task\StatisticsReport">
-		<descr>Send automated statistics reports to press managers and editors.</descr>
-		<frequency day="1"/>
-	</task>
-	<task class="PKP\task\RemoveUnvalidatedExpiredUsers">
-		<descr>Automatically remove unvalidated and expired users.</descr>
-		<frequency day="1"/>
-	</task>
 	<task class="PKP\task\UpdateIPGeoDB">
 		<descr>Update the DB-IP city lite database periodically to ensure the geographical stats remain accurate.</descr>
 		<frequency day="10"/>
