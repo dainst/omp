@@ -3,7 +3,7 @@ config.inc.php
 build
 temp
 /files
-/plugins/paymethod/paypal/vendor/
+/plugins/paymethod/paypal/
 .project
 .project/
 .vscode
@@ -11,6 +11,7 @@ temp
 .settings/
 .htaccess
 te_ST/
+package-lock.json
 node_modules
 js/build.js
 js/hot-updates
