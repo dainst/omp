@@ -224,7 +224,7 @@ class ChapterForm extends Form
         $selectedChapterAuthorsArray = [];
         if ($this->getChapter()) {
             $selectedChapterAuthors = Repo::author()->getCollector()
-                ->filterByChapterIds([$this->getChapter()->getId()])
+                ->filterByChapterId($this->getChapter()->getId())
                 ->filterByPublicationIds([$this->getPublication()->getId()])
                 ->getMany();
 
@@ -278,6 +278,7 @@ class ChapterForm extends Form
             }, $selectedChapterAuthorsArray),
             'chapterFileOptions' => $chapterFileOptions,
             'selectedChapterFiles' => $selectedChapterFiles,
+            'doi' => $this->getChapter()?->getDoi()
         ]);
 
         return parent::fetch($request, $template, $display);
