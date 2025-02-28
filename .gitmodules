@@ -47,13 +47,6 @@
 	path = plugins/generic/acron
 	url = https://github.com/pkp/acron
 
-[submodule "plugins/generic/datacite"]
-	path = plugins/generic/datacite
-	url = https://github.com/withanage/datacite.git
-	branch = stable-3_4_0
-
-# dai-plugins
-
 [submodule "plugins/themes/publicationstheme"]
 	path = plugins/themes/publicationstheme
 	url = https://github.com/dainst/publicationstheme.git
@@ -73,3 +66,6 @@
 [submodule "plugins/generic/webFeed"]
 	path = plugins/generic/webFeed
 	url = https://github.com/pkp/webFeed.git
+[submodule "plugins/generic/datacite"]
+	path = plugins/generic/datacite
+	url = https://github.com/dainst/datacite.git
