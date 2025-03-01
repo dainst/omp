@@ -47,13 +47,6 @@
 	path = plugins/generic/acron
 	url = https://github.com/pkp/acron
 
-[submodule "plugins/generic/datacite"]
-	path = plugins/generic/datacite
-	url = https://github.com/withanage/datacite.git
-	branch = stable-3_4_0
-
-# dai-plugins
-
 [submodule "plugins/themes/publicationstheme"]
 	path = plugins/themes/publicationstheme
 	url = https://github.com/dainst/publicationstheme.git
@@ -70,3 +63,6 @@
 [submodule "plugins/generic/authorRequirements"]
 	path = plugins/generic/authorRequirements
 	url = https://github.com/pkp/authorRequirements.git
+[submodule "plugins/generic/datacite"]
+	path = plugins/generic/datacite
+	url = https://github.com/dainst/omp-datacite-plugin.git
