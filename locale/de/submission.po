@@ -653,3 +653,6 @@ msgstr ""
 "Sammelband einreichen, vergewissern Sie sich bitte, dass in jedem Kapitel "
 "die Autor/innen angegeben sind, die für das jeweilige Kapitel verantwortlich "
 "sind."
+
+msgid "submission.supportingAgencies"
+msgstr "Unterstützende Organisationen"
